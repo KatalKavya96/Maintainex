@@ -1,4 +1,5 @@
 import type { Prisma } from "@prisma/client";
+import { prisma } from "../../config/database";
 import { ApiError } from "../../utils/ApiError";
 import { ActivityRepository } from "./activity.repository";
 
@@ -25,14 +26,16 @@ type ActivityPayload = {
 export class ActivityService {
   constructor(private repository = new ActivityRepository()) {}
 
-  create(payload: ActivityPayload) {
-    return this.repository.create(this.toDatabasePayload(payload) as Prisma.ActivityUncheckedCreateInput);
+  async create(userId: string, payload: ActivityPayload) {
+    await this.ensureRelationsBelongToUser(userId, payload);
+    return this.repository.create({ ...this.toDatabasePayload(payload), userId } as Prisma.ActivityUncheckedCreateInput);
   }
 
-  async list(query: Record<string, string | undefined>) {
+  async list(userId: string, query: Record<string, string | undefined>) {
     const page = Number(query.page ?? 1);
     const limit = Number(query.limit ?? 20);
     const where: Prisma.ActivityWhereInput = {
+      userId,
       activityType: query.type as Prisma.EnumActivityTypeFilter | undefined,
       status: query.status as Prisma.EnumActivityStatusFilter | undefined,
       closingReason: query.closingReason as Prisma.EnumClosingReasonFilter | undefined,
@@ -62,24 +65,25 @@ export class ActivityService {
     return { items, total, page, limit };
   }
 
-  async get(id: string) {
-    const activity = await this.repository.findById(id);
+  async get(userId: string, id: string) {
+    const activity = await this.repository.findByIdForUser(id, userId);
     if (!activity) throw new ApiError(404, "Activity not found");
     return activity;
   }
 
-  async update(id: string, payload: ActivityPayload) {
-    await this.get(id);
+  async update(userId: string, id: string, payload: ActivityPayload) {
+    await this.get(userId, id);
+    await this.ensureRelationsBelongToUser(userId, payload);
     return this.repository.update(id, this.toDatabasePayload(payload) as Prisma.ActivityUncheckedUpdateInput);
   }
 
-  async delete(id: string) {
-    await this.get(id);
+  async delete(userId: string, id: string) {
+    await this.get(userId, id);
     return this.repository.delete(id);
   }
 
-  deleteAll() {
-    return this.repository.deleteAll();
+  deleteAll(userId: string) {
+    return this.repository.deleteAll(userId);
   }
 
   private toDatabasePayload(payload: ActivityPayload) {
@@ -103,5 +107,17 @@ export class ActivityService {
       organizationNameSnapshot,
       repositoryNameSnapshot
     };
+  }
+
+  private async ensureRelationsBelongToUser(userId: string, payload: ActivityPayload) {
+    if (payload.organizationId) {
+      const organization = await prisma.organization.findFirst({ where: { id: payload.organizationId, userId }, select: { id: true } });
+      if (!organization) throw new ApiError(400, "Organization does not belong to this user");
+    }
+
+    if (payload.repositoryId) {
+      const repository = await prisma.repository.findFirst({ where: { id: payload.repositoryId, userId }, select: { id: true } });
+      if (!repository) throw new ApiError(400, "Repository does not belong to this user");
+    }
   }
 }

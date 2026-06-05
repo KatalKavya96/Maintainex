@@ -1,30 +1,30 @@
 import { prisma } from "../../config/database";
 
 export class AnalyticsRepository {
-  summary() {
+  summary(userId: string) {
     return Promise.all([
-      prisma.activity.count(),
-      prisma.organization.count(),
-      prisma.repository.count(),
-      prisma.activity.groupBy({ by: ["activityType"], _count: { _all: true } }),
-      prisma.activity.groupBy({ by: ["repositoryNameSnapshot"], _count: { _all: true } }),
-      prisma.activity.groupBy({ by: ["organizationNameSnapshot"], _count: { _all: true } })
+      prisma.activity.count({ where: { userId } }),
+      prisma.organization.count({ where: { userId } }),
+      prisma.repository.count({ where: { userId } }),
+      prisma.activity.groupBy({ by: ["activityType"], where: { userId }, _count: { _all: true } }),
+      prisma.activity.groupBy({ by: ["repositoryNameSnapshot"], where: { userId }, _count: { _all: true } }),
+      prisma.activity.groupBy({ by: ["organizationNameSnapshot"], where: { userId }, _count: { _all: true } })
     ]);
   }
 
-  daily() {
-    return prisma.activity.groupBy({ by: ["date"], _count: { _all: true }, orderBy: { date: "asc" } });
+  daily(userId: string) {
+    return prisma.activity.groupBy({ by: ["date"], where: { userId }, _count: { _all: true }, orderBy: { date: "asc" } });
   }
 
-  activityTypes() {
-    return prisma.activity.groupBy({ by: ["activityType"], _count: { _all: true } });
+  activityTypes(userId: string) {
+    return prisma.activity.groupBy({ by: ["activityType"], where: { userId }, _count: { _all: true } });
   }
 
-  repositories() {
-    return prisma.activity.groupBy({ by: ["repositoryNameSnapshot"], _count: { _all: true } });
+  repositories(userId: string) {
+    return prisma.activity.groupBy({ by: ["repositoryNameSnapshot"], where: { userId }, _count: { _all: true } });
   }
 
-  organizations() {
-    return prisma.activity.groupBy({ by: ["organizationNameSnapshot"], _count: { _all: true } });
+  organizations(userId: string) {
+    return prisma.activity.groupBy({ by: ["organizationNameSnapshot"], where: { userId }, _count: { _all: true } });
   }
 }

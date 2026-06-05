@@ -20,8 +20,8 @@ export class ActivityRepository {
     return prisma.activity.count({ where });
   }
 
-  findById(id: string) {
-    return prisma.activity.findUnique({ where: { id }, include: { organization: true, repository: true } });
+  findByIdForUser(id: string, userId: string) {
+    return prisma.activity.findFirst({ where: { id, userId }, include: { organization: true, repository: true } });
   }
 
   update(id: string, data: Prisma.ActivityUncheckedUpdateInput) {
@@ -32,7 +32,7 @@ export class ActivityRepository {
     return prisma.activity.delete({ where: { id } });
   }
 
-  deleteAll() {
-    return prisma.activity.deleteMany();
+  deleteAll(userId: string) {
+    return prisma.activity.deleteMany({ where: { userId } });
   }
 }

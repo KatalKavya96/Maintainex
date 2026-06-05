@@ -6,6 +6,7 @@ import { activityRoutes } from "./modules/activity/activity.routes";
 import { authRoutes } from "./modules/auth/auth.routes";
 import { organizationRoutes } from "./modules/organization/organization.routes";
 import { pinRoutes } from "./modules/pin/pin.routes";
+import { profileRoutes } from "./modules/profile/profile.routes";
 import { repositoryRoutes } from "./modules/repository/repository.routes";
 import { scheduledWorkRoutes } from "./modules/scheduledWork/scheduledWork.routes";
 import { errorMiddleware } from "./middlewares/error.middleware";
@@ -49,5 +50,6 @@ app.use("/api/repositories", repositoryRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/pins", pinRoutes);
 app.use("/api/scheduled-work", scheduledWorkRoutes);
+app.use("/api/profiles", profileRoutes);
 
 app.use(errorMiddleware);

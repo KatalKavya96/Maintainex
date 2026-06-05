@@ -62,6 +62,9 @@ model User {
   email         String          @unique
   passwordHash  String
   role          UserRole        @default(VIEWER)
+  activities    Activity[]
+  organizations Organization[]
+  repositories  Repository[]
   pins          Pin[]
   scheduledWork ScheduledWork[]
   createdAt     DateTime        @default(now())
@@ -178,6 +181,7 @@ model ScheduledWork {
 
 model Activity {
   id                       String         @id @default(cuid())
+  userId                   String
   date                     DateTime
   activityType             ActivityType
   title                    String
@@ -195,9 +199,11 @@ model Activity {
   repositoryNameSnapshot   String
   organization             Organization?  @relation(fields: [organizationId], references: [id], onDelete: SetNull)
   repository               Repository?    @relation(fields: [repositoryId], references: [id], onDelete: SetNull)
+  user                     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt                DateTime       @default(now())
   updatedAt                DateTime       @updatedAt
 
+  @@index([userId])
   @@index([date])
   @@index([activityType])
   @@index([organizationId])
@@ -206,29 +212,37 @@ model Activity {
 
 model Organization {
   id           String       @id @default(cuid())
-  name         String       @unique
+  userId       String
+  name         String
   website      String?
   githubUrl    String?
   description  String?      @db.Text
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   repositories Repository[]
   activities   Activity[]
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
+
+  @@unique([userId, name])
+  @@index([userId])
 }
 
 model Repository {
   id               String        @id @default(cuid())
+  userId           String
   organizationId   String
   name             String
   githubUrl        String?
   description      String?       @db.Text
   primaryTechStack String?
   isActive         Boolean       @default(true)
+  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   organization     Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   activities       Activity[]
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
-  @@unique([organizationId, name])
+  @@unique([userId, organizationId, name])
+  @@index([userId])
   @@index([organizationId])
 }

@@ -3,36 +3,36 @@ import { AnalyticsRepository } from "./analytics.repository";
 export class AnalyticsService {
   constructor(private repository = new AnalyticsRepository()) {}
 
-  async summary() {
-    const [activities, organizations, repositories, byType, byRepository, byOrganization] = await this.repository.summary();
+  async summary(userId: string) {
+    const [activities, organizations, repositories, byType, byRepository, byOrganization] = await this.repository.summary(userId);
     return { activities, organizations, repositories, byType, byRepository, byOrganization };
   }
 
-  daily() {
-    return this.repository.daily();
+  daily(userId: string) {
+    return this.repository.daily(userId);
   }
 
-  weekly() {
-    return this.repository.daily();
+  weekly(userId: string) {
+    return this.repository.daily(userId);
   }
 
-  monthly() {
-    return this.repository.daily();
+  monthly(userId: string) {
+    return this.repository.daily(userId);
   }
 
-  yearly() {
-    return this.repository.daily();
+  yearly(userId: string) {
+    return this.repository.daily(userId);
   }
 
-  activityTypes() {
-    return this.repository.activityTypes();
+  activityTypes(userId: string) {
+    return this.repository.activityTypes(userId);
   }
 
-  repositories() {
-    return this.repository.repositories();
+  repositories(userId: string) {
+    return this.repository.repositories(userId);
   }
 
-  organizations() {
-    return this.repository.organizations();
+  organizations(userId: string) {
+    return this.repository.organizations(userId);
   }
 }

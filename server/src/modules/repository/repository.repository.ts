@@ -6,12 +6,12 @@ export class RepositoryRepository {
     return prisma.repository.create({ data });
   }
 
-  findMany() {
-    return prisma.repository.findMany({ include: { organization: true }, orderBy: { name: "asc" } });
+  findMany(userId: string) {
+    return prisma.repository.findMany({ where: { userId }, include: { organization: true }, orderBy: { name: "asc" } });
   }
 
-  findById(id: string) {
-    return prisma.repository.findUnique({ where: { id }, include: { organization: true, activities: true } });
+  findByIdForUser(id: string, userId: string) {
+    return prisma.repository.findFirst({ where: { id, userId }, include: { organization: true, activities: true } });
   }
 
   update(id: string, data: Prisma.RepositoryUncheckedUpdateInput) {

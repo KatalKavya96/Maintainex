@@ -1,32 +1,29 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { ActivityLineChart, ActivityTypeChart, OrgChart, RepoChart } from "@/components/analytics/Charts";
+import { RangeToggle } from "@/components/analytics/RangeToggle";
 import { PageTitle } from "@/components/common/PageTitle";
 import { useActivityStore } from "@/lib/activityStore";
-
-const tabs = ["Daily", "Weekly", "Monthly", "Yearly", "Custom range"];
+import { filterActivitiesByRange, type TimeRange } from "@/lib/timeRange";
 
 export default function AnalyticsPage() {
   const { activities } = useActivityStore();
+  const [range, setRange] = useState<TimeRange>("weekly");
+  const filteredActivities = useMemo(() => filterActivitiesByRange(activities, range), [activities, range]);
 
   return (
     <>
-      <PageTitle title="Analytics" description="Compare contribution volume by date, type, repository, and organization." />
-      <div className="mb-5 flex flex-wrap gap-2">
-        {tabs.map((tab, index) => (
-          <button
-            key={tab}
-            className={`h-10 rounded-md px-4 text-sm font-semibold ${index === 1 ? "bg-moss text-white" : "border border-line bg-white text-slate-600"}`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
+      <PageTitle
+        title="Analytics"
+        description="Compare contribution volume by date, type, repository, and organization."
+        action={<RangeToggle value={range} onChange={setRange} />}
+      />
       <div className="grid gap-6 xl:grid-cols-2">
-        <ActivityLineChart activities={activities} />
-        <ActivityTypeChart activities={activities} />
-        <RepoChart activities={activities} />
-        <OrgChart activities={activities} />
+        <ActivityLineChart activities={filteredActivities} />
+        <ActivityTypeChart activities={filteredActivities} />
+        <RepoChart activities={filteredActivities} />
+        <OrgChart activities={filteredActivities} />
       </div>
     </>
   );

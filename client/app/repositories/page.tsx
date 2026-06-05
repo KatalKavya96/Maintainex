@@ -1,23 +1,31 @@
 "use client";
 
+import { useMemo, useState } from "react";
+import { ActivityBadge } from "@/components/activities/ActivityBadge";
 import { Button } from "@/components/common/Button";
 import { PageTitle } from "@/components/common/PageTitle";
 import { useActivityStore } from "@/lib/activityStore";
+import { labelize } from "@/lib/constants";
 
 export default function RepositoriesPage() {
   const { activities } = useActivityStore();
-  const repositories = Array.from(
-    activities.reduce<Map<string, { organizationName: string; name: string; count: number }>>((acc, activity) => {
-      const key = `${activity.organizationName}/${activity.repositoryName}`;
-      const current = acc.get(key) ?? {
-        organizationName: activity.organizationName,
-        name: activity.repositoryName,
-        count: 0
-      };
-      acc.set(key, { ...current, count: current.count + 1 });
-      return acc;
-    }, new Map())
-  ).map(([, repo]) => repo);
+  const [expandedKey, setExpandedKey] = useState<string | null>(null);
+  const repositories = useMemo(
+    () =>
+      Array.from(
+        activities.reduce<Map<string, { organizationName: string; name: string; activities: typeof activities }>>((acc, activity) => {
+          const key = `${activity.organizationName}/${activity.repositoryName}`;
+          const current = acc.get(key) ?? {
+            organizationName: activity.organizationName,
+            name: activity.repositoryName,
+            activities: []
+          };
+          acc.set(key, { ...current, activities: [...current.activities, activity] });
+          return acc;
+        }, new Map())
+      ).map(([key, repo]) => ({ key, ...repo })),
+    [activities]
+  );
 
   return (
     <>
@@ -32,29 +40,63 @@ export default function RepositoriesPage() {
           <p className="mt-2 text-sm text-slate-500">Add an activity with a repository name to see it here.</p>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-line bg-white shadow-soft">
-          <table className="w-full min-w-[680px] text-left text-sm">
-            <thead className="bg-skyglass text-xs uppercase tracking-wide text-slate-500">
-              <tr>
-                <th className="px-4 py-3">Repository</th>
-                <th className="px-4 py-3">Organization</th>
-                <th className="px-4 py-3">Activities</th>
-                <th className="px-4 py-3">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-line">
-              {repositories.map((repo) => (
-                <tr key={`${repo.organizationName}/${repo.name}`}>
-                  <td className="px-4 py-3 font-semibold">{repo.name}</td>
-                  <td className="px-4 py-3">{repo.organizationName}</td>
-                  <td className="px-4 py-3 text-slate-600">{repo.count}</td>
-                  <td className="px-4 py-3">
-                    <span className="rounded-lg bg-emerald-50 px-2 py-1 text-xs font-bold text-emerald-700">Active</span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {repositories.map((repo) => {
+            const expanded = expandedKey === repo.key;
+            const typeCounts = Array.from(
+              repo.activities.reduce<Map<string, number>>((acc, activity) => {
+                acc.set(activity.activityType, (acc.get(activity.activityType) ?? 0) + 1);
+                return acc;
+              }, new Map())
+            );
+            return (
+              <article key={repo.key} className="rounded-2xl border border-line bg-white p-5 shadow-soft">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <h2 className="truncate text-2xl font-extrabold tracking-tight text-ink">{repo.name}</h2>
+                    <p className="mt-1 truncate text-sm font-semibold text-slate-500">{repo.organizationName}</p>
+                  </div>
+                  <span className="rounded-lg border border-line bg-skyglass px-2 py-1 text-xs font-bold text-moss">Active</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setExpandedKey(expanded ? null : repo.key)}
+                  className="mt-5 h-10 w-full rounded-lg border border-line bg-skyglass text-sm font-bold text-ink transition hover:border-moss"
+                >
+                  {expanded ? "Hide details" : "Expand repository"}
+                </button>
+                {expanded ? (
+                  <div className="mt-5 space-y-4 border-t border-line pt-5">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="rounded-xl bg-skyglass p-4">
+                        <p className="text-2xl font-extrabold text-moss">{repo.activities.length}</p>
+                        <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Activities</p>
+                      </div>
+                      <div className="rounded-xl bg-skyglass p-4">
+                        <p className="text-2xl font-extrabold text-moss">{typeCounts.length}</p>
+                        <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Types</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {typeCounts.map(([type, count]) => (
+                        <span key={type} className="rounded-lg bg-skyglass px-3 py-2 text-xs font-bold text-slate-500">
+                          {labelize(type)} <strong className="text-moss">{count}</strong>
+                        </span>
+                      ))}
+                    </div>
+                    <div className="space-y-2">
+                      {repo.activities.slice(0, 4).map((activity) => (
+                        <div key={activity.id} className="rounded-xl border border-line bg-skyglass p-3">
+                          <ActivityBadge value={activity.activityType} />
+                          <p className="mt-2 truncate text-sm font-bold text-ink">{activity.title}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+              </article>
+            );
+          })}
         </div>
       )}
     </>

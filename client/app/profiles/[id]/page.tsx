@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { ActivityLineChart, ActivityTypeChart } from "@/components/analytics/Charts";
+import { CalendarDays, Mail, ShieldCheck } from "lucide-react";
+import { ActivityLineChart, ActivityTypeChart, OrgChart, RepoChart } from "@/components/analytics/Charts";
+import { ActivityHeatmap } from "@/components/calendar/ActivityHeatmap";
 import { PageTitle } from "@/components/common/PageTitle";
-import { StatCard } from "@/components/dashboard/StatCard";
-import { DueStatusBadge } from "@/components/schedule/DueStatusBadge";
-import { PriorityBadge } from "@/components/schedule/PriorityBadge";
-import { chartByOrganization, chartByRepository, summaryStats } from "@/lib/analytics";
+import { formatDate } from "@/lib/dateUtils";
 import { getProfileDashboard } from "@/lib/api";
 import type { ProfileDashboard } from "@/types/profile";
 
@@ -27,82 +26,100 @@ export default function ProfileDashboardPage({ params }: { params: { id: string 
   }, [params.id]);
 
   const activities = useMemo(() => profile?.activities ?? [], [profile]);
-  const orgs = useMemo(() => chartByOrganization(activities), [activities]);
-  const repos = useMemo(() => chartByRepository(activities), [activities]);
+  const profileStats = useMemo(
+    () => [
+      { label: "Activities", value: profile?.stats.activities ?? 0 },
+      { label: "Repositories", value: profile?.stats.repositories ?? 0 },
+      { label: "Organizations", value: profile?.stats.organizations ?? 0 }
+    ],
+    [profile]
+  );
 
   if (loading) return <div className="rounded-xl border border-line bg-white p-8 text-sm text-slate-500 shadow-soft">Loading profile...</div>;
   if (error || !profile) return <div className="rounded-xl border border-red-200 bg-red-50 p-8 text-sm font-semibold text-red-700">{error || "Profile not found"}</div>;
 
+  const initials = profile.user.name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
     <>
-      <PageTitle title={`${profile.user.name}'s Dashboard`} description="Read-only profile view. You can inspect this user's activity, but cannot modify their data." />
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {summaryStats(activities).map((stat) => <StatCard key={stat.label} {...stat} />)}
-        <StatCard label="Pinned Links" value={profile.stats.pins} />
-        <StatCard label="Future Work" value={profile.stats.scheduledWork} />
-      </div>
+      <PageTitle title={`${profile.user.name}'s Profile`} description="Read-only contribution profile with activity history and public progress." />
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-2">
-        <section className="rounded-xl border border-line bg-white p-5 shadow-soft">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <h2 className="text-lg font-bold">Favorite Pins</h2>
-            <span className="text-xs font-bold uppercase text-slate-400">Read only</span>
-          </div>
-          {profile.favoritePins.length ? (
-            <div className="grid gap-2 sm:grid-cols-2">
-              {profile.favoritePins.map((pin) => (
-                <a key={pin.id} href={pin.url} target="_blank" rel="noreferrer" className="flex items-center gap-3 rounded-xl border border-line p-3 text-sm font-semibold transition hover:bg-skyglass">
-                  <img src={pin.imageUrl || pin.faviconUrl || ""} alt="" className="h-6 w-6 rounded object-contain" />
-                  <span className="truncate">{pin.title}</span>
-                </a>
-              ))}
+      <section className="rounded-2xl border border-line bg-white p-6 shadow-soft">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-center gap-5">
+            <div className="grid h-24 w-24 place-items-center rounded-2xl border border-moss/35 bg-skyglass text-3xl font-extrabold text-moss shadow-[0_0_28px_rgba(201,244,58,0.12)]">
+              {initials}
             </div>
-          ) : <p className="text-sm text-slate-500">No favorite pins yet.</p>}
-        </section>
+            <div>
+              <div className="flex flex-wrap items-center gap-3">
+                <h2 className="text-3xl font-extrabold tracking-tight text-ink">{profile.user.name}</h2>
+                <span className="inline-flex items-center gap-1 rounded-lg border border-line bg-skyglass px-2 py-1 text-xs font-bold uppercase text-moss">
+                  <ShieldCheck size={13} />
+                  {profile.user.role}
+                </span>
+              </div>
+              <div className="mt-3 flex flex-wrap gap-4 text-sm font-semibold text-slate-500">
+                <span className="inline-flex items-center gap-2">
+                  <Mail size={16} />
+                  {profile.user.email}
+                </span>
+                <span className="inline-flex items-center gap-2">
+                  <CalendarDays size={16} />
+                  Joined {formatDate(profile.user.createdAt.slice(0, 10))}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="grid min-w-[280px] grid-cols-3 gap-3">
+            {profileStats.map((stat) => (
+              <div key={stat.label} className="rounded-xl border border-line bg-skyglass p-4 text-center">
+                <p className="text-2xl font-extrabold text-moss">{stat.value}</p>
+                <p className="mt-1 text-xs font-bold uppercase tracking-wide text-slate-500">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-        <section className="rounded-xl border border-line bg-white p-5 shadow-soft">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <h2 className="text-lg font-bold">Upcoming Work</h2>
-            <span className="text-xs font-bold uppercase text-slate-400">Read only</span>
-          </div>
-          {profile.upcomingWork.length ? (
-            <div className="space-y-3">
-              {profile.upcomingWork.map((item) => (
-                <article key={item.id} className="rounded-xl border border-line p-3">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <p className="font-semibold text-ink">{item.title}</p>
-                    <PriorityBadge priority={item.priority} />
-                  </div>
-                  <p className="mt-1 text-sm text-slate-500">{item.organizationName}/{item.repositoryName}</p>
-                  <div className="mt-2">
-                    <DueStatusBadge dueDate={item.dueDate} status={item.status} />
-                  </div>
-                </article>
-              ))}
-            </div>
-          ) : <p className="text-sm text-slate-500">No scheduled work yet.</p>}
-        </section>
+      <div className="mt-6">
+        <ActivityHeatmap activities={activities} ownerName={profile.user.name} />
       </div>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-2">
         <ActivityLineChart activities={activities} />
         <ActivityTypeChart activities={activities} />
+        <RepoChart activities={activities} />
+        <OrgChart activities={activities} />
       </div>
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-2">
-        <section className="rounded-xl border border-line bg-white p-5 shadow-soft">
-          <h2 className="mb-4 text-lg font-bold">Repositories</h2>
-          <div className="space-y-2">
-            {repos.map((repo) => <p key={repo.name} className="flex justify-between rounded-lg bg-skyglass px-3 py-2 text-sm"><span>{repo.name}</span><strong>{repo.value}</strong></p>)}
+      <section className="mt-6 rounded-2xl border border-line bg-white p-6 shadow-soft">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <h2 className="text-xl font-extrabold tracking-tight">Recent activity</h2>
+          <span className="text-xs font-bold uppercase text-slate-400">Read only</span>
+        </div>
+        {activities.length ? (
+          <div className="grid gap-3 md:grid-cols-2">
+            {activities.slice(0, 6).map((activity) => (
+              <article key={activity.id} className="rounded-xl border border-line bg-skyglass p-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="font-bold text-ink">{activity.title}</p>
+                  <span className="text-xs font-bold text-slate-500">{formatDate(activity.date)}</span>
+                </div>
+                <p className="mt-2 text-sm font-semibold text-slate-500">
+                  {activity.organizationName}/{activity.repositoryName} {activity.number}
+                </p>
+              </article>
+            ))}
           </div>
-        </section>
-        <section className="rounded-xl border border-line bg-white p-5 shadow-soft">
-          <h2 className="mb-4 text-lg font-bold">Organizations</h2>
-          <div className="space-y-2">
-            {orgs.map((org) => <p key={org.name} className="flex justify-between rounded-lg bg-skyglass px-3 py-2 text-sm"><span>{org.name}</span><strong>{org.value}</strong></p>)}
-          </div>
-        </section>
-      </div>
+        ) : (
+          <p className="rounded-xl bg-skyglass p-6 text-sm font-semibold text-slate-500">No public activity yet.</p>
+        )}
+      </section>
 
       <div className="mt-6">
         <Link href="/profiles" className="text-sm font-semibold text-moss">Back to profiles</Link>

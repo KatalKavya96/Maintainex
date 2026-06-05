@@ -76,8 +76,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <aside className="border-line bg-white lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-72 lg:flex-col lg:border-r">
         <div className="flex h-28 items-center justify-between gap-3 border-b border-line px-6">
           <div>
-            <p className="text-4xl font-black tracking-tight text-ink">
-              M<span className="text-moss">CODE</span>
+            <p className="text-3xl font-extrabold tracking-tight text-ink">
+              Maintain<span className="text-moss">ex</span>
             </p>
             <p className="mt-2 text-sm font-bold uppercase tracking-wide text-slate-500">Platform</p>
           </div>
@@ -97,7 +97,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 key={item.href}
                 href={item.href}
                 className={clsx(
-                  "flex min-w-max items-center gap-4 rounded-xl px-5 py-4 text-lg font-bold transition",
+                  "flex min-w-max items-center gap-4 rounded-xl px-5 py-4 text-base font-bold transition",
                   active ? "bg-[#39A84A] text-white" : "text-slate-400 hover:bg-skyglass hover:text-ink"
                 )}
               >
@@ -129,8 +129,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <header className="sticky top-0 z-10 border-b border-line bg-white/90 px-5 py-5 backdrop-blur lg:px-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.24em] text-moss">Personal dashboard</p>
-              <h1 className="text-2xl font-black text-ink">Maintenance activity</h1>
+              <p className="text-xs font-bold uppercase tracking-[0.24em] text-moss">Maintainex workspace</p>
+              <h1 className="text-2xl font-extrabold tracking-tight text-ink">Contribution dashboard</h1>
             </div>
             <div className="flex items-center gap-3">
               <button

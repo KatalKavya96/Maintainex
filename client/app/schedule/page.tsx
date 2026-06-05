@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/common/Button";
 import { PageTitle } from "@/components/common/PageTitle";
+import { StatCard } from "@/components/dashboard/StatCard";
 import { ScheduledWorkBoard } from "@/components/schedule/ScheduledWorkBoard";
 import { ScheduledWorkFilters } from "@/components/schedule/ScheduledWorkFilters";
 import { ScheduledWorkTable } from "@/components/schedule/ScheduledWorkTable";
@@ -28,9 +29,23 @@ export default function SchedulePage() {
     await deleteScheduledWork(item.id);
     load();
   }
+  const stats = useMemo(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    return [
+      { label: "Future Work", value: items.length },
+      { label: "Due Today", value: items.filter((item) => item.dueDate?.slice(0, 10) === today).length },
+      { label: "Overdue Work", value: items.filter((item) => item.dueDate && item.dueDate.slice(0, 10) < today && item.status !== "DONE").length },
+      { label: "Blocked Work", value: items.filter((item) => item.status === "BLOCKED").length }
+    ];
+  }, [items]);
   return (
     <>
       <PageTitle title="Future Work Scheduler" description="Plan PR reviews, issues, and future contribution work." action={<Button href="/schedule/new">Add Work</Button>} />
+      <div className="mb-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {stats.map((stat) => (
+          <StatCard key={stat.label} {...stat} />
+        ))}
+      </div>
       <ScheduledWorkFilters filters={filters} onChange={setFilters} />
       <div className="mb-4 flex justify-end gap-2">
         <Button type="button" variant={view === "board" ? "primary" : "secondary"} onClick={() => setView("board")}>Board</Button>

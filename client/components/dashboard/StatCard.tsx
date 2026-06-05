@@ -15,9 +15,9 @@ export function StatCard({ label, value }: { label: string; value: number }) {
       <div className="pointer-events-none absolute -right-4 top-16 h-28 w-28 rounded-full border-[20px] border-current opacity-10" />
       <div className="relative flex items-start justify-between gap-4">
         <div>
-          <p className="text-base font-black text-slate-400">{label}</p>
-          <p className="mt-3 text-4xl font-black tracking-tight">{value}</p>
-          <p className="mt-3 text-sm font-bold text-slate-500">This workspace</p>
+          <p className="text-base font-extrabold leading-6 text-slate-400">{label}</p>
+          <p className="mt-3 text-4xl font-extrabold tracking-tight">{value}</p>
+          <p className="mt-3 text-sm font-semibold text-slate-500">This workspace</p>
         </div>
         <span className="grid h-14 w-14 place-items-center rounded-xl bg-current/15 text-current">
           <ArrowUpRight size={18} />

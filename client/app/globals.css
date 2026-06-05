@@ -180,3 +180,50 @@ html[data-theme="light"] .metric-card {
     #ffffff !important;
   border-color: var(--app-line) !important;
 }
+
+.heatmap-cell {
+  background: #20251b;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.heatmap-cell[data-level="1"] {
+  background: #31582b;
+}
+
+.heatmap-cell[data-level="2"] {
+  background: #4f8f35;
+}
+
+.heatmap-cell[data-level="3"] {
+  background: #7ccc3a;
+}
+
+.heatmap-cell[data-level="4"] {
+  background: #c9f43a;
+}
+
+.heatmap-cell[data-level="future"] {
+  background: transparent;
+  border-color: transparent;
+}
+
+html[data-theme="light"] .heatmap-cell {
+  background: #edf4e6;
+  border-color: #dce8cf;
+}
+
+html[data-theme="light"] .heatmap-cell[data-level="1"] {
+  background: #bfeea0;
+}
+
+html[data-theme="light"] .heatmap-cell[data-level="2"] {
+  background: #8adb5c;
+}
+
+html[data-theme="light"] .heatmap-cell[data-level="3"] {
+  background: #54b947;
+}
+
+html[data-theme="light"] .heatmap-cell[data-level="4"] {
+  background: #219340;
+}

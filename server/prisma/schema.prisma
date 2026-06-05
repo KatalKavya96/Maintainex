@@ -51,6 +51,131 @@ enum ClosingReason {
   OTHER
 }
 
+enum UserRole {
+  ADMIN
+  VIEWER
+}
+
+model User {
+  id            String          @id @default(cuid())
+  name          String
+  email         String          @unique
+  passwordHash  String
+  role          UserRole        @default(VIEWER)
+  pins          Pin[]
+  scheduledWork ScheduledWork[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+enum PinCategory {
+  REPOSITORY
+  ISSUE
+  PULL_REQUEST
+  DOCUMENTATION
+  PROJECT_BOARD
+  ORGANIZATION
+  WEBSITE
+  OTHER
+}
+
+enum ScheduledWorkType {
+  PR_REVIEW
+  ISSUE_WORK
+  PR_TO_RAISE
+  ISSUE_TO_RAISE
+  BUG_FIX
+  FEATURE_BUILD
+  DOCUMENTATION
+  TESTING
+  OTHER
+}
+
+enum ScheduledWorkStatus {
+  PLANNED
+  IN_PROGRESS
+  BLOCKED
+  DONE
+  CANCELLED
+  POSTPONED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum WorkDifficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model Pin {
+  id             String      @id @default(cuid())
+  userId         String
+  title          String
+  url            String
+  description    String?     @db.Text
+  category       PinCategory @default(WEBSITE)
+  customCategory String?
+  iconUrl        String?
+  faviconUrl     String?
+  imageUrl       String?
+  isFavorite     Boolean     @default(false)
+  isArchived     Boolean     @default(false)
+  tags           Json?
+  sortOrder      Int         @default(0)
+  lastOpenedAt   DateTime?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([category])
+  @@index([isFavorite])
+  @@index([createdAt])
+}
+
+model ScheduledWork {
+  id               String              @id @default(cuid())
+  userId           String
+  title            String
+  type             ScheduledWorkType
+  status           ScheduledWorkStatus @default(PLANNED)
+  priority         Priority            @default(MEDIUM)
+  organizationName String
+  repositoryName   String
+  itemNumber       Int?
+  itemUrl          String?
+  assignedToMe     Boolean             @default(false)
+  assignedSince    DateTime?
+  startDate        DateTime?
+  dueDate          DateTime?
+  completedAt      DateTime?
+  estimatedHours   Float?
+  actualHours      Float?
+  labels           Json?
+  tags             Json?
+  difficulty       WorkDifficulty?
+  context          String?             @db.Text
+  plan             String?             @db.Text
+  blockers         String?             @db.Text
+  closingNotes     String?             @db.Text
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  user             User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@index([priority])
+  @@index([type])
+  @@index([dueDate])
+  @@index([assignedToMe])
+}
+
 model Activity {
   id                       String         @id @default(cuid())
   date                     DateTime

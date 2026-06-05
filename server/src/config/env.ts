@@ -9,6 +9,7 @@ const splitOrigins = (value?: string) =>
     .filter(Boolean) ?? [];
 
 const vercelUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined;
+const allowVercelOrigins = process.env.ALLOW_VERCEL_ORIGINS !== "false";
 const clientUrls = Array.from(
   new Set([
     "http://localhost:3000",
@@ -22,5 +23,8 @@ const clientUrls = Array.from(
 
 export const env = {
   port: Number(process.env.PORT ?? 5001),
-  clientUrls
+  clientUrls,
+  allowVercelOrigins,
+  jwtSecret: process.env.JWT_SECRET ?? "dev-only-maintainex-secret-change-me",
+  signupAdminCode: process.env.SIGNUP_ADMIN_CODE
 };

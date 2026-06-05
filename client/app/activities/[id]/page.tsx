@@ -7,10 +7,12 @@ import { Button } from "@/components/common/Button";
 import { labelize } from "@/lib/constants";
 import { formatDate } from "@/lib/dateUtils";
 import { useActivityStore } from "@/lib/activityStore";
+import { useAuthStore } from "@/lib/authStore";
 
 export default function ActivityDetailsPage() {
   const params = useParams<{ id: string }>();
   const { activities } = useActivityStore();
+  const { isAdmin } = useAuthStore();
   const activity = activities.find((item) => item.id === params.id);
 
   if (!activity) {
@@ -51,7 +53,7 @@ export default function ActivityDetailsPage() {
           <Button href="/activities" variant="secondary">
             Back
           </Button>
-          <Button href={`/activities/${activity.id}/edit`}>Edit</Button>
+          {isAdmin ? <Button href={`/activities/${activity.id}/edit`}>Edit</Button> : null}
         </div>
       </div>
       <section className="rounded-md border border-line bg-white p-5 shadow-soft">

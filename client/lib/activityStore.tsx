@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { Activity } from "@/types/activity";
 import { apiRequest } from "@/lib/api";
+import { authChangedEvent } from "@/lib/authStore";
 
 type ActivityInput = Omit<Activity, "id" | "createdAt" | "updatedAt">;
 type ApiActivity = Omit<Activity, "date" | "organizationName" | "repositoryName" | "tags" | "number" | "link" | "description" | "notes"> & {
@@ -58,13 +59,25 @@ export function ActivityProvider({ children }: { children: React.ReactNode }) {
   const [activities, setActivities] = useState<Activity[]>([]);
 
   useEffect(() => {
-    apiRequest<{ items: ApiActivity[] }>("/activities?limit=1000")
-      .then((data) => {
-        setActivities(data.items.map(mapApiActivity));
-      })
-      .catch((error) => {
-        console.error("Failed to load activities", error);
-      });
+    const loadActivities = () => {
+      if (!window.localStorage.getItem("maintainex.token")) {
+        setActivities([]);
+        return;
+      }
+
+      apiRequest<{ items: ApiActivity[] }>("/activities?limit=1000")
+        .then((data) => {
+          setActivities(data.items.map(mapApiActivity));
+        })
+        .catch((error) => {
+          console.error("Failed to load activities", error);
+          setActivities([]);
+        });
+    };
+
+    loadActivities();
+    window.addEventListener(authChangedEvent, loadActivities);
+    return () => window.removeEventListener(authChangedEvent, loadActivities);
   }, []);
 
   const store = useMemo<ActivityStore>(

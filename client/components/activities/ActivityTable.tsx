@@ -6,9 +6,11 @@ import { labelize } from "@/lib/constants";
 import { formatDate } from "@/lib/dateUtils";
 import { ActivityBadge } from "@/components/activities/ActivityBadge";
 import { useActivityStore } from "@/lib/activityStore";
+import { useAuthStore } from "@/lib/authStore";
 
 export function ActivityTable() {
   const { activities, deleteActivity } = useActivityStore();
+  const { isAdmin } = useAuthStore();
 
   if (activities.length === 0) {
     return (
@@ -33,7 +35,7 @@ export function ActivityTable() {
               <th className="px-4 py-3">Title</th>
               <th className="px-4 py-3">Status</th>
               <th className="px-4 py-3">Closing Reason</th>
-              <th className="px-4 py-3">Actions</th>
+              {isAdmin ? <th className="px-4 py-3">Actions</th> : null}
             </tr>
           </thead>
           <tbody className="divide-y divide-line">
@@ -49,26 +51,30 @@ export function ActivityTable() {
                 <td className="max-w-[280px] truncate px-4 py-3">{activity.title}</td>
                 <td className="px-4 py-3">{labelize(activity.status)}</td>
                 <td className="px-4 py-3 text-slate-600">{labelize(activity.closingReason)}</td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-1">
-                    <Link className="rounded-md p-2 hover:bg-slate-100" href={`/activities/${activity.id}`} title="View">
-                      <Eye size={16} />
-                    </Link>
-                    <Link className="rounded-md p-2 hover:bg-slate-100" href={`/activities/${activity.id}/edit`} title="Edit">
-                      <Pencil size={16} />
-                    </Link>
-                    <a className="rounded-md p-2 hover:bg-slate-100" href={activity.link} target="_blank" title="Open GitHub">
-                      <ExternalLink size={16} />
-                    </a>
-                    <button
-                      className="rounded-md p-2 text-rose-600 hover:bg-rose-50"
-                      title="Delete"
-                      onClick={() => deleteActivity(activity.id)}
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </td>
+                {isAdmin ? (
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-1">
+                      <Link className="rounded-md p-2 hover:bg-slate-100" href={`/activities/${activity.id}`} title="View">
+                        <Eye size={16} />
+                      </Link>
+                      <Link className="rounded-md p-2 hover:bg-slate-100" href={`/activities/${activity.id}/edit`} title="Edit">
+                        <Pencil size={16} />
+                      </Link>
+                      {activity.link ? (
+                        <a className="rounded-md p-2 hover:bg-slate-100" href={activity.link} target="_blank" title="Open GitHub">
+                          <ExternalLink size={16} />
+                        </a>
+                      ) : null}
+                      <button
+                        className="rounded-md p-2 text-rose-600 hover:bg-rose-50"
+                        title="Delete"
+                        onClick={() => void deleteActivity(activity.id)}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </td>
+                ) : null}
               </tr>
             ))}
           </tbody>

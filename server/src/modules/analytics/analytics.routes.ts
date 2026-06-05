@@ -1,10 +1,12 @@
 import { Router } from "express";
 import { asyncHandler } from "../../middlewares/async.middleware";
+import { requireAuth } from "../../middlewares/auth.middleware";
 import { AnalyticsController } from "./analytics.controller";
 
 const controller = new AnalyticsController();
 export const analyticsRoutes = Router();
 
+analyticsRoutes.use(requireAuth);
 analyticsRoutes.get("/summary", asyncHandler(controller.summary));
 analyticsRoutes.get("/daily", asyncHandler(controller.daily));
 analyticsRoutes.get("/weekly", asyncHandler(controller.weekly));

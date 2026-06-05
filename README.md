@@ -69,6 +69,9 @@ DATABASE_URL=postgresql://USER:PASSWORD@HOST/DB?sslmode=require
 PORT=5001
 CLIENT_URL=https://your-production-frontend.vercel.app
 CLIENT_URLS=http://localhost:3000,https://your-production-frontend.vercel.app
+ALLOW_VERCEL_ORIGINS=true
+JWT_SECRET=replace-with-a-long-random-secret
+SIGNUP_ADMIN_CODE=optional-admin-invite-code
 ```
 
 Use `CLIENT_URLS` for multiple frontend origins, such as localhost plus Vercel production or preview URLs.
@@ -142,4 +145,9 @@ The backend needs:
 DATABASE_URL=postgresql://USER:PASSWORD@HOST/DB?sslmode=require
 CLIENT_URL=https://your-production-frontend.vercel.app
 CLIENT_URLS=https://your-production-frontend.vercel.app
+ALLOW_VERCEL_ORIGINS=true
+JWT_SECRET=replace-with-a-long-random-secret
+SIGNUP_ADMIN_CODE=optional-admin-invite-code
 ```
+
+The first signed-up account becomes `ADMIN`. Later signups become `VIEWER` unless they provide `SIGNUP_ADMIN_CODE`.

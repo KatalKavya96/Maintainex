@@ -49,7 +49,7 @@ export default function DashboardPage() {
     <>
       <PageTitle
         title="Dashboard"
-        description="Track PR reviews, raised work, closures, notes, repositories, organizations, and progress across time."
+        description="Welcome back. Here's your contribution overview, work queue, pinned resources, and public progress."
         action={
           <div className="flex gap-2">
             <Button href="/activities/new">Add activity</Button>

@@ -55,9 +55,9 @@ export function ActivityForm({ activity }: { activity?: Activity }) {
   }
 
   return (
-    <form ref={formRef} onSubmit={onSubmit} className="space-y-5 rounded-md border border-line bg-white p-5 shadow-soft">
+    <form ref={formRef} onSubmit={onSubmit} className="space-y-6 rounded-xl border border-line bg-white p-5 shadow-soft">
       <section>
-        <h3 className="mb-4 text-lg font-bold">Basic Info</h3>
+        <h3 className="mb-4 text-base font-bold">Basic Info</h3>
         <div className="grid gap-4 md:grid-cols-2">
           <Field label="Date">
             <Input name="date" type="date" required defaultValue={activity?.date ?? today()} />
@@ -87,7 +87,7 @@ export function ActivityForm({ activity }: { activity?: Activity }) {
       </section>
 
       <section>
-        <h3 className="mb-4 text-lg font-bold">Repository Info</h3>
+        <h3 className="mb-4 text-base font-bold">Repository Info</h3>
         <div className="grid gap-4 md:grid-cols-2">
           <Field label="Organization">
             <Input name="organizationName" required defaultValue={activity?.organizationName} placeholder="layer5io" />
@@ -99,7 +99,7 @@ export function ActivityForm({ activity }: { activity?: Activity }) {
       </section>
 
       <section>
-        <h3 className="mb-4 text-lg font-bold">Status & Review Info</h3>
+        <h3 className="mb-4 text-base font-bold">Status & Review Info</h3>
         <div className="grid gap-4 md:grid-cols-3">
           <Field label="Status">
             <Select name="status" defaultValue={activity?.status ?? "OPEN"}>
@@ -132,7 +132,7 @@ export function ActivityForm({ activity }: { activity?: Activity }) {
       </section>
 
       <section>
-        <h3 className="mb-4 text-lg font-bold">Notes</h3>
+        <h3 className="mb-4 text-base font-bold">Notes</h3>
         <div className="grid gap-4 md:grid-cols-2">
           <Field label="Description">
             <Textarea name="description" defaultValue={activity?.description} />

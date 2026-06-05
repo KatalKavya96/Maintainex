@@ -2,8 +2,8 @@ export function SummaryList({ title, data }: { title: string; data: { name: stri
   const max = Math.max(...data.map((item) => item.value), 1);
 
   return (
-    <section className="rounded-md border border-line bg-white p-5 shadow-soft">
-      <h3 className="mb-4 text-lg font-bold">{title}</h3>
+    <section className="dcode-card rounded-2xl p-6 shadow-soft">
+      <h3 className="mb-5 text-2xl font-black">{title}</h3>
       <div className="space-y-4">
         {data.map((item) => (
           <div key={item.name}>
@@ -11,8 +11,8 @@ export function SummaryList({ title, data }: { title: string; data: { name: stri
               <span className="font-medium">{item.name}</span>
               <span className="text-slate-500">{item.value}</span>
             </div>
-            <div className="h-2 rounded-full bg-slate-100">
-              <div className="h-2 rounded-full bg-moss" style={{ width: `${(item.value / max) * 100}%` }} />
+            <div className="h-2 rounded-full bg-skyglass">
+              <div className="h-2 rounded-full bg-moss shadow-[0_0_18px_rgba(201,244,58,0.35)]" style={{ width: `${(item.value / max) * 100}%` }} />
             </div>
           </div>
         ))}

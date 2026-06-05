@@ -3,16 +3,48 @@
 @tailwind utilities;
 
 :root {
+  color-scheme: dark;
+  --app-bg: #101111;
+  --app-panel: #171818;
+  --app-panel-soft: #20251b;
+  --app-elevated: #1e1f22;
+  --app-line: #263142;
+  --app-text: #f7f7f2;
+  --app-muted: #9ca1ad;
+  --app-faint: #6f7583;
+  --app-accent: #c9f43a;
+  --app-green: #42b456;
+  --app-blue: #5f8ef6;
+  --app-orange: #fb9638;
+  background: var(--app-bg);
+}
+
+html[data-theme="light"] {
   color-scheme: light;
-  background: #f7faf9;
+  --app-bg: #f7f9f4;
+  --app-panel: #ffffff;
+  --app-panel-soft: #f0f7e6;
+  --app-elevated: #ffffff;
+  --app-line: #dce8cf;
+  --app-text: #11150e;
+  --app-muted: #667085;
+  --app-faint: #8a94a6;
+  --app-accent: #9bd91f;
+  --app-green: #35a853;
+  --app-blue: #4c7df0;
+  --app-orange: #f28b30;
 }
 
 body {
   margin: 0;
-  color: #16202a;
+  color: var(--app-text);
   background:
-    linear-gradient(180deg, rgba(232, 243, 246, 0.82), rgba(247, 250, 249, 0.96) 310px),
-    #f7faf9;
+    radial-gradient(circle at 58% 10%, rgba(201, 244, 58, 0.08), transparent 28rem),
+    var(--app-bg);
+  font-feature-settings:
+    "cv02" 1,
+    "cv03" 1,
+    "cv04" 1;
 }
 
 * {
@@ -33,4 +65,118 @@ textarea {
 
 .recharts-wrapper * {
   outline: none;
+}
+
+::selection {
+  background: rgba(201, 244, 58, 0.24);
+}
+
+html[data-theme="dark"] .bg-white,
+html[data-theme="dark"] .bg-white\/90 {
+  background-color: var(--app-panel) !important;
+}
+
+html[data-theme="dark"] .bg-\[\#F5F7FB\] {
+  background-color: var(--app-bg) !important;
+}
+
+html[data-theme="dark"] .bg-skyglass {
+  background-color: var(--app-panel-soft) !important;
+}
+
+html[data-theme="dark"] .border-line {
+  border-color: var(--app-line) !important;
+}
+
+html[data-theme="dark"] .text-ink {
+  color: var(--app-text) !important;
+}
+
+html[data-theme="dark"] .text-slate-400,
+html[data-theme="dark"] .text-slate-500,
+html[data-theme="dark"] .text-slate-600,
+html[data-theme="dark"] .text-slate-700 {
+  color: var(--app-muted) !important;
+}
+
+html[data-theme="dark"] .bg-slate-100,
+html[data-theme="dark"] .bg-slate-50 {
+  background-color: var(--app-elevated) !important;
+}
+
+html[data-theme="dark"] .bg-moss {
+  background-color: var(--app-accent) !important;
+}
+
+html[data-theme="dark"] .text-moss {
+  color: var(--app-accent) !important;
+}
+
+html[data-theme="light"] .border-line {
+  border-color: var(--app-line) !important;
+}
+
+html[data-theme="light"] .bg-skyglass {
+  background-color: var(--app-panel-soft) !important;
+}
+
+html[data-theme="light"] .text-ink {
+  color: var(--app-text) !important;
+}
+
+html[data-theme="light"] .text-slate-400,
+html[data-theme="light"] .text-slate-500,
+html[data-theme="light"] .text-slate-600,
+html[data-theme="light"] .text-slate-700 {
+  color: var(--app-muted) !important;
+}
+
+html[data-theme="light"] .bg-moss {
+  background-color: var(--app-accent) !important;
+}
+
+html[data-theme="light"] .text-moss {
+  color: var(--app-accent) !important;
+}
+
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea {
+  background-color: #111212 !important;
+  color: var(--app-text) !important;
+}
+
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder {
+  color: #7d8390 !important;
+}
+
+html[data-theme="light"] body {
+  background:
+    radial-gradient(circle at 58% 10%, rgba(155, 217, 31, 0.12), transparent 28rem),
+    var(--app-bg);
+}
+
+.dcode-card {
+  background:
+    radial-gradient(circle at 86% 50%, rgba(201, 244, 58, 0.08), transparent 9rem),
+    linear-gradient(135deg, rgba(32, 37, 27, 0.92), rgba(23, 24, 24, 0.98));
+  border: 1px solid var(--app-line);
+}
+
+html[data-theme="light"] .dcode-card {
+  background:
+    radial-gradient(circle at 86% 50%, rgba(155, 217, 31, 0.14), transparent 9rem),
+    #ffffff;
+}
+
+.dcode-glow {
+  box-shadow: 0 0 42px rgba(201, 244, 58, 0.12);
+}
+
+html[data-theme="light"] .metric-card {
+  background:
+    radial-gradient(circle at 86% 50%, rgba(155, 217, 31, 0.14), transparent 9rem),
+    #ffffff !important;
+  border-color: var(--app-line) !important;
 }

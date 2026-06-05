@@ -45,9 +45,9 @@ export function PinForm({ pin }: { pin?: Pin }) {
   }
 
   return (
-    <form ref={formRef} onSubmit={onSubmit} className="space-y-5 rounded-md border border-line bg-white p-5 shadow-soft">
+    <form ref={formRef} onSubmit={onSubmit} className="space-y-6 rounded-xl border border-line bg-white p-5 shadow-soft">
       <section>
-        <h3 className="mb-4 text-lg font-bold">Pin Details</h3>
+        <h3 className="mb-4 text-base font-bold">Pin Details</h3>
         <div className="grid gap-4 md:grid-cols-2">
           <Field label="Title"><Input name="title" required defaultValue={pin?.title} placeholder="Layer5 Website Repo" /></Field>
           <Field label="URL"><Input name="url" required defaultValue={pin?.url} placeholder="https://github.com/layer5io/layer5" /></Field>
@@ -62,13 +62,13 @@ export function PinForm({ pin }: { pin?: Pin }) {
         </div>
       </section>
       <section>
-        <h3 className="mb-4 text-lg font-bold">Description</h3>
+        <h3 className="mb-4 text-base font-bold">Description</h3>
         <Textarea name="description" defaultValue={pin?.description ?? ""} />
         <label className="mt-4 flex items-center gap-2 text-sm font-semibold text-slate-700">
           <input type="checkbox" name="isFavorite" defaultChecked={pin?.isFavorite} className="h-4 w-4 rounded border-line" />
           Favorite
         </label>
-        {faviconPreview ? <img src={faviconPreview} alt="" className="mt-4 h-10 w-10 rounded-md border border-line p-1" /> : null}
+        {faviconPreview ? <img src={faviconPreview} alt="" className="mt-4 h-10 w-10 rounded-lg border border-line p-1" /> : null}
       </section>
       <div className="flex justify-end gap-3 border-t border-line pt-4">
         <Button href="/pins" variant="secondary">Cancel</Button>

@@ -32,9 +32,9 @@ export default function SignupPage() {
 
   return (
     <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-md place-items-center">
-      <form onSubmit={onSubmit} className="w-full rounded-md border border-line bg-white p-6 shadow-soft">
+      <form onSubmit={onSubmit} className="w-full rounded-xl border border-line bg-white p-6 shadow-soft">
         <div className="mb-6 flex items-center gap-3">
-          <div className="grid h-11 w-11 place-items-center rounded-md bg-moss text-white">
+          <div className="grid h-11 w-11 place-items-center rounded-xl bg-moss text-black shadow-[0_12px_24px_rgba(201,244,58,0.22)]">
             <ShieldCheck size={22} />
           </div>
           <div>
@@ -56,7 +56,7 @@ export default function SignupPage() {
             <Input name="adminCode" placeholder="Optional after first signup" />
           </Field>
         </div>
-        {error ? <p className="mt-4 rounded-md bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700">{error}</p> : null}
+        {error ? <p className="mt-4 rounded-lg bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700">{error}</p> : null}
         <Button type="submit" className="mt-6 w-full">
           Create account
         </Button>
@@ -70,4 +70,3 @@ export default function SignupPage() {
     </div>
   );
 }
-

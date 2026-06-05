@@ -20,6 +20,7 @@ const isAllowedOrigin = (origin?: string) => {
 
   try {
     const url = new URL(origin);
+    if (url.protocol === "http:" && ["localhost", "127.0.0.1"].includes(url.hostname)) return true;
     return env.allowVercelOrigins && url.protocol === "https:" && url.hostname.endsWith(".vercel.app");
   } catch {
     return false;

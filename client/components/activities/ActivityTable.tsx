@@ -12,7 +12,7 @@ export function ActivityTable() {
 
   if (activities.length === 0) {
     return (
-      <div className="rounded-md border border-line bg-white p-8 text-center shadow-soft">
+      <div className="rounded-xl border border-line bg-white p-8 text-center shadow-soft">
         <p className="text-lg font-bold">No activities yet</p>
         <p className="mt-2 text-sm text-slate-500">Add your first maintenance activity to populate this table.</p>
       </div>
@@ -20,10 +20,10 @@ export function ActivityTable() {
   }
 
   return (
-    <div className="overflow-hidden rounded-md border border-line bg-white shadow-soft">
+    <div className="overflow-hidden rounded-xl border border-line bg-white shadow-soft">
       <div className="overflow-x-auto">
         <table className="w-full min-w-[980px] text-left text-sm">
-          <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+          <thead className="bg-skyglass text-xs uppercase tracking-wide text-slate-500">
             <tr>
               <th className="px-4 py-3">Date</th>
               <th className="px-4 py-3">Type</th>
@@ -38,7 +38,7 @@ export function ActivityTable() {
           </thead>
           <tbody className="divide-y divide-line">
             {activities.map((activity) => (
-              <tr key={activity.id} className="hover:bg-slate-50/70">
+              <tr key={activity.id} className="hover:bg-skyglass/70">
                 <td className="px-4 py-3 text-slate-600">{formatDate(activity.date)}</td>
                 <td className="px-4 py-3">
                   <ActivityBadge value={activity.activityType} />
@@ -51,19 +51,19 @@ export function ActivityTable() {
                 <td className="px-4 py-3 text-slate-600">{labelize(activity.closingReason)}</td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-1">
-                    <Link className="rounded-md p-2 hover:bg-slate-100" href={`/activities/${activity.id}`} title="View">
+                    <Link className="rounded-lg p-2 hover:bg-skyglass" href={`/activities/${activity.id}`} title="View">
                       <Eye size={16} />
                     </Link>
-                    <Link className="rounded-md p-2 hover:bg-slate-100" href={`/activities/${activity.id}/edit`} title="Edit">
+                    <Link className="rounded-lg p-2 hover:bg-skyglass" href={`/activities/${activity.id}/edit`} title="Edit">
                       <Pencil size={16} />
                     </Link>
                     {activity.link ? (
-                      <a className="rounded-md p-2 hover:bg-slate-100" href={activity.link} target="_blank" title="Open GitHub">
+                      <a className="rounded-lg p-2 hover:bg-skyglass" href={activity.link} target="_blank" title="Open GitHub">
                         <ExternalLink size={16} />
                       </a>
                     ) : null}
                     <button
-                      className="rounded-md p-2 text-rose-600 hover:bg-rose-50"
+                      className="rounded-lg p-2 text-rose-600 hover:bg-rose-50"
                       title="Delete"
                       onClick={() => void deleteActivity(activity.id)}
                     >

@@ -15,15 +15,15 @@ type LinkButtonProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
 };
 
 const styles = {
-  primary: "bg-moss text-white hover:bg-[#285f51]",
-  secondary: "border border-line bg-white text-ink hover:bg-slate-50",
-  ghost: "text-slate-600 hover:bg-slate-100"
+  primary: "bg-moss text-black shadow-[0_12px_28px_rgba(201,244,58,0.20)] hover:brightness-105",
+  secondary: "border border-line bg-skyglass text-ink hover:border-moss",
+  ghost: "text-slate-600 hover:bg-skyglass hover:text-ink"
 };
 
 export function Button(props: ButtonProps | LinkButtonProps) {
   const { className, variant = "primary" } = props;
   const base = clsx(
-    "inline-flex h-10 items-center justify-center gap-2 rounded-md px-4 text-sm font-semibold transition",
+    "inline-flex h-10 items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold transition",
     styles[variant],
     className
   );

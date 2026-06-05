@@ -14,15 +14,15 @@ export function UpcomingWork() {
     getScheduledWork({ limit: 5 }).then((data) => setItems(data.items)).catch(() => setItems([]));
   }, []);
   return (
-    <section className="rounded-md border border-line bg-white p-5 shadow-soft">
+    <section className="rounded-xl border border-line bg-white p-5 shadow-soft">
       <div className="mb-4 flex items-center justify-between gap-3">
-        <h2 className="text-lg font-bold">Upcoming Work</h2>
+        <h2 className="text-base font-bold">Upcoming Work</h2>
         <Link href="/schedule" className="text-sm font-semibold text-moss">View schedule</Link>
       </div>
       {items.length ? (
         <div className="space-y-3">
           {items.map((item) => (
-            <Link key={item.id} href={`/schedule/${item.id}`} className="block rounded-md border border-line p-3 transition hover:bg-slate-50">
+            <Link key={item.id} href={`/schedule/${item.id}`} className="block rounded-xl border border-line p-3 transition hover:bg-skyglass">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="font-semibold text-ink">{item.title}</p>
                 <PriorityBadge priority={item.priority} />

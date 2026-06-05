@@ -17,14 +17,14 @@ export function ActivityHeatmap({ activities }: { activities: Activity[] }) {
 
   const color = (count: number) => {
     if (count >= 3) return "bg-moss";
-    if (count === 2) return "bg-[#6FA895]";
-    if (count === 1) return "bg-[#B9DBD0]";
-    return "bg-slate-100";
+    if (count === 2) return "bg-[#8C7CF5]";
+    if (count === 1) return "bg-[#C9C3FF]";
+    return "bg-skyglass";
   };
 
   return (
-    <section className="rounded-md border border-line bg-white p-5 shadow-soft">
-      <h3 className="mb-4 text-lg font-bold">Yearly consistency heatmap</h3>
+    <section className="rounded-xl border border-line bg-white p-5 shadow-soft">
+      <h3 className="mb-4 text-base font-bold">Yearly consistency heatmap</h3>
       <div className="grid grid-cols-7 gap-2">
         {days.map((day) => (
           <div

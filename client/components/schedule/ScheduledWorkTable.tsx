@@ -10,9 +10,9 @@ import { labelize } from "@/lib/constants";
 
 export function ScheduledWorkTable({ items }: { items: ScheduledWork[] }) {
   return (
-    <div className="overflow-x-auto rounded-md border border-line bg-white shadow-soft">
+    <div className="overflow-x-auto rounded-xl border border-line bg-white shadow-soft">
       <table className="min-w-full text-left text-sm">
-        <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+        <thead className="bg-skyglass text-xs uppercase text-slate-500">
           <tr>
             {["Title", "Type", "Status", "Priority", "Repository", "Number", "Assigned For", "Due Status", "Actions"].map((head) => <th key={head} className="px-4 py-3 font-bold">{head}</th>)}
           </tr>

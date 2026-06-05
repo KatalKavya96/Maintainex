@@ -13,8 +13,8 @@ export default function PinDetailPage({ params }: { params: { id: string } }) {
   const [error, setError] = useState("");
   const load = () => getPinById(params.id).then(setPin).catch((err) => setError(err.message ?? "Pin not found"));
   useEffect(() => { void load(); }, [params.id]);
-  if (error) return <div className="rounded-md border border-red-200 bg-red-50 p-5 text-sm font-semibold text-red-700">{error}</div>;
-  if (!pin) return <div className="rounded-md border border-line bg-white p-5 text-sm text-slate-500 shadow-soft">Loading pin...</div>;
+  if (error) return <div className="rounded-xl border border-red-200 bg-red-50 p-5 text-sm font-semibold text-red-700">{error}</div>;
+  if (!pin) return <div className="rounded-xl border border-line bg-white p-5 text-sm text-slate-500 shadow-soft">Loading pin...</div>;
   return (
     <>
       <PageTitle
@@ -22,9 +22,9 @@ export default function PinDetailPage({ params }: { params: { id: string } }) {
         description={pin.description || pin.url}
         action={<div className="flex gap-2"><Button href={`/pins/${pin.id}/edit`} variant="secondary">Edit</Button><Button type="button" onClick={async () => { await markPinOpened(pin.id); window.open(pin.url, "_blank", "noopener,noreferrer"); }}>Open</Button></div>}
       />
-      <section className="rounded-md border border-line bg-white p-5 shadow-soft">
+      <section className="rounded-xl border border-line bg-white p-5 shadow-soft">
         <div className="flex items-center gap-4">
-          <img src={pin.imageUrl || pin.faviconUrl || ""} alt="" className="h-16 w-16 rounded-md border border-line p-2 object-contain" />
+          <img src={pin.imageUrl || pin.faviconUrl || ""} alt="" className="h-16 w-16 rounded-xl border border-line p-2 object-contain" />
           <div>
             <p className="font-semibold text-slate-500">{labelize(pin.category)}</p>
             <Link href={pin.url} target="_blank" className="break-all text-sm font-semibold text-moss">{pin.url}</Link>

@@ -13,7 +13,7 @@ export default function EditActivityPage() {
 
   if (!activity) {
     return (
-      <div className="rounded-md border border-line bg-white p-8 text-center shadow-soft">
+      <div className="rounded-xl border border-line bg-white p-8 text-center shadow-soft">
         <p className="text-lg font-bold">Activity not found</p>
         <p className="mt-2 text-sm text-slate-500">It may have been deleted or cleared during reset.</p>
         <Button href="/activities" className="mt-5">

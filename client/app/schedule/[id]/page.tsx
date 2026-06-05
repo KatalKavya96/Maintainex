@@ -13,7 +13,7 @@ import { labelize } from "@/lib/constants";
 import type { ScheduledWork } from "@/types/scheduledWork";
 
 const row = (label: string, value: React.ReactNode) => (
-  <div className="rounded-md border border-line p-3">
+  <div className="rounded-xl border border-line p-3">
     <p className="text-xs font-bold uppercase text-slate-400">{label}</p>
     <div className="mt-1 text-sm font-semibold text-slate-700">{value || "-"}</div>
   </div>
@@ -24,16 +24,16 @@ export default function ScheduledWorkDetailPage({ params }: { params: { id: stri
   const [error, setError] = useState("");
   const load = () => getScheduledWorkById(params.id).then(setWork).catch((err) => setError(err.message ?? "Scheduled work not found"));
   useEffect(() => { void load(); }, [params.id]);
-  if (error) return <div className="rounded-md border border-red-200 bg-red-50 p-5 text-sm font-semibold text-red-700">{error}</div>;
-  if (!work) return <div className="rounded-md border border-line bg-white p-5 text-sm text-slate-500 shadow-soft">Loading scheduled work...</div>;
+  if (error) return <div className="rounded-xl border border-red-200 bg-red-50 p-5 text-sm font-semibold text-red-700">{error}</div>;
+  if (!work) return <div className="rounded-xl border border-line bg-white p-5 text-sm text-slate-500 shadow-soft">Loading scheduled work...</div>;
   return (
     <>
       <PageTitle
         title={work.title}
         description={`${work.organizationName}/${work.repositoryName}${work.itemNumber ? ` #${work.itemNumber}` : ""}`}
-        action={<div className="flex flex-wrap gap-2"><Button href={`/schedule/${work.id}/edit`} variant="secondary">Edit</Button>{work.itemUrl ? <Link href={work.itemUrl} target="_blank" className="inline-flex h-10 items-center rounded-md bg-moss px-4 text-sm font-semibold text-white">Open GitHub Link</Link> : null}</div>}
+        action={<div className="flex flex-wrap gap-2"><Button href={`/schedule/${work.id}/edit`} variant="secondary">Edit</Button>{work.itemUrl ? <Link href={work.itemUrl} target="_blank" className="inline-flex h-10 items-center rounded-lg bg-moss px-4 text-sm font-semibold text-white">Open GitHub Link</Link> : null}</div>}
       />
-      <section className="rounded-md border border-line bg-white p-5 shadow-soft">
+      <section className="rounded-xl border border-line bg-white p-5 shadow-soft">
         <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-4">
           {row("Type", labelize(work.type))}
           {row("Status", <WorkStatusBadge status={work.status} />)}

@@ -2,19 +2,21 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Activity,
   BarChart3,
   CalendarDays,
+  ChevronLeft,
   FolderGit2,
   Home,
   Link2,
   LogOut,
+  Moon,
   Plus,
   ClipboardList,
   Settings,
-  ShieldCheck,
+  Sun,
   UserRoundSearch,
   Users
 } from "lucide-react";
@@ -40,6 +42,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { user, isReady, logout } = useAuthStore();
   const isAuthPage = pathname === "/login" || pathname === "/signup";
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem("maintainex.theme");
+    const nextTheme = stored === "light" ? "light" : "dark";
+    setTheme(nextTheme);
+    document.documentElement.dataset.theme = nextTheme;
+  }, []);
+
+  function toggleTheme() {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+    document.documentElement.dataset.theme = nextTheme;
+    window.localStorage.setItem("maintainex.theme", nextTheme);
+  }
 
   useEffect(() => {
     if (!isReady) return;
@@ -55,41 +72,49 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen lg:flex">
-      <aside className="border-line bg-white/92 lg:fixed lg:inset-y-0 lg:left-0 lg:w-72 lg:border-r">
-        <div className="flex h-20 items-center gap-3 px-6">
-          <div className="grid h-10 w-10 place-items-center rounded-md bg-moss text-white">
-            <ShieldCheck size={22} />
-          </div>
+    <div className="min-h-screen bg-[var(--app-bg)] lg:flex">
+      <aside className="border-line bg-white lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-72 lg:flex-col lg:border-r">
+        <div className="flex h-28 items-center justify-between gap-3 border-b border-line px-6">
           <div>
-            <p className="text-lg font-bold">Maintainex</p>
-            <p className="text-xs text-slate-500">Open-source activity tracker</p>
+            <p className="text-4xl font-black tracking-tight text-ink">
+              M<span className="text-moss">CODE</span>
+            </p>
+            <p className="mt-2 text-sm font-bold uppercase tracking-wide text-slate-500">Platform</p>
           </div>
+          <button className="grid h-9 w-9 place-items-center rounded-full border border-slate-600/50 text-slate-400 transition hover:border-moss hover:text-moss" title="Collapse sidebar">
+            <ChevronLeft size={18} />
+          </button>
         </div>
-        <nav className="flex gap-2 overflow-x-auto px-4 pb-4 lg:block lg:space-y-1">
+        <nav className="flex gap-2 overflow-x-auto px-4 py-8 lg:block lg:flex-1 lg:space-y-4 lg:overflow-y-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const active = pathname === item.href;
+            const active =
+              pathname === item.href ||
+              (item.href === "/activities" && pathname.startsWith("/activities/") && pathname !== "/activities/new") ||
+              (item.href !== "/" && item.href !== "/activities" && item.href !== "/activities/new" && pathname.startsWith(item.href));
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 className={clsx(
-                  "flex min-w-max items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition",
-                  active ? "bg-skyglass text-ink" : "text-slate-600 hover:bg-slate-100 hover:text-ink"
+                  "flex min-w-max items-center gap-4 rounded-xl px-5 py-4 text-lg font-bold transition",
+                  active ? "bg-[#39A84A] text-white" : "text-slate-400 hover:bg-skyglass hover:text-ink"
                 )}
               >
-                <Icon size={18} />
+                <Icon size={23} />
                 {item.label}
               </Link>
             );
           })}
         </nav>
         <div className="border-t border-line px-4 py-4">
-          <p className="px-3 text-xs font-semibold uppercase tracking-wide text-slate-400">{user.role}</p>
-          <p className="mt-1 truncate px-3 text-sm font-semibold text-slate-700">{user.name}</p>
+          <div className="rounded-xl border border-line bg-skyglass p-4">
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-400">{user.role}</p>
+            <p className="mt-1 truncate text-base font-bold text-ink">{user.name}</p>
+            <p className="truncate text-sm font-semibold text-slate-500">{user.email}</p>
+          </div>
           <button
-            className="mt-3 flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-ink"
+            className="mt-4 flex w-full items-center gap-3 rounded-xl px-5 py-3 text-base font-bold text-slate-400 transition hover:bg-skyglass hover:text-ink"
             onClick={() => {
               logout();
               router.replace("/login");
@@ -101,22 +126,33 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
       <main className="w-full lg:pl-72">
-        <header className="sticky top-0 z-10 border-b border-line bg-white/82 px-5 py-4 backdrop-blur lg:px-8">
+        <header className="sticky top-0 z-10 border-b border-line bg-white/90 px-5 py-5 backdrop-blur lg:px-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-medium text-moss">Personal dashboard</p>
-              <h1 className="text-2xl font-bold text-ink">Maintenance activity</h1>
+              <p className="text-xs font-bold uppercase tracking-[0.24em] text-moss">Personal dashboard</p>
+              <h1 className="text-2xl font-black text-ink">Maintenance activity</h1>
             </div>
-            <Link
-              href="/activities/new"
-              className="inline-flex h-10 items-center gap-2 rounded-md bg-coral px-4 text-sm font-semibold text-white shadow-soft transition hover:bg-[#d85e42]"
-            >
-              <Plus size={17} />
-              Add activity
-            </Link>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="inline-flex h-12 items-center gap-2 rounded-xl border border-line bg-skyglass px-4 text-sm font-black text-ink transition hover:border-moss"
+                title="Toggle theme"
+              >
+                {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+                {theme === "dark" ? "Light" : "Dark"}
+              </button>
+              <Link
+                href="/activities/new"
+                className="inline-flex h-12 items-center gap-2 rounded-xl bg-moss px-5 text-sm font-black text-black shadow-[0_10px_28px_rgba(201,244,58,0.18)] transition hover:brightness-105"
+              >
+                <Plus size={18} />
+                Add activity
+              </Link>
+            </div>
           </div>
         </header>
-        <div className="px-5 py-6 lg:px-8">{children}</div>
+        <div className="px-5 py-7 lg:px-8">{children}</div>
       </main>
     </div>
   );

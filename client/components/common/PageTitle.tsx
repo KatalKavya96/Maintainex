@@ -8,10 +8,10 @@ export function PageTitle({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+    <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
       <div>
-        <h2 className="text-3xl font-bold text-ink">{title}</h2>
-        <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-600">{description}</p>
+        <h2 className="text-4xl font-black tracking-tight text-ink">{title}</h2>
+        <p className="mt-2 max-w-4xl text-xl font-bold leading-8 text-slate-500">{description}</p>
       </div>
       {action}
     </div>

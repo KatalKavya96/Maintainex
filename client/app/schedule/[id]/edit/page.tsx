@@ -12,8 +12,8 @@ export default function EditScheduledWorkPage({ params }: { params: { id: string
   useEffect(() => {
     getScheduledWorkById(params.id).then(setWork).catch((err) => setError(err.message ?? "Scheduled work not found"));
   }, [params.id]);
-  if (error) return <div className="rounded-md border border-red-200 bg-red-50 p-5 text-sm font-semibold text-red-700">{error}</div>;
-  if (!work) return <div className="rounded-md border border-line bg-white p-5 text-sm text-slate-500 shadow-soft">Loading scheduled work...</div>;
+  if (error) return <div className="rounded-xl border border-red-200 bg-red-50 p-5 text-sm font-semibold text-red-700">{error}</div>;
+  if (!work) return <div className="rounded-xl border border-line bg-white p-5 text-sm text-slate-500 shadow-soft">Loading scheduled work...</div>;
   return (
     <>
       <PageTitle title="Edit Future Work" description="Update status, priority, timeline, notes, and blockers." />

@@ -17,8 +17,8 @@ export default function SettingsPage() {
         {settings.map((item) => {
           const Icon = item.icon;
           return (
-            <article key={item.title} className="rounded-md border border-line bg-white p-5 shadow-soft">
-              <div className="mb-4 grid h-10 w-10 place-items-center rounded-md bg-skyglass text-moss">
+            <article key={item.title} className="rounded-xl border border-line bg-white p-5 shadow-soft">
+              <div className="mb-4 grid h-10 w-10 place-items-center rounded-xl bg-skyglass text-moss">
                 <Icon size={20} />
               </div>
               <h3 className="text-lg font-bold">{item.title}</h3>

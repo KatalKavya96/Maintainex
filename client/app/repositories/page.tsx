@@ -27,14 +27,14 @@ export default function RepositoriesPage() {
         action={<Button href="/activities/new">Add activity</Button>}
       />
       {repositories.length === 0 ? (
-        <div className="rounded-md border border-line bg-white p-8 text-center shadow-soft">
+        <div className="rounded-xl border border-line bg-white p-8 text-center shadow-soft">
           <p className="text-lg font-bold">No repositories yet</p>
           <p className="mt-2 text-sm text-slate-500">Add an activity with a repository name to see it here.</p>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-md border border-line bg-white shadow-soft">
+        <div className="overflow-hidden rounded-xl border border-line bg-white shadow-soft">
           <table className="w-full min-w-[680px] text-left text-sm">
-            <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+            <thead className="bg-skyglass text-xs uppercase tracking-wide text-slate-500">
               <tr>
                 <th className="px-4 py-3">Repository</th>
                 <th className="px-4 py-3">Organization</th>
@@ -49,7 +49,7 @@ export default function RepositoriesPage() {
                   <td className="px-4 py-3">{repo.organizationName}</td>
                   <td className="px-4 py-3 text-slate-600">{repo.count}</td>
                   <td className="px-4 py-3">
-                    <span className="rounded-md bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-700">Active</span>
+                    <span className="rounded-lg bg-emerald-50 px-2 py-1 text-xs font-bold text-emerald-700">Active</span>
                   </td>
                 </tr>
               ))}

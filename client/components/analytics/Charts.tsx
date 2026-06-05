@@ -5,14 +5,17 @@ import { chartByDate, chartByOrganization, chartByRepository, chartByType } from
 import { labelize } from "@/lib/constants";
 import type { Activity } from "@/types/activity";
 
-const colors = ["#2F6F5E", "#E76F51", "#3478A7", "#C79A32", "#7A5C99", "#4A7C59", "#D45D79", "#64748B"];
+const colors = ["#C9F43A", "#5DE16F", "#60A5FA", "#8C7CF5", "#FB9638", "#CBD5E1", "#F87171", "#94A3B8"];
 
 function ChartPanel({ title, children, empty }: { title: string; children: React.ReactNode; empty?: boolean }) {
   return (
-    <section className="rounded-md border border-line bg-white p-5 shadow-soft">
-      <h3 className="mb-4 text-lg font-bold">{title}</h3>
+    <section className="dcode-card rounded-2xl p-6 shadow-soft">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <h3 className="text-2xl font-black text-ink">{title}</h3>
+        <span className="rounded-lg border border-line bg-skyglass px-3 py-1 text-xs font-black text-slate-400">Live</span>
+      </div>
       <div className="h-72">
-        {empty ? <div className="grid h-full place-items-center rounded-md bg-slate-50 text-sm font-medium text-slate-500">No activity yet.</div> : children}
+        {empty ? <div className="grid h-full place-items-center rounded-xl bg-skyglass text-lg font-bold text-slate-500">No activity yet.</div> : children}
       </div>
     </section>
   );
@@ -24,11 +27,11 @@ export function ActivityLineChart({ activities }: { activities: Activity[] }) {
     <ChartPanel title="Activity over time" empty={data.length === 0}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data}>
-          <CartesianGrid stroke="#E2E8F0" />
-          <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-          <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+          <CartesianGrid stroke="var(--app-line)" vertical={false} opacity={0.55} />
+          <XAxis dataKey="date" tick={{ fontSize: 12, fill: "var(--app-muted)" }} axisLine={false} tickLine={false} />
+          <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: "var(--app-muted)" }} axisLine={false} tickLine={false} />
           <Tooltip />
-          <Line type="monotone" dataKey="count" stroke="#2F6F5E" strokeWidth={3} dot={{ r: 4 }} />
+          <Line type="monotone" dataKey="count" stroke="#C9F43A" strokeWidth={3} dot={{ r: 4, fill: "#C9F43A" }} />
         </LineChart>
       </ResponsiveContainer>
     </ChartPanel>
@@ -59,11 +62,11 @@ export function RepoChart({ activities }: { activities: Activity[] }) {
     <ChartPanel title="Repository comparison" empty={data.length === 0}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data}>
-          <CartesianGrid stroke="#E2E8F0" />
-          <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-          <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+          <CartesianGrid stroke="var(--app-line)" vertical={false} opacity={0.55} />
+          <XAxis dataKey="name" tick={{ fontSize: 12, fill: "var(--app-muted)" }} axisLine={false} tickLine={false} />
+          <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: "var(--app-muted)" }} axisLine={false} tickLine={false} />
           <Tooltip />
-          <Bar dataKey="value" fill="#3478A7" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="value" fill="#C9F43A" radius={[8, 8, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </ChartPanel>
@@ -76,11 +79,11 @@ export function OrgChart({ activities }: { activities: Activity[] }) {
     <ChartPanel title="Organization comparison" empty={data.length === 0}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data}>
-          <CartesianGrid stroke="#E2E8F0" />
-          <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-          <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+          <CartesianGrid stroke="var(--app-line)" vertical={false} opacity={0.55} />
+          <XAxis dataKey="name" tick={{ fontSize: 12, fill: "var(--app-muted)" }} axisLine={false} tickLine={false} />
+          <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: "var(--app-muted)" }} axisLine={false} tickLine={false} />
           <Tooltip />
-          <Bar dataKey="value" fill="#E76F51" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="value" fill="#5DE16F" radius={[8, 8, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </ChartPanel>

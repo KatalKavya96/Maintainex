@@ -52,9 +52,9 @@ export function ScheduledWorkForm({ work }: { work?: ScheduledWork }) {
   }
 
   return (
-    <form ref={formRef} onSubmit={onSubmit} className="space-y-5 rounded-md border border-line bg-white p-5 shadow-soft">
+    <form ref={formRef} onSubmit={onSubmit} className="space-y-6 rounded-xl border border-line bg-white p-5 shadow-soft">
       <section>
-        <h3 className="mb-4 text-lg font-bold">Basic Info</h3>
+        <h3 className="mb-4 text-base font-bold">Basic Info</h3>
         <div className="grid gap-4 md:grid-cols-2">
           <Field label="Title"><Input name="title" required defaultValue={work?.title} placeholder="Review PR #1546" /></Field>
           <Field label="Type"><Select name="type" required defaultValue={work?.type ?? "ISSUE_WORK"}>{scheduledWorkTypes.map((type) => <option key={type} value={type}>{labelize(type)}</option>)}</Select></Field>
@@ -63,7 +63,7 @@ export function ScheduledWorkForm({ work }: { work?: ScheduledWork }) {
         </div>
       </section>
       <section>
-        <h3 className="mb-4 text-lg font-bold">Repository Info</h3>
+        <h3 className="mb-4 text-base font-bold">Repository Info</h3>
         <div className="grid gap-4 md:grid-cols-2">
           <Field label="Organization"><Input name="organizationName" required defaultValue={work?.organizationName} placeholder="layer5io" /></Field>
           <Field label="Repository"><Input name="repositoryName" required defaultValue={work?.repositoryName} placeholder="meshery" /></Field>
@@ -72,7 +72,7 @@ export function ScheduledWorkForm({ work }: { work?: ScheduledWork }) {
         </div>
       </section>
       <section>
-        <h3 className="mb-4 text-lg font-bold">Assignment & Timeline</h3>
+        <h3 className="mb-4 text-base font-bold">Assignment & Timeline</h3>
         <label className="mb-4 flex items-center gap-2 text-sm font-semibold text-slate-700"><input name="assignedToMe" type="checkbox" defaultChecked={work?.assignedToMe} className="h-4 w-4 rounded border-line" />Assigned to me</label>
         <div className="grid gap-4 md:grid-cols-4">
           <Field label="Assigned since"><Input name="assignedSince" type="date" defaultValue={dateValue(work?.assignedSince)} /></Field>
@@ -82,7 +82,7 @@ export function ScheduledWorkForm({ work }: { work?: ScheduledWork }) {
         </div>
       </section>
       <section>
-        <h3 className="mb-4 text-lg font-bold">Effort & Metadata</h3>
+        <h3 className="mb-4 text-base font-bold">Effort & Metadata</h3>
         <div className="grid gap-4 md:grid-cols-3">
           <Field label="Estimated hours"><Input name="estimatedHours" type="number" min="0" step="0.25" defaultValue={work?.estimatedHours ?? ""} /></Field>
           <Field label="Actual hours"><Input name="actualHours" type="number" min="0" step="0.25" defaultValue={work?.actualHours ?? ""} /></Field>
@@ -92,7 +92,7 @@ export function ScheduledWorkForm({ work }: { work?: ScheduledWork }) {
         </div>
       </section>
       <section>
-        <h3 className="mb-4 text-lg font-bold">Extra Info</h3>
+        <h3 className="mb-4 text-base font-bold">Extra Info</h3>
         <div className="grid gap-4 md:grid-cols-2">
           <Field label="Context"><Textarea name="context" defaultValue={work?.context ?? ""} /></Field>
           <Field label="Plan"><Textarea name="plan" defaultValue={work?.plan ?? ""} /></Field>

@@ -5,14 +5,14 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#16202A",
-        moss: "#2F6F5E",
-        coral: "#E76F51",
-        skyglass: "#E8F3F6",
-        line: "#D9E2E7"
+        ink: "#F7F7F2",
+        moss: "#C9F43A",
+        coral: "#5DE16F",
+        skyglass: "#20251B",
+        line: "#243044"
       },
       boxShadow: {
-        soft: "0 12px 30px rgba(22, 32, 42, 0.08)"
+        soft: "0 18px 44px rgba(0, 0, 0, 0.22)"
       }
     }
   },

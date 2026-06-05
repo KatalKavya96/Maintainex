@@ -25,6 +25,7 @@ app.use(
 app.use(express.json());
 
 app.get("/health", (_req, res) => res.json({ status: "ok" }));
+app.get("/api/health", (_req, res) => res.json({ status: "ok" }));
 app.use("/api/activities", activityRoutes);
 app.use("/api/organizations", organizationRoutes);
 app.use("/api/repositories", repositoryRoutes);

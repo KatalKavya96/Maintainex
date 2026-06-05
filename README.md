@@ -124,13 +124,19 @@ When `NEXT_PUBLIC_API_URL` is set, the frontend stores activities through the ba
 
 ## Vercel Env Variables
 
-Add this to the deployed frontend project:
+If frontend and backend are deployed together on the same Vercel project, the frontend can use the same-domain `/api` route automatically. You may leave `NEXT_PUBLIC_API_URL` unset, or set it explicitly:
 
 ```txt
-NEXT_PUBLIC_API_URL=https://your-backend-api-domain.com/api
+NEXT_PUBLIC_API_URL=/api
 ```
 
-The backend also needs its own environment variables on the platform where you deploy it:
+If frontend and backend are separate deployments, add this to the frontend project:
+
+```txt
+NEXT_PUBLIC_API_URL=https://your-backend-api-domain.vercel.app/api
+```
+
+The backend needs:
 
 ```txt
 DATABASE_URL=postgresql://USER:PASSWORD@HOST/DB?sslmode=require

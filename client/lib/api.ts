@@ -40,6 +40,7 @@ export async function apiRequest<T>(path: string, options?: RequestInit): Promis
 }
 
 import type { PinInput, PinListResponse } from "@/types/pin";
+import type { ProfileDashboard, ProfileSummary } from "@/types/profile";
 import type { ScheduledWorkInput, ScheduledWorkListResponse, ScheduledWorkStatus } from "@/types/scheduledWork";
 
 export const getPins = (params?: Record<string, string | number | boolean | undefined>) => apiRequest<PinListResponse>(`/pins${queryString(params)}`);
@@ -59,3 +60,6 @@ export const deleteScheduledWork = (id: string) => apiRequest<null>(`/scheduled-
 export const updateScheduledWorkStatus = (id: string, status: ScheduledWorkStatus) => apiRequest<ScheduledWorkListResponse["items"][number]>(`/scheduled-work/${id}/status`, { method: "PATCH", body: JSON.stringify({ status }) });
 export const markScheduledWorkDone = (id: string) => apiRequest<ScheduledWorkListResponse["items"][number]>(`/scheduled-work/${id}/mark-done`, { method: "PATCH" });
 export const markScheduledWorkBlocked = (id: string) => apiRequest<ScheduledWorkListResponse["items"][number]>(`/scheduled-work/${id}/mark-blocked`, { method: "PATCH" });
+
+export const getProfiles = () => apiRequest<ProfileSummary[]>("/profiles");
+export const getProfileDashboard = (userId: string) => apiRequest<ProfileDashboard>(`/profiles/${userId}`);

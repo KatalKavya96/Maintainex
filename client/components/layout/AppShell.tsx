@@ -15,6 +15,7 @@ import {
   ClipboardList,
   Settings,
   ShieldCheck,
+  UserRoundSearch,
   Users
 } from "lucide-react";
 import clsx from "clsx";
@@ -26,6 +27,7 @@ const navItems = [
   { href: "/activities/new", label: "Add Activity", icon: Plus },
   { href: "/pins", label: "Pins", icon: Link2 },
   { href: "/schedule", label: "Schedule", icon: ClipboardList },
+  { href: "/profiles", label: "Profiles", icon: UserRoundSearch },
   { href: "/organizations", label: "Organizations", icon: Users },
   { href: "/repositories", label: "Repositories", icon: FolderGit2 },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
@@ -36,9 +38,8 @@ const navItems = [
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, isReady, isAdmin, logout } = useAuthStore();
+  const { user, isReady, logout } = useAuthStore();
   const isAuthPage = pathname === "/login" || pathname === "/signup";
-  const visibleNavItems = isAdmin ? navItems : navItems.filter((item) => item.href !== "/activities/new");
 
   useEffect(() => {
     if (!isReady) return;
@@ -66,7 +67,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
         <nav className="flex gap-2 overflow-x-auto px-4 pb-4 lg:block lg:space-y-1">
-          {visibleNavItems.map((item) => {
+          {navItems.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href;
             return (
@@ -106,15 +107,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <p className="text-sm font-medium text-moss">Personal dashboard</p>
               <h1 className="text-2xl font-bold text-ink">Maintenance activity</h1>
             </div>
-            {isAdmin ? (
-              <Link
-                href="/activities/new"
-                className="inline-flex h-10 items-center gap-2 rounded-md bg-coral px-4 text-sm font-semibold text-white shadow-soft transition hover:bg-[#d85e42]"
-              >
-                <Plus size={17} />
-                Add activity
-              </Link>
-            ) : null}
+            <Link
+              href="/activities/new"
+              className="inline-flex h-10 items-center gap-2 rounded-md bg-coral px-4 text-sm font-semibold text-white shadow-soft transition hover:bg-[#d85e42]"
+            >
+              <Plus size={17} />
+              Add activity
+            </Link>
           </div>
         </header>
         <div className="px-5 py-6 lg:px-8">{children}</div>

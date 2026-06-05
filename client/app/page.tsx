@@ -12,14 +12,12 @@ import { UpcomingWork } from "@/components/schedule/UpcomingWork";
 import { chartByOrganization, chartByRepository, summaryStats } from "@/lib/analytics";
 import { useActivityStore } from "@/lib/activityStore";
 import { getPins, getScheduledWork } from "@/lib/api";
-import { useAuthStore } from "@/lib/authStore";
 import type { ScheduledWork } from "@/types/scheduledWork";
 
 const today = () => new Date().toISOString().slice(0, 10);
 
 export default function DashboardPage() {
   const { activities, resetAll } = useActivityStore();
-  const { isAdmin } = useAuthStore();
   const [featureStats, setFeatureStats] = useState([
     { label: "Pinned Links", value: 0 },
     { label: "Future Work", value: 0 },
@@ -53,14 +51,12 @@ export default function DashboardPage() {
         title="Dashboard"
         description="Track PR reviews, raised work, closures, notes, repositories, organizations, and progress across time."
         action={
-          isAdmin ? (
           <div className="flex gap-2">
             <Button href="/activities/new">Add activity</Button>
             <Button type="button" variant="secondary" onClick={resetAll}>
               Reset data
             </Button>
           </div>
-          ) : undefined
         }
       />
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

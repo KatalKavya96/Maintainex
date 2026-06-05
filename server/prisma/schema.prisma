@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ActivityType {
+  PR_REVIEWED
+  PR_RAISED
+  ISSUE_RAISED
+  PR_CLOSED
+  ISSUE_CLOSED
+  COMMENTED
+  MERGED
+  OTHER
+}
+
+enum ActivityStatus {
+  OPEN
+  CLOSED
+  MERGED
+  REVIEWED
+  APPROVED
+  CHANGES_REQUESTED
+  COMMENTED
+  DRAFT
+  OTHER
+}
+
+enum ReviewType {
+  COMMENTED
+  APPROVED
+  CHANGES_REQUESTED
+  REQUESTED_REVIEW
+  NOT_APPLICABLE
+}
+
+enum ClosingReason {
+  DUPLICATE
+  STALE
+  INVALID
+  COMPLETED
+  FIXED_IN_ANOTHER_PR
+  NOT_REPRODUCIBLE
+  AUTHOR_CLOSED
+  MAINTAINER_CLOSED
+  NOT_APPLICABLE
+  OTHER
+}
+
+model Activity {
+  id                       String         @id @default(cuid())
+  date                     DateTime
+  activityType             ActivityType
+  title                    String
+  number                   String?
+  link                     String?
+  status                   ActivityStatus @default(OTHER)
+  reviewType               ReviewType     @default(NOT_APPLICABLE)
+  closingReason            ClosingReason  @default(NOT_APPLICABLE)
+  description              String?        @db.Text
+  notes                    String?        @db.Text
+  tags                     Json?
+  organizationId           String?
+  repositoryId             String?
+  organizationNameSnapshot String
+  repositoryNameSnapshot   String
+  organization             Organization?  @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  repository               Repository?    @relation(fields: [repositoryId], references: [id], onDelete: SetNull)
+  createdAt                DateTime       @default(now())
+  updatedAt                DateTime       @updatedAt
+
+  @@index([date])
+  @@index([activityType])
+  @@index([organizationId])
+  @@index([repositoryId])
+}
+
+model Organization {
+  id           String       @id @default(cuid())
+  name         String       @unique
+  website      String?
+  githubUrl    String?
+  description  String?      @db.Text
+  repositories Repository[]
+  activities   Activity[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model Repository {
+  id               String        @id @default(cuid())
+  organizationId   String
+  name             String
+  githubUrl        String?
+  description      String?       @db.Text
+  primaryTechStack String?
+  isActive         Boolean       @default(true)
+  organization     Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  activities       Activity[]
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@unique([organizationId, name])
+  @@index([organizationId])
+}

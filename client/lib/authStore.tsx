@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { apiRequest } from "@/lib/api";
+import { clearSessionToken, getSessionToken, setSessionToken } from "@/lib/sessionToken";
 
 export type UserRole = "ADMIN" | "VIEWER";
 
@@ -31,15 +32,12 @@ interface AuthStore {
   logout: () => void;
 }
 
-const TOKEN_KEY = "maintainex.token";
-const USER_KEY = "maintainex.user";
 const AUTH_EVENT = "maintainex-auth-changed";
 
 const AuthContext = createContext<AuthStore | undefined>(undefined);
 
 function persistSession(data: AuthResponse) {
-  window.localStorage.setItem(TOKEN_KEY, data.token);
-  window.localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+  setSessionToken(data.token);
   window.dispatchEvent(new Event(AUTH_EVENT));
 }
 
@@ -49,17 +47,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    const storedToken = window.localStorage.getItem(TOKEN_KEY);
-    const storedUser = window.localStorage.getItem(USER_KEY);
-    if (storedToken) setToken(storedToken);
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser) as AuthUser);
-      } catch {
-        window.localStorage.removeItem(USER_KEY);
-      }
+    const storedToken = getSessionToken();
+    if (!storedToken) {
+      setIsReady(true);
+      return;
     }
-    setIsReady(true);
+    setToken(storedToken);
+    apiRequest<AuthResponse>("/auth/me")
+      .then((data) => {
+        persistSession(data);
+        setToken(data.token);
+        setUser(data.user);
+      })
+      .catch(() => {
+        clearSessionToken();
+        setToken(null);
+        setUser(null);
+      })
+      .finally(() => setIsReady(true));
   }, []);
 
   const store = useMemo<AuthStore>(
@@ -97,14 +102,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser((current) => {
           if (!current) return current;
           const next = { ...current, ...partial };
-          window.localStorage.setItem(USER_KEY, JSON.stringify(next));
           window.dispatchEvent(new Event(AUTH_EVENT));
           return next;
         });
       },
       logout: () => {
-        window.localStorage.removeItem(TOKEN_KEY);
-        window.localStorage.removeItem(USER_KEY);
+        clearSessionToken();
         window.dispatchEvent(new Event(AUTH_EVENT));
         setToken(null);
         setUser(null);

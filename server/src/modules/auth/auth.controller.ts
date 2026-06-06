@@ -15,8 +15,12 @@ export class AuthController {
     res.json(new ApiResponse(data, "Login successful"));
   };
 
+  me = async (req: Request, res: Response) => {
+    const data = await this.service.me(req.user!);
+    res.json(new ApiResponse(data, "Session refreshed"));
+  };
+
   viewer = async (_req: Request, res: Response) => {
     res.json(new ApiResponse(this.service.viewer(), "Viewer session created"));
   };
 }
-

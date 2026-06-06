@@ -43,24 +43,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
-    const stored = window.localStorage.getItem("maintainex.theme");
-    const nextTheme = stored === "light" ? "light" : "dark";
-    setTheme(nextTheme);
-    document.documentElement.dataset.theme = nextTheme;
-    setCollapsed(window.localStorage.getItem("maintainex.sidebar") === "collapsed");
+    document.documentElement.dataset.theme = theme;
   }, []);
 
   function toggleTheme() {
     const nextTheme = theme === "dark" ? "light" : "dark";
     setTheme(nextTheme);
     document.documentElement.dataset.theme = nextTheme;
-    window.localStorage.setItem("maintainex.theme", nextTheme);
   }
 
   function toggleSidebar() {
-    const next = !collapsed;
-    setCollapsed(next);
-    window.localStorage.setItem("maintainex.sidebar", next ? "collapsed" : "expanded");
+    setCollapsed((value) => !value);
   }
 
   useEffect(() => {
@@ -96,6 +89,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return <main className="grid min-h-screen place-items-center text-sm font-medium text-slate-500">Loading session...</main>;
   }
   const profileUsername = user.username || user.id;
+  const profileHref = user.id === "viewer" ? "/coming-soon?feature=Viewer%20profile" : `/profile/${profileUsername}`;
 
   return (
     <div className="min-h-screen bg-[var(--app-bg)] lg:flex">
@@ -174,7 +168,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </button>
               <NotificationMenu />
               <Link
-                href={`/profile/${profileUsername}`}
+                href={profileHref}
                 className="flex items-center gap-2 rounded-lg border border-line bg-skyglass px-2 py-1.5 transition hover:border-moss"
                 title="Open profile"
               >

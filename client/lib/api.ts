@@ -1,3 +1,5 @@
+import { getSessionToken } from "@/lib/sessionToken";
+
 const getApiUrl = () => {
   if (process.env.NEXT_PUBLIC_API_URL) {
     return process.env.NEXT_PUBLIC_API_URL.replace(/\/$/, "");
@@ -20,14 +22,16 @@ const queryString = (params?: Record<string, string | number | boolean | undefin
 };
 
 export async function apiRequest<T>(path: string, options?: RequestInit): Promise<T> {
-  const token = typeof window !== "undefined" ? window.localStorage.getItem("maintainex.token") : null;
+  const token = getSessionToken();
+  const { headers, ...requestOptions } = options ?? {};
+  const requestHeaders = new Headers(headers);
+  if (!requestHeaders.has("Content-Type")) requestHeaders.set("Content-Type", "application/json");
+  if (token && !requestHeaders.has("Authorization")) requestHeaders.set("Authorization", `Bearer ${token}`);
+
   const response = await fetch(`${getApiUrl()}${path}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...options?.headers
-    },
-    ...options
+    ...requestOptions,
+    credentials: "include",
+    headers: requestHeaders
   });
 
   if (!response.ok) {

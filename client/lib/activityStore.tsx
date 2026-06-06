@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { Activity } from "@/types/activity";
 import { apiRequest } from "@/lib/api";
 import { authChangedEvent } from "@/lib/authStore";
+import { getSessionToken } from "@/lib/sessionToken";
 
 export const realtimeDashboardEvent = "maintainex-realtime-dashboard";
 
@@ -62,7 +63,7 @@ export function ActivityProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const loadActivities = () => {
-      if (!window.localStorage.getItem("maintainex.token")) {
+      if (!getSessionToken()) {
         setActivities([]);
         return;
       }

@@ -4,6 +4,7 @@ import type { User, UserRole } from "@prisma/client";
 import { env } from "../../config/env";
 import { ApiError } from "../../utils/ApiError";
 import { AuthRepository } from "./auth.repository";
+import type { AuthUser } from "./auth.types";
 
 export class AuthService {
   constructor(private repository = new AuthRepository()) {}
@@ -39,6 +40,15 @@ export class AuthService {
 
     const isValid = await bcrypt.compare(payload.password, user.passwordHash);
     if (!isValid) throw new ApiError(401, "Invalid email or password");
+
+    return this.authResponse(user);
+  }
+
+  async me(currentUser: AuthUser) {
+    if (currentUser.id === "viewer") return this.viewer();
+
+    const user = await this.repository.findById(currentUser.id);
+    if (!user) throw new ApiError(401, "Session user not found");
 
     return this.authResponse(user);
   }

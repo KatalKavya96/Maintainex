@@ -21,8 +21,10 @@ export class AuthService {
         ? "ADMIN"
         : "VIEWER";
     const passwordHash = await bcrypt.hash(payload.password, 12);
+    const username = await this.generateUsername(payload.name, payload.email);
     const user = await this.repository.create({
       name: payload.name,
+      username,
       email: payload.email.toLowerCase(),
       passwordHash,
       role
@@ -45,6 +47,7 @@ export class AuthService {
     const user = {
       id: "viewer",
       name: "Viewer",
+      username: "viewer",
       email: "viewer@maintainex.local",
       role: "VIEWER" as UserRole
     };
@@ -58,6 +61,7 @@ export class AuthService {
     const publicUser = {
       id: user.id,
       name: user.name,
+      username: user.username,
       email: user.email,
       role: user.role
     };
@@ -68,7 +72,30 @@ export class AuthService {
     };
   }
 
-  private sign(user: { id: string; name: string; email: string; role: UserRole }) {
+  private sign(user: { id: string; name: string; username: string; email: string; role: UserRole }) {
     return jwt.sign(user, env.jwtSecret, { expiresIn: "7d" });
+  }
+
+  private async generateUsername(name: string, email: string) {
+    const base =
+      name
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") ||
+      email
+        .split("@")[0]
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") ||
+      "user";
+
+    let username = base;
+    let suffix = 1;
+    while (await this.repository.findByUsername(username)) {
+      suffix += 1;
+      username = `${base}-${suffix}`;
+    }
+    return username;
   }
 }

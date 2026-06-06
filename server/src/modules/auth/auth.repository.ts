@@ -10,8 +10,11 @@ export class AuthRepository {
     return prisma.user.findUnique({ where: { email } });
   }
 
+  findByUsername(username: string) {
+    return prisma.user.findUnique({ where: { username } });
+  }
+
   create(data: Prisma.UserCreateInput) {
     return prisma.user.create({ data });
   }
 }
-

@@ -6,8 +6,15 @@ export class ProfileRepository {
       select: {
         id: true,
         name: true,
+        username: true,
         email: true,
         role: true,
+        bio: true,
+        githubUrl: true,
+        linkedinUrl: true,
+        portfolioUrl: true,
+        skills: true,
+        mainOrganizations: true,
         createdAt: true,
         _count: {
           select: {
@@ -15,7 +22,9 @@ export class ProfileRepository {
             organizations: true,
             repositories: true,
             pins: true,
-            scheduledWork: true
+            scheduledWork: true,
+            followers: true,
+            following: true
           }
         }
       },
@@ -29,8 +38,35 @@ export class ProfileRepository {
       select: {
         id: true,
         name: true,
+        username: true,
         email: true,
         role: true,
+        bio: true,
+        githubUrl: true,
+        linkedinUrl: true,
+        portfolioUrl: true,
+        skills: true,
+        mainOrganizations: true,
+        createdAt: true
+      }
+    });
+  }
+
+  findUserByUsername(username: string) {
+    return prisma.user.findUnique({
+      where: { username },
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        email: true,
+        role: true,
+        bio: true,
+        githubUrl: true,
+        linkedinUrl: true,
+        portfolioUrl: true,
+        skills: true,
+        mainOrganizations: true,
         createdAt: true
       }
     });
@@ -69,5 +105,16 @@ export class ProfileRepository {
       prisma.pin.count({ where: { userId, isArchived: false } }),
       prisma.scheduledWork.count({ where: { userId } })
     ]);
+  }
+
+  followCounts(userId: string) {
+    return Promise.all([
+      prisma.follow.count({ where: { followingId: userId } }),
+      prisma.follow.count({ where: { followerId: userId } })
+    ]);
+  }
+
+  isFollowing(followerId: string, followingId: string) {
+    return prisma.follow.findUnique({ where: { followerId_followingId: { followerId, followingId } } });
   }
 }

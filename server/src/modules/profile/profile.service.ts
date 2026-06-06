@@ -8,15 +8,26 @@ export class ProfileService {
     return this.repository.findUsers();
   }
 
-  async getProfile(userId: string) {
+  async getProfile(userId: string, viewerId?: string) {
     const user = await this.repository.findUser(userId);
     if (!user) throw new ApiError(404, "Profile not found");
+    return this.profileForUser(user, viewerId);
+  }
 
-    const [activities, favoritePins, upcomingWork, [activityCount, organizationCount, repositoryCount, pinCount, scheduledWorkCount]] = await Promise.all([
-      this.repository.activities(userId),
-      this.repository.favoritePins(userId),
-      this.repository.upcomingWork(userId),
-      this.repository.counts(userId)
+  async getProfileByUsername(username: string, viewerId?: string) {
+    const user = await this.repository.findUserByUsername(username);
+    if (!user) throw new ApiError(404, "Profile not found");
+    return this.profileForUser(user, viewerId);
+  }
+
+  private async profileForUser(user: NonNullable<Awaited<ReturnType<ProfileRepository["findUser"]>>>, viewerId?: string) {
+    const [activities, favoritePins, upcomingWork, [activityCount, organizationCount, repositoryCount, pinCount, scheduledWorkCount], [followers, following], follow] = await Promise.all([
+      this.repository.activities(user.id),
+      this.repository.favoritePins(user.id),
+      this.repository.upcomingWork(user.id),
+      this.repository.counts(user.id),
+      this.repository.followCounts(user.id),
+      viewerId && viewerId !== user.id ? this.repository.isFollowing(viewerId, user.id) : Promise.resolve(null)
     ]);
 
     return {
@@ -26,10 +37,14 @@ export class ProfileService {
         organizations: organizationCount,
         repositories: repositoryCount,
         pins: pinCount,
-        scheduledWork: scheduledWorkCount
+        scheduledWork: scheduledWorkCount,
+        followers,
+        following,
+        isFollowing: Boolean(follow)
       },
       activities: activities.map((activity) => ({
         ...activity,
+        date: activity.date.toISOString().slice(0, 10),
         organizationName: activity.organizationNameSnapshot,
         repositoryName: activity.repositoryNameSnapshot,
         number: activity.number ?? "",

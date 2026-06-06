@@ -29,11 +29,11 @@ export default function ProfilesPage() {
       {!loading && !error ? (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {profiles.map((profile) => (
-            <Link key={profile.id} href={`/profiles/${profile.id}`} className="rounded-2xl border border-line bg-white p-5 shadow-soft transition hover:-translate-y-0.5 hover:border-moss/40 hover:shadow-lg">
+            <Link key={profile.id} href={`/profile/${profile.username}`} className="rounded-2xl border border-line bg-white p-5 shadow-soft transition hover:-translate-y-0.5 hover:border-moss/40 hover:shadow-lg">
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
                   <h2 className="truncate text-xl font-extrabold tracking-tight text-ink">{profile.name}</h2>
-                  <p className="mt-1 truncate text-sm font-medium text-slate-500">{profile.email}</p>
+                  <p className="mt-1 truncate text-sm font-medium text-slate-500">@{profile.username}</p>
                 </div>
                 <span className="rounded-lg bg-skyglass px-2 py-1 text-xs font-bold text-moss">{profile.role}</span>
               </div>
@@ -41,6 +41,7 @@ export default function ProfilesPage() {
                 <span className="rounded-lg bg-skyglass p-3 font-semibold text-slate-600"><strong className="block text-lg text-moss">{profile._count.activities}</strong>activities</span>
                 <span className="rounded-lg bg-skyglass p-3 font-semibold text-slate-600"><strong className="block text-lg text-moss">{profile._count.repositories}</strong>repos</span>
                 <span className="rounded-lg bg-skyglass p-3 font-semibold text-slate-600"><strong className="block text-lg text-moss">{profile._count.organizations}</strong>orgs</span>
+                <span className="rounded-lg bg-skyglass p-3 font-semibold text-slate-600"><strong className="block text-lg text-moss">{profile._count.followers}</strong>followers</span>
               </div>
             </Link>
           ))}

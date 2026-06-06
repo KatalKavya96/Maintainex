@@ -59,16 +59,105 @@ enum UserRole {
 model User {
   id            String          @id @default(cuid())
   name          String
+  username      String          @unique
   email         String          @unique
   passwordHash  String
   role          UserRole        @default(VIEWER)
+  bio           String?         @db.Text
+  githubUrl     String?
+  linkedinUrl   String?
+  portfolioUrl  String?
+  skills        Json?
+  mainOrganizations Json?
   activities    Activity[]
   organizations Organization[]
   repositories  Repository[]
   pins          Pin[]
   scheduledWork ScheduledWork[]
+  goals         Goal[]
+  following     Follow[]        @relation("UserFollowing")
+  followers     Follow[]        @relation("UserFollowers")
+  notifications Notification[]  @relation("UserNotifications")
+  sentNotifications Notification[] @relation("NotificationActor")
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
+}
+
+model Follow {
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+  follower    User     @relation("UserFollowing", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("UserFollowers", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followingId])
+  @@index([followingId])
+}
+
+enum GoalMetric {
+  PR_RAISED
+  PR_REVIEWED
+  ISSUE_RAISED
+  ISSUE_CLOSED
+  REPO_CONTRIBUTIONS
+  TOTAL_ACTIVITY
+  STREAK
+}
+
+enum GoalPeriod {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+  CUSTOM
+}
+
+model Goal {
+  id          String     @id @default(cuid())
+  userId      String
+  title       String
+  metric      GoalMetric
+  target      Int
+  period      GoalPeriod @default(MONTHLY)
+  startsAt    DateTime?
+  endsAt      DateTime?
+  isCompleted Boolean    @default(false)
+  completedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([metric])
+  @@index([period])
+}
+
+enum NotificationType {
+  SYSTEM
+  SOCIAL
+  GOAL
+  SCHEDULE
+  BADGE
+  REMINDER
+}
+
+model Notification {
+  id          String           @id @default(cuid())
+  recipientId String
+  actorId     String?
+  type        NotificationType @default(SYSTEM)
+  title       String
+  body        String           @db.Text
+  metadata    Json?
+  readAt      DateTime?
+  createdAt   DateTime         @default(now())
+  recipient   User             @relation("UserNotifications", fields: [recipientId], references: [id], onDelete: Cascade)
+  actor       User?            @relation("NotificationActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([recipientId])
+  @@index([actorId])
+  @@index([type])
+  @@index([createdAt])
 }
 
 enum PinCategory {

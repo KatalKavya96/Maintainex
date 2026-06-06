@@ -42,6 +42,7 @@ export async function apiRequest<T>(path: string, options?: RequestInit): Promis
 import type { PinInput, PinListResponse } from "@/types/pin";
 import type { ProfileDashboard, ProfileSummary } from "@/types/profile";
 import type { ScheduledWorkInput, ScheduledWorkListResponse, ScheduledWorkStatus } from "@/types/scheduledWork";
+import type { Badge, FeedItem, FollowRecord, Goal, GoalInput, LeaderboardEntry, NotificationItem } from "@/types/social";
 
 export const getPins = (params?: Record<string, string | number | boolean | undefined>) => apiRequest<PinListResponse>(`/pins${queryString(params)}`);
 export const getPinById = (id: string) => apiRequest<PinListResponse["items"][number]>(`/pins/${id}`);
@@ -63,3 +64,19 @@ export const markScheduledWorkBlocked = (id: string) => apiRequest<ScheduledWork
 
 export const getProfiles = () => apiRequest<ProfileSummary[]>("/profiles");
 export const getProfileDashboard = (userId: string) => apiRequest<ProfileDashboard>(`/profiles/${userId}`);
+export const getProfileByUsername = (username: string) => apiRequest<ProfileDashboard>(`/profiles/username/${username}`);
+
+export const followUser = (userId: string) => apiRequest<{ following: boolean }>(`/social/follow/${userId}`, { method: "POST" });
+export const unfollowUser = (userId: string) => apiRequest<{ following: boolean }>(`/social/follow/${userId}`, { method: "DELETE" });
+export const getFollowers = (username: string) => apiRequest<FollowRecord[]>(`/social/${username}/followers`);
+export const getFollowing = (username: string) => apiRequest<FollowRecord[]>(`/social/${username}/following`);
+export const getFeed = (params?: Record<string, string | number | boolean | undefined>) => apiRequest<FeedItem[]>(`/social/feed${queryString(params)}`);
+export const getLeaderboard = (params?: Record<string, string | number | boolean | undefined>) => apiRequest<LeaderboardEntry[]>(`/social/leaderboard${queryString(params)}`);
+export const getBadges = (username: string) => apiRequest<Badge[]>(`/social/${username}/badges`);
+export const getNotifications = () => apiRequest<NotificationItem[]>("/social/notifications");
+export const markNotificationRead = (id: string) => apiRequest<unknown>(`/social/notifications/${id}/read`, { method: "PATCH" });
+
+export const getGoals = () => apiRequest<Goal[]>("/goals");
+export const createGoal = (data: GoalInput) => apiRequest<Goal>("/goals", { method: "POST", body: JSON.stringify(data) });
+export const updateGoal = (id: string, data: Partial<GoalInput>) => apiRequest<Goal>(`/goals/${id}`, { method: "PUT", body: JSON.stringify(data) });
+export const deleteGoal = (id: string) => apiRequest<unknown>(`/goals/${id}`, { method: "DELETE" });

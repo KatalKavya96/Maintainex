@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Button } from "@/components/common/Button";
 import { PageTitle } from "@/components/common/PageTitle";
 import { useActivityStore } from "@/lib/activityStore";
@@ -36,6 +37,9 @@ export default function OrganizationsPage() {
                 </div>
                 <span className="rounded-lg bg-skyglass px-2 py-1 text-xs font-bold text-moss">{org.count} activities</span>
               </div>
+              <Link href={`/orgs/${encodeURIComponent(org.name)}`} className="mt-5 inline-flex h-10 items-center justify-center rounded-lg bg-moss px-4 text-sm font-bold text-black">
+                Open org profile
+              </Link>
             </article>
           ))}
         </div>

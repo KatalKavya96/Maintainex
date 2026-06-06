@@ -5,7 +5,9 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   Activity,
+  Award,
   BarChart3,
+  Bell,
   CalendarDays,
   ChevronLeft,
   FolderGit2,
@@ -17,11 +19,15 @@ import {
   ClipboardList,
   Settings,
   Sun,
+  Target,
+  Trophy,
   UserRoundSearch,
   Users
 } from "lucide-react";
 import clsx from "clsx";
 import { useAuthStore } from "@/lib/authStore";
+import { realtimeDashboardEvent } from "@/lib/activityStore";
+import { connectRealtime, disconnectRealtime } from "@/lib/realtime";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: Home },
@@ -29,6 +35,11 @@ const navItems = [
   { href: "/activities/new", label: "Add Activity", icon: Plus },
   { href: "/pins", label: "Pins", icon: Link2 },
   { href: "/schedule", label: "Schedule", icon: ClipboardList },
+  { href: "/feed", label: "Feed", icon: Users },
+  { href: "/goals", label: "Goals", icon: Target },
+  { href: "/badges", label: "Badges", icon: Award },
+  { href: "/leaderboard", label: "Leaderboard", icon: Trophy },
+  { href: "/notifications", label: "Notifications", icon: Bell },
   { href: "/profiles", label: "Profiles", icon: UserRoundSearch },
   { href: "/organizations", label: "Organizations", icon: Users },
   { href: "/repositories", label: "Repositories", icon: FolderGit2 },
@@ -63,6 +74,26 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     if (!user && !isAuthPage) router.replace("/login");
   }, [isAuthPage, isReady, pathname, router, user]);
 
+  useEffect(() => {
+    if (!user || isAuthPage) return undefined;
+
+    const socket = connectRealtime(user.id);
+    const refreshDashboard = () => window.dispatchEvent(new Event(realtimeDashboardEvent));
+    const refreshFeed = () => window.dispatchEvent(new Event("maintainex-feed-new"));
+    const refreshNotifications = () => window.dispatchEvent(new Event("maintainex-notifications-changed"));
+
+    socket?.on("dashboard:update", refreshDashboard);
+    socket?.on("feed:new", refreshFeed);
+    socket?.on("notification:new", refreshNotifications);
+
+    return () => {
+      socket?.off("dashboard:update", refreshDashboard);
+      socket?.off("feed:new", refreshFeed);
+      socket?.off("notification:new", refreshNotifications);
+      disconnectRealtime();
+    };
+  }, [isAuthPage, user?.id]);
+
   if (isAuthPage) {
     return <main className="min-h-screen px-5 py-8">{children}</main>;
   }
@@ -70,6 +101,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   if (!isReady || !user) {
     return <main className="grid min-h-screen place-items-center text-sm font-medium text-slate-500">Loading session...</main>;
   }
+  const profileUsername = user.username || user.id;
 
   return (
     <div className="min-h-screen bg-[var(--app-bg)] lg:flex">
@@ -108,11 +140,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           })}
         </nav>
         <div className="border-t border-line px-4 py-4">
-          <div className="rounded-xl border border-line bg-skyglass p-4">
+          <Link href={`/profile/${profileUsername}`} className="block rounded-xl border border-line bg-skyglass p-4 transition hover:border-moss">
             <p className="text-xs font-bold uppercase tracking-wide text-slate-400">{user.role}</p>
             <p className="mt-1 truncate text-base font-bold text-ink">{user.name}</p>
-            <p className="truncate text-sm font-semibold text-slate-500">{user.email}</p>
-          </div>
+            <p className="truncate text-sm font-semibold text-slate-500">@{profileUsername}</p>
+          </Link>
           <button
             className="mt-4 flex w-full items-center gap-3 rounded-xl px-5 py-3 text-base font-bold text-slate-400 transition hover:bg-skyglass hover:text-ink"
             onClick={() => {

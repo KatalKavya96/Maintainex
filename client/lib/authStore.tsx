@@ -8,6 +8,7 @@ export type UserRole = "ADMIN" | "VIEWER";
 export interface AuthUser {
   id: string;
   name: string;
+  username: string;
   email: string;
   role: UserRole;
 }

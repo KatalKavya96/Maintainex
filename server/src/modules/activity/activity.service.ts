@@ -1,6 +1,7 @@
 import type { Prisma } from "@prisma/client";
 import { prisma } from "../../config/database";
 import { ApiError } from "../../utils/ApiError";
+import { emitDashboardUpdate, emitToUser } from "../../realtime/socket";
 import { ActivityRepository } from "./activity.repository";
 
 type ActivityPayload = {
@@ -28,7 +29,11 @@ export class ActivityService {
 
   async create(userId: string, payload: ActivityPayload) {
     await this.ensureRelationsBelongToUser(userId, payload);
-    return this.repository.create({ ...this.toDatabasePayload(payload), userId } as Prisma.ActivityUncheckedCreateInput);
+    const activity = await this.repository.create({ ...this.toDatabasePayload(payload), userId } as Prisma.ActivityUncheckedCreateInput);
+    emitDashboardUpdate(userId);
+    const followers = await prisma.follow.findMany({ where: { followingId: userId }, select: { followerId: true } });
+    followers.forEach((follow) => emitToUser(follow.followerId, "feed:new", { activityId: activity.id, userId, at: new Date().toISOString() }));
+    return activity;
   }
 
   async list(userId: string, query: Record<string, string | undefined>) {
@@ -74,16 +79,22 @@ export class ActivityService {
   async update(userId: string, id: string, payload: ActivityPayload) {
     await this.get(userId, id);
     await this.ensureRelationsBelongToUser(userId, payload);
-    return this.repository.update(id, this.toDatabasePayload(payload) as Prisma.ActivityUncheckedUpdateInput);
+    const activity = await this.repository.update(id, this.toDatabasePayload(payload) as Prisma.ActivityUncheckedUpdateInput);
+    emitDashboardUpdate(userId);
+    return activity;
   }
 
   async delete(userId: string, id: string) {
     await this.get(userId, id);
-    return this.repository.delete(id);
+    const activity = await this.repository.delete(id);
+    emitDashboardUpdate(userId);
+    return activity;
   }
 
-  deleteAll(userId: string) {
-    return this.repository.deleteAll(userId);
+  async deleteAll(userId: string) {
+    const result = await this.repository.deleteAll(userId);
+    emitDashboardUpdate(userId);
+    return result;
   }
 
   private toDatabasePayload(payload: ActivityPayload) {

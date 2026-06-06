@@ -5,6 +5,8 @@ import type { Activity } from "@/types/activity";
 import { apiRequest } from "@/lib/api";
 import { authChangedEvent } from "@/lib/authStore";
 
+export const realtimeDashboardEvent = "maintainex-realtime-dashboard";
+
 type ActivityInput = Omit<Activity, "id" | "createdAt" | "updatedAt">;
 type ApiActivity = Omit<Activity, "date" | "organizationName" | "repositoryName" | "tags" | "number" | "link" | "description" | "notes"> & {
   date: string;
@@ -77,7 +79,11 @@ export function ActivityProvider({ children }: { children: React.ReactNode }) {
 
     loadActivities();
     window.addEventListener(authChangedEvent, loadActivities);
-    return () => window.removeEventListener(authChangedEvent, loadActivities);
+    window.addEventListener(realtimeDashboardEvent, loadActivities);
+    return () => {
+      window.removeEventListener(authChangedEvent, loadActivities);
+      window.removeEventListener(realtimeDashboardEvent, loadActivities);
+    };
   }, []);
 
   const store = useMemo<ActivityStore>(

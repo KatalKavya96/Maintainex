@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ActivityBadge } from "@/components/activities/ActivityBadge";
 import { Button } from "@/components/common/Button";
@@ -65,6 +66,12 @@ export default function RepositoriesPage() {
                 >
                   {expanded ? "Hide details" : "Expand repository"}
                 </button>
+                <Link
+                  href={`/repos/${encodeURIComponent(repo.organizationName)}/${encodeURIComponent(repo.name)}`}
+                  className="mt-3 inline-flex h-10 w-full items-center justify-center rounded-lg bg-moss text-sm font-bold text-black transition hover:brightness-105"
+                >
+                  Open repo profile
+                </Link>
                 {expanded ? (
                   <div className="mt-5 space-y-4 border-t border-line pt-5">
                     <div className="grid grid-cols-2 gap-3">

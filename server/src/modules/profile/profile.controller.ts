@@ -10,6 +10,10 @@ export class ProfileController {
   };
 
   get = async (req: Request, res: Response) => {
-    res.json(new ApiResponse(await this.service.getProfile(req.params.userId)));
+    res.json(new ApiResponse(await this.service.getProfile(req.params.userId, req.user?.id)));
+  };
+
+  getByUsername = async (req: Request, res: Response) => {
+    res.json(new ApiResponse(await this.service.getProfileByUsername(req.params.username, req.user?.id)));
   };
 }

@@ -8,4 +8,5 @@ export const profileRoutes = Router();
 
 profileRoutes.use(requireAuth);
 profileRoutes.get("/", asyncHandler(controller.list));
+profileRoutes.get("/username/:username", asyncHandler(controller.getByUsername));
 profileRoutes.get("/:userId", asyncHandler(controller.get));

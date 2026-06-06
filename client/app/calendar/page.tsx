@@ -1,18 +1,14 @@
 "use client";
 
-import { ActivityCalendar } from "@/components/calendar/ActivityCalendar";
-import { PageTitle } from "@/components/common/PageTitle";
-import { useActivityStore } from "@/lib/activityStore";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function CalendarPage() {
-  const { activities } = useActivityStore();
+  const router = useRouter();
 
-  return (
-    <>
-      <PageTitle title="Calendar" description="Review activity grouped by date." />
-      <div className="grid gap-6">
-        <ActivityCalendar activities={activities} />
-      </div>
-    </>
-  );
+  useEffect(() => {
+    router.replace("/dashboard");
+  }, [router]);
+
+  return <main className="grid min-h-[50vh] place-items-center text-sm font-semibold text-slate-500">Opening Dashboard...</main>;
 }

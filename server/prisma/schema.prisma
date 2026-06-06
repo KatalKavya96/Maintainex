@@ -66,7 +66,10 @@ model User {
   bio           String?         @db.Text
   githubUrl     String?
   linkedinUrl   String?
+  xUrl           String?
+  leetcodeUrl    String?
   portfolioUrl  String?
+  usernameUpdatedAt DateTime?
   skills        Json?
   mainOrganizations Json?
   activities    Activity[]

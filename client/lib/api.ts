@@ -40,7 +40,7 @@ export async function apiRequest<T>(path: string, options?: RequestInit): Promis
 }
 
 import type { PinInput, PinListResponse } from "@/types/pin";
-import type { ProfileDashboard, ProfileSummary } from "@/types/profile";
+import type { ProfileDashboard, ProfileSummary, ProfileUpdateInput, ProfileUser, UsernameAvailability } from "@/types/profile";
 import type { ScheduledWorkInput, ScheduledWorkListResponse, ScheduledWorkStatus } from "@/types/scheduledWork";
 import type { Badge, FeedItem, FollowRecord, Goal, GoalInput, LeaderboardEntry, NotificationItem } from "@/types/social";
 
@@ -65,6 +65,10 @@ export const markScheduledWorkBlocked = (id: string) => apiRequest<ScheduledWork
 export const getProfiles = () => apiRequest<ProfileSummary[]>("/profiles");
 export const getProfileDashboard = (userId: string) => apiRequest<ProfileDashboard>(`/profiles/${userId}`);
 export const getProfileByUsername = (username: string) => apiRequest<ProfileDashboard>(`/profiles/username/${username}`);
+export const checkUsernameAvailability = (username: string) => apiRequest<UsernameAvailability>(`/profiles/username-availability${queryString({ username })}`);
+export const updateProfile = (data: ProfileUpdateInput) => apiRequest<ProfileUser>("/profiles/me", { method: "PUT", body: JSON.stringify(data) });
+export const changePassword = (data: { currentPassword: string; newPassword: string }) => apiRequest<{ changed: boolean }>("/profiles/password", { method: "PATCH", body: JSON.stringify(data) });
+export const resetWorkspaceData = (password: string) => apiRequest<Record<string, number>>("/profiles/reset-workspace", { method: "POST", body: JSON.stringify({ password }) });
 
 export const followUser = (userId: string) => apiRequest<{ following: boolean }>(`/social/follow/${userId}`, { method: "POST" });
 export const unfollowUser = (userId: string) => apiRequest<{ following: boolean }>(`/social/follow/${userId}`, { method: "DELETE" });

@@ -1,4 +1,5 @@
 import { Bell, Download, Github, Moon, Target } from "lucide-react";
+import Link from "next/link";
 import { PageTitle } from "@/components/common/PageTitle";
 
 const settings = [
@@ -17,13 +18,13 @@ export default function SettingsPage() {
         {settings.map((item) => {
           const Icon = item.icon;
           return (
-            <article key={item.title} className="rounded-xl border border-line bg-white p-5 shadow-soft">
+            <Link key={item.title} href={`/coming-soon?feature=${encodeURIComponent(item.title)}`} className="block rounded-xl border border-line bg-white p-5 shadow-soft transition hover:border-moss">
               <div className="mb-4 grid h-10 w-10 place-items-center rounded-xl bg-skyglass text-moss">
                 <Icon size={20} />
               </div>
               <h3 className="text-lg font-bold">{item.title}</h3>
               <p className="mt-2 text-sm leading-6 text-slate-600">{item.description}</p>
-            </article>
+            </Link>
           );
         })}
       </div>

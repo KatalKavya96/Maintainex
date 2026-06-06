@@ -27,6 +27,7 @@ interface AuthStore {
   login: (email: string, password: string) => Promise<void>;
   signup: (payload: { name: string; email: string; password: string; adminCode?: string }) => Promise<void>;
   viewAsViewer: () => Promise<void>;
+  updateUser: (user: Partial<AuthUser>) => void;
   logout: () => void;
 }
 
@@ -91,6 +92,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         persistSession(data);
         setToken(data.token);
         setUser(data.user);
+      },
+      updateUser: (partial) => {
+        setUser((current) => {
+          if (!current) return current;
+          const next = { ...current, ...partial };
+          window.localStorage.setItem(USER_KEY, JSON.stringify(next));
+          window.dispatchEvent(new Event(AUTH_EVENT));
+          return next;
+        });
       },
       logout: () => {
         window.localStorage.removeItem(TOKEN_KEY);

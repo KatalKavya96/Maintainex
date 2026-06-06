@@ -1,0 +1,3 @@
+ALTER TABLE "User" ADD COLUMN "xUrl" TEXT;
+ALTER TABLE "User" ADD COLUMN "leetcodeUrl" TEXT;
+ALTER TABLE "User" ADD COLUMN "usernameUpdatedAt" TIMESTAMP(3);

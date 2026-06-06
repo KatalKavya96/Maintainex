@@ -1,5 +1,42 @@
+import bcrypt from "bcryptjs";
+import { prisma } from "../../config/database";
+import { emitDashboardUpdate } from "../../realtime/socket";
 import { ApiError } from "../../utils/ApiError";
 import { ProfileRepository } from "./profile.repository";
+
+type UpdateProfilePayload = {
+  name?: string;
+  username?: string;
+  bio?: string | null;
+  githubUrl?: string | null;
+  linkedinUrl?: string | null;
+  xUrl?: string | null;
+  leetcodeUrl?: string | null;
+  portfolioUrl?: string | null;
+  skills?: string[];
+  mainOrganizations?: string[];
+};
+
+const usernamePattern = /^[a-z0-9](?:[a-z0-9-]{1,37}[a-z0-9])$/;
+
+const cleanString = (value?: string | null) => {
+  const next = value?.trim();
+  return next ? next : null;
+};
+
+const normalizeUsername = (username: string) =>
+  username
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+const nextUsernameChangeDate = (date: Date) => {
+  const next = new Date(date);
+  next.setDate(next.getDate() + 30);
+  return next;
+};
 
 export class ProfileService {
   constructor(private repository = new ProfileRepository()) {}
@@ -18,6 +55,139 @@ export class ProfileService {
     const user = await this.repository.findUserByUsername(username);
     if (!user) throw new ApiError(404, "Profile not found");
     return this.profileForUser(user, viewerId);
+  }
+
+  async usernameAvailability(currentUserId: string, username: string) {
+    const normalized = normalizeUsername(username);
+    if (!usernamePattern.test(normalized)) {
+      return {
+        username: normalized,
+        available: false,
+        canChange: false,
+        message: "Use 3-39 lowercase letters, numbers, or hyphens. Start and end with a letter or number."
+      };
+    }
+
+    const currentUser = await prisma.user.findUnique({ where: { id: currentUserId }, select: { id: true, username: true, usernameUpdatedAt: true } });
+    if (!currentUser) throw new ApiError(404, "User not found");
+
+    const existing = await prisma.user.findUnique({ where: { username: normalized }, select: { id: true } });
+    const available = !existing || existing.id === currentUserId;
+    const nextChangeAt = currentUser.usernameUpdatedAt ? nextUsernameChangeDate(currentUser.usernameUpdatedAt) : null;
+    const canChange = !nextChangeAt || nextChangeAt <= new Date() || normalized === currentUser.username;
+
+    return {
+      username: normalized,
+      available,
+      canChange,
+      nextChangeAt,
+      message: !available
+        ? "That username is already taken."
+        : !canChange
+          ? `You can change your username again on ${nextChangeAt?.toISOString().slice(0, 10)}.`
+          : normalized === currentUser.username
+            ? "This is your current username."
+            : "That username is available."
+    };
+  }
+
+  async updateCurrentProfile(userId: string, payload: UpdateProfilePayload) {
+    const currentUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, username: true, usernameUpdatedAt: true }
+    });
+    if (!currentUser) throw new ApiError(404, "User not found");
+
+    const data: Record<string, unknown> = {};
+    if (payload.name !== undefined) data.name = payload.name.trim();
+    if (payload.bio !== undefined) data.bio = cleanString(payload.bio);
+    if (payload.githubUrl !== undefined) data.githubUrl = cleanString(payload.githubUrl);
+    if (payload.linkedinUrl !== undefined) data.linkedinUrl = cleanString(payload.linkedinUrl);
+    if (payload.xUrl !== undefined) data.xUrl = cleanString(payload.xUrl);
+    if (payload.leetcodeUrl !== undefined) data.leetcodeUrl = cleanString(payload.leetcodeUrl);
+    if (payload.portfolioUrl !== undefined) data.portfolioUrl = cleanString(payload.portfolioUrl);
+    if (payload.skills !== undefined) data.skills = payload.skills.map((item) => item.trim()).filter(Boolean);
+    if (payload.mainOrganizations !== undefined) data.mainOrganizations = payload.mainOrganizations.map((item) => item.trim()).filter(Boolean);
+
+    if (payload.username !== undefined) {
+      const normalized = normalizeUsername(payload.username);
+      if (!usernamePattern.test(normalized)) throw new ApiError(400, "Invalid username format");
+      if (normalized !== currentUser.username) {
+        const availability = await this.usernameAvailability(userId, normalized);
+        if (!availability.available) throw new ApiError(409, "Username already exists");
+        if (!availability.canChange) throw new ApiError(429, availability.message);
+        data.username = normalized;
+        data.usernameUpdatedAt = new Date();
+      }
+    }
+
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data,
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        email: true,
+        role: true,
+        bio: true,
+        githubUrl: true,
+        linkedinUrl: true,
+        xUrl: true,
+        leetcodeUrl: true,
+        portfolioUrl: true,
+        usernameUpdatedAt: true,
+        skills: true,
+        mainOrganizations: true,
+        createdAt: true
+      }
+    });
+
+    return user;
+  }
+
+  async changePassword(userId: string, currentPassword: string, newPassword: string) {
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { passwordHash: true } });
+    if (!user) throw new ApiError(404, "User not found");
+
+    const valid = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!valid) throw new ApiError(401, "Current password is incorrect");
+
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+    await prisma.user.update({ where: { id: userId }, data: { passwordHash } });
+    return { changed: true };
+  }
+
+  async resetWorkspace(userId: string, password?: string) {
+    if (!password) throw new ApiError(400, "Password is required");
+
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { passwordHash: true } });
+    if (!user) throw new ApiError(404, "User not found");
+
+    const valid = await bcrypt.compare(password, user.passwordHash);
+    if (!valid) throw new ApiError(401, "Invalid password");
+
+    const [notifications, goals, scheduledWork, pins, activities, repositories, organizations] = await prisma.$transaction([
+      prisma.notification.deleteMany({ where: { recipientId: userId } }),
+      prisma.goal.deleteMany({ where: { userId } }),
+      prisma.scheduledWork.deleteMany({ where: { userId } }),
+      prisma.pin.deleteMany({ where: { userId } }),
+      prisma.activity.deleteMany({ where: { userId } }),
+      prisma.repository.deleteMany({ where: { userId } }),
+      prisma.organization.deleteMany({ where: { userId } })
+    ]);
+
+    emitDashboardUpdate(userId);
+
+    return {
+      notifications: notifications.count,
+      goals: goals.count,
+      scheduledWork: scheduledWork.count,
+      pins: pins.count,
+      activities: activities.count,
+      repositories: repositories.count,
+      organizations: organizations.count
+    };
   }
 
   private async profileForUser(user: NonNullable<Awaited<ReturnType<ProfileRepository["findUser"]>>>, viewerId?: string) {

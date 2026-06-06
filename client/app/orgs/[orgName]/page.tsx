@@ -69,7 +69,7 @@ export default function OrgProfilePage() {
         </section>
       </div>
       <div className="mt-6">
-        <Link href="/organizations" className="text-sm font-bold text-moss">Back to organizations</Link>
+        <Link href="/dashboard" className="text-sm font-bold text-moss">Back to dashboard</Link>
       </div>
     </>
   );

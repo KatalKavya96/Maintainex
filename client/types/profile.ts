@@ -11,10 +11,34 @@ export type ProfileUser = {
   bio?: string | null;
   githubUrl?: string | null;
   linkedinUrl?: string | null;
+  xUrl?: string | null;
+  leetcodeUrl?: string | null;
   portfolioUrl?: string | null;
+  usernameUpdatedAt?: string | null;
   skills?: string[] | null;
   mainOrganizations?: string[] | null;
   createdAt: string;
+};
+
+export type ProfileUpdateInput = {
+  name?: string;
+  username?: string;
+  bio?: string | null;
+  githubUrl?: string | null;
+  linkedinUrl?: string | null;
+  xUrl?: string | null;
+  leetcodeUrl?: string | null;
+  portfolioUrl?: string | null;
+  skills?: string[];
+  mainOrganizations?: string[];
+};
+
+export type UsernameAvailability = {
+  username: string;
+  available: boolean;
+  canChange: boolean;
+  nextChangeAt?: string | null;
+  message: string;
 };
 
 export type ProfileSummary = ProfileUser & {

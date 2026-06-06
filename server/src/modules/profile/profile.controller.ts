@@ -16,4 +16,20 @@ export class ProfileController {
   getByUsername = async (req: Request, res: Response) => {
     res.json(new ApiResponse(await this.service.getProfileByUsername(req.params.username, req.user?.id)));
   };
+
+  usernameAvailability = async (req: Request, res: Response) => {
+    res.json(new ApiResponse(await this.service.usernameAvailability(req.user!.id, String(req.query.username ?? ""))));
+  };
+
+  updateMe = async (req: Request, res: Response) => {
+    res.json(new ApiResponse(await this.service.updateCurrentProfile(req.user!.id, req.body), "Profile updated"));
+  };
+
+  changePassword = async (req: Request, res: Response) => {
+    res.json(new ApiResponse(await this.service.changePassword(req.user!.id, req.body.currentPassword, req.body.newPassword), "Password changed"));
+  };
+
+  resetWorkspace = async (req: Request, res: Response) => {
+    res.json(new ApiResponse(await this.service.resetWorkspace(req.user!.id, req.body?.password), "Workspace data reset"));
+  };
 }

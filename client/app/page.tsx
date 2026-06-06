@@ -1,62 +1,62 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { ActivityLineChart, ActivityTypeChart, OrgChart, RepoChart } from "@/components/analytics/Charts";
-import { RangeToggle } from "@/components/analytics/RangeToggle";
-import { Button } from "@/components/common/Button";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { ActivityBadge } from "@/components/activities/ActivityBadge";
 import { PageTitle } from "@/components/common/PageTitle";
-import { RecentActivities } from "@/components/dashboard/RecentActivities";
-import { StatCard } from "@/components/dashboard/StatCard";
-import { summaryStats } from "@/lib/analytics";
-import { useActivityStore } from "@/lib/activityStore";
-import { filterActivitiesByRange, type TimeRange } from "@/lib/timeRange";
+import { getFeed } from "@/lib/api";
+import { formatDate } from "@/lib/dateUtils";
+import type { FeedItem } from "@/types/social";
 
-export default function DashboardPage() {
-  const { activities, resetAll } = useActivityStore();
-  const [range, setRange] = useState<TimeRange>("weekly");
-  const visualActivities = useMemo(() => filterActivitiesByRange(activities, range), [activities, range]);
-  const topStats = useMemo(
-    () => summaryStats(activities).filter((stat) => ["Total Activities", "PRs Reviewed", "PRs Raised", "Issues Raised"].includes(stat.label)),
-    [activities]
-  );
+export default function HomePage() {
+  const [feed, setFeed] = useState<FeedItem[]>([]);
+
+  useEffect(() => {
+    const load = () => getFeed().then(setFeed).catch(() => setFeed([]));
+    load();
+    window.addEventListener("maintainex-feed-new", load);
+    return () => window.removeEventListener("maintainex-feed-new", load);
+  }, []);
 
   return (
     <>
-      <PageTitle
-        title="Dashboard"
-        description="Welcome back. Here's your contribution overview, work queue, pinned resources, and public progress."
-        action={
-          <div className="flex gap-2">
-            <Button href="/activities/new">Add activity</Button>
-            <Button type="button" variant="secondary" onClick={resetAll}>
-              Reset data
-            </Button>
-          </div>
-        }
-      />
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {topStats.map((stat) => (
-          <StatCard key={stat.label} {...stat} />
-        ))}
-      </div>
-
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 className="text-2xl font-extrabold tracking-tight text-ink">Contribution visuals</h2>
-          <p className="mt-1 text-sm font-medium text-slate-500">Switch the range to update every chart below.</p>
+      <PageTitle title="Home" description="Activity from people you follow." />
+      <section className="mx-auto max-w-3xl">
+        <div className="space-y-3">
+          {feed.map((item) => (
+            <article key={item.id} className="rounded-xl border border-line bg-white p-4 shadow-soft">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex min-w-0 gap-3">
+                  <Link href={`/profile/${item.user.username}`} className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-moss text-sm font-black text-black">
+                    {item.user.name.slice(0, 1).toUpperCase()}
+                  </Link>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-slate-500">
+                      <Link href={`/profile/${item.user.username}`} className="font-bold text-ink hover:text-moss">{item.user.name}</Link>{" "}
+                      contributed to{" "}
+                      <Link href={`/repos/${encodeURIComponent(item.activity.organizationName)}/${encodeURIComponent(item.activity.repositoryName)}`} className="font-bold text-ink hover:text-moss">
+                        {item.activity.organizationName}/{item.activity.repositoryName}
+                      </Link>
+                    </p>
+                    <p className="mt-1 text-xs font-semibold text-slate-500">{formatDate(item.createdAt.slice(0, 10))}</p>
+                  </div>
+                </div>
+                <ActivityBadge value={item.activity.activityType} />
+              </div>
+              <h3 className="mt-4 text-base font-extrabold text-ink">{item.activity.title}</h3>
+              {item.activity.description ? <p className="mt-2 rounded-lg bg-skyglass p-3 text-sm font-semibold leading-6 text-slate-500">{item.activity.description}</p> : null}
+            </article>
+          ))}
+          {!feed.length ? (
+            <div className="rounded-xl border border-line bg-white p-10 text-center shadow-soft">
+              <h2 className="text-lg font-extrabold text-ink">Your feed is warming up.</h2>
+              <p className="mt-2 text-sm font-semibold leading-6 text-slate-500">
+                Follow developers from search above and their Maintainex activity will start showing up here.
+              </p>
+            </div>
+          ) : null}
         </div>
-        <RangeToggle value={range} onChange={setRange} />
-      </div>
-
-      <div className="mt-4 grid gap-6 xl:grid-cols-[1.25fr_.75fr]">
-        <ActivityLineChart activities={visualActivities} />
-        <ActivityTypeChart activities={visualActivities} />
-      </div>
-      <div className="mt-6 grid gap-6 xl:grid-cols-3">
-        <RepoChart activities={visualActivities} />
-        <OrgChart activities={visualActivities} />
-        <RecentActivities activities={activities} />
-      </div>
+      </section>
     </>
   );
 }

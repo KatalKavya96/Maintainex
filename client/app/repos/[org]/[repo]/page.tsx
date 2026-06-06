@@ -86,7 +86,7 @@ export default function RepoProfilePage() {
         </section>
       </div>
       <div className="mt-6">
-        <Link href="/repositories" className="text-sm font-bold text-moss">Back to repositories</Link>
+        <Link href="/dashboard" className="text-sm font-bold text-moss">Back to dashboard</Link>
       </div>
     </>
   );

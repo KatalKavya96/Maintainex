@@ -38,9 +38,7 @@ html[data-theme="light"] {
 body {
   margin: 0;
   color: var(--app-text);
-  background:
-    radial-gradient(circle at 58% 10%, rgba(201, 244, 58, 0.08), transparent 28rem),
-    var(--app-bg);
+  background: var(--app-bg);
   font-feature-settings:
     "cv02" 1,
     "cv03" 1,
@@ -152,9 +150,7 @@ html[data-theme="dark"] textarea::placeholder {
 }
 
 html[data-theme="light"] body {
-  background:
-    radial-gradient(circle at 58% 10%, rgba(155, 217, 31, 0.12), transparent 28rem),
-    var(--app-bg);
+  background: var(--app-bg);
 }
 
 .dcode-card {

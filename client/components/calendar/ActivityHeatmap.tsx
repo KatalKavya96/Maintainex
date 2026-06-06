@@ -45,10 +45,10 @@ export function ActivityHeatmap({ activities, ownerName }: { activities: Activit
   const total = activities.length;
 
   return (
-    <section className="rounded-2xl border border-line bg-white p-6 shadow-soft">
-      <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+    <section className="rounded-xl border border-line bg-white p-4 shadow-soft">
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h3 className="text-xl font-extrabold tracking-tight text-ink">Contribution heatmap</h3>
+          <h3 className="text-base font-extrabold tracking-tight text-ink">Contribution heatmap</h3>
           <p className="mt-1 text-sm font-medium text-slate-500">
             {ownerName ? `${ownerName}'s` : "Your"} activity across the last year.
           </p>

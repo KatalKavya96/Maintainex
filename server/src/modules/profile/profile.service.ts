@@ -1,7 +1,10 @@
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import { prisma } from "../../config/database";
 import { emitDashboardUpdate } from "../../realtime/socket";
 import { ApiError } from "../../utils/ApiError";
+import { EmailService } from "../../utils/email.service";
+import { ensureUsableEmail } from "../../utils/emailValidation";
 import { ProfileRepository } from "./profile.repository";
 
 type UpdateProfilePayload = {
@@ -39,7 +42,10 @@ const nextUsernameChangeDate = (date: Date) => {
 };
 
 export class ProfileService {
-  constructor(private repository = new ProfileRepository()) {}
+  constructor(
+    private repository = new ProfileRepository(),
+    private emailService = new EmailService()
+  ) {}
 
   async list() {
     return this.repository.findUsers();
@@ -129,6 +135,7 @@ export class ProfileService {
         name: true,
         username: true,
         email: true,
+        emailVerifiedAt: true,
         role: true,
         bio: true,
         githubUrl: true,
@@ -147,15 +154,80 @@ export class ProfileService {
   }
 
   async changePassword(userId: string, currentPassword: string, newPassword: string) {
-    const user = await prisma.user.findUnique({ where: { id: userId }, select: { passwordHash: true } });
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { passwordHash: true, passwordSetAt: true } });
     if (!user) throw new ApiError(404, "User not found");
+    if (!user.passwordSetAt) throw new ApiError(400, "This account does not have a password yet. Use provider login for now.");
 
     const valid = await bcrypt.compare(currentPassword, user.passwordHash);
     if (!valid) throw new ApiError(401, "Current password is incorrect");
 
     const passwordHash = await bcrypt.hash(newPassword, 12);
-    await prisma.user.update({ where: { id: userId }, data: { passwordHash } });
+    await prisma.user.update({ where: { id: userId }, data: { passwordHash, passwordSetAt: new Date() } });
     return { changed: true };
+  }
+
+  async sendEmailVerificationOtp(userId: string) {
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true, emailVerifiedAt: true } });
+    if (!user) throw new ApiError(404, "User not found");
+    if (user.emailVerifiedAt) return { sent: false, alreadyVerified: true, message: "Your email is already verified." };
+    await ensureUsableEmail(user.email);
+
+    const recent = await prisma.emailVerificationOtp.findFirst({
+      where: { userId, consumedAt: null, createdAt: { gt: new Date(Date.now() - 60 * 1000) } },
+      orderBy: { createdAt: "desc" }
+    });
+    if (recent) throw new ApiError(429, "A verification code was sent recently. Please wait a minute before requesting another.");
+
+    const code = crypto.randomInt(100000, 1000000).toString();
+    const codeHash = await bcrypt.hash(code, 12);
+    await prisma.emailVerificationOtp.create({
+      data: {
+        userId,
+        codeHash,
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000)
+      }
+    });
+    await this.emailService.sendOtp(user.email, code);
+    return { sent: true, alreadyVerified: false, message: `Verification code sent to ${user.email}.` };
+  }
+
+  async verifyEmailOtp(userId: string, code: string) {
+    const otp = await prisma.emailVerificationOtp.findFirst({
+      where: { userId, consumedAt: null },
+      orderBy: { createdAt: "desc" }
+    });
+    if (!otp) throw new ApiError(400, "Request a verification code first.");
+    if (otp.expiresAt < new Date()) throw new ApiError(400, "This verification code has expired. Request a new one.");
+    if (otp.attemptCount >= 5) throw new ApiError(429, "Too many incorrect attempts. Request a new code.");
+
+    const valid = await bcrypt.compare(code, otp.codeHash);
+    if (!valid) {
+      await prisma.emailVerificationOtp.update({ where: { id: otp.id }, data: { attemptCount: { increment: 1 } } });
+      throw new ApiError(400, "Incorrect verification code.");
+    }
+
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        emailVerifiedAt: new Date(),
+        emailVerificationOtps: {
+          update: {
+            where: { id: otp.id },
+            data: { consumedAt: new Date() }
+          }
+        }
+      },
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        email: true,
+        emailVerifiedAt: true,
+        role: true
+      }
+    });
+
+    return { verified: true, user };
   }
 
   async resetWorkspace(userId: string, password?: string) {

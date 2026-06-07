@@ -36,3 +36,9 @@ export const resetWorkspaceSchema = z.object({
     password: z.string().min(1)
   })
 });
+
+export const verifyEmailOtpSchema = z.object({
+  body: z.object({
+    code: z.string().trim().regex(/^\d{6}$/, "Enter the 6-digit verification code.")
+  })
+});

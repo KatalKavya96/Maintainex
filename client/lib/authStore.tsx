@@ -11,6 +11,7 @@ export interface AuthUser {
   name: string;
   username: string;
   email: string;
+  emailVerifiedAt?: string | null;
   role: UserRole;
 }
 
@@ -27,6 +28,7 @@ interface AuthStore {
   isViewer: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (payload: { name: string; email: string; password: string; adminCode?: string }) => Promise<void>;
+  completeOAuthSession: (code: string) => Promise<void>;
   viewAsViewer: () => Promise<void>;
   updateUser: (user: Partial<AuthUser>) => void;
   logout: () => void;
@@ -87,6 +89,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const data = await apiRequest<AuthResponse>("/auth/signup", {
           method: "POST",
           body: JSON.stringify(payload)
+        });
+        persistSession(data);
+        setToken(data.token);
+        setUser(data.user);
+      },
+      completeOAuthSession: async (code) => {
+        const data = await apiRequest<AuthResponse>("/auth/oauth/session", {
+          method: "POST",
+          body: JSON.stringify({ code })
         });
         persistSession(data);
         setToken(data.token);

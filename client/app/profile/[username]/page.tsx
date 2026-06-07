@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { Award, Code2, ExternalLink, Github, Linkedin, Mail, ShieldAlert, Trash2, Users } from "lucide-react";
+import { Award, BadgeCheck, Code2, ExternalLink, Github, Linkedin, Loader2, Mail, Send, ShieldAlert, Trash2, Users } from "lucide-react";
 import { ActivityBadge } from "@/components/activities/ActivityBadge";
 import { ActivityHeatmap } from "@/components/calendar/ActivityHeatmap";
 import { Button } from "@/components/common/Button";
 import { Input } from "@/components/common/FormControls";
-import { getBadges, getProfileByUsername, followUser, resetWorkspaceData, unfollowUser } from "@/lib/api";
+import { getBadges, getProfileByUsername, followUser, resetWorkspaceData, sendEmailVerificationOtp, unfollowUser, verifyEmailOtp } from "@/lib/api";
 import { formatDate } from "@/lib/dateUtils";
 import { useAuthStore } from "@/lib/authStore";
 import type { ProfileDashboard } from "@/types/profile";
@@ -16,7 +16,7 @@ import type { Badge } from "@/types/social";
 
 export default function PublicProfilePage() {
   const params = useParams<{ username: string }>();
-  const { user } = useAuthStore();
+  const { user, updateUser } = useAuthStore();
   const [profile, setProfile] = useState<ProfileDashboard | null>(null);
   const [badges, setBadges] = useState<Badge[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,6 +25,10 @@ export default function PublicProfilePage() {
   const [resetOpen, setResetOpen] = useState(false);
   const [password, setPassword] = useState("");
   const [resetMessage, setResetMessage] = useState("");
+  const [verifyOpen, setVerifyOpen] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [verifyMessage, setVerifyMessage] = useState("");
+  const [verifyWorking, setVerifyWorking] = useState<"send" | "verify" | "">("");
 
   const loadProfile = () => {
     setLoading(true);
@@ -77,6 +81,38 @@ export default function PublicProfilePage() {
     }
   }
 
+  async function sendVerificationCode() {
+    setVerifyWorking("send");
+    setVerifyMessage("");
+    try {
+      const data = await sendEmailVerificationOtp();
+      setVerifyOpen(true);
+      setVerifyMessage(data.message);
+    } catch (err) {
+      setVerifyMessage(err instanceof Error ? err.message : "Could not send verification code.");
+    } finally {
+      setVerifyWorking("");
+    }
+  }
+
+  async function verifyEmail(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setVerifyWorking("verify");
+    setVerifyMessage("");
+    try {
+      const data = await verifyEmailOtp(otpCode);
+      setProfile((current) => current ? { ...current, user: { ...current.user, emailVerifiedAt: data.user.emailVerifiedAt } } : current);
+      updateUser({ emailVerifiedAt: data.user.emailVerifiedAt });
+      setOtpCode("");
+      setVerifyOpen(false);
+      setVerifyMessage("Email verified. Your profile tick is live.");
+    } catch (err) {
+      setVerifyMessage(err instanceof Error ? err.message : "Verification failed.");
+    } finally {
+      setVerifyWorking("");
+    }
+  }
+
   if (loading) return <div className="rounded-xl border border-line bg-white p-8 text-sm text-slate-500 shadow-soft">Loading profile...</div>;
   if (error || !profile) return <div className="rounded-xl border border-red-200 bg-red-50 p-8 text-sm font-semibold text-red-700">{error || "Profile not found"}</div>;
 
@@ -106,8 +142,14 @@ export default function PublicProfilePage() {
               </div>
             </div>
             <div className="mt-3 min-w-0 text-center xl:text-left">
-              <h1 className="truncate text-xl font-extrabold text-ink">{profile.user.name}</h1>
-              <p className="truncate text-sm font-semibold text-slate-500">@{profile.user.username}</p>
+              <h1 className="flex min-w-0 items-center justify-center gap-1.5 truncate text-xl font-extrabold text-ink xl:justify-start">
+                <span className="truncate">{profile.user.name}</span>
+                {profile.user.emailVerifiedAt ? <BadgeCheck size={19} className="shrink-0 text-moss" aria-label="Verified profile" /> : null}
+              </h1>
+              <p className="flex min-w-0 items-center justify-center gap-1.5 truncate text-sm font-semibold text-slate-500 xl:justify-start">
+                <span className="truncate">@{profile.user.username}</span>
+                {profile.user.emailVerifiedAt ? <span className="rounded-full bg-moss/15 px-2 py-0.5 text-[10px] font-black uppercase tracking-wide text-moss">Verified</span> : null}
+              </p>
               <p className="mt-2 text-sm font-semibold leading-5 text-slate-500">{profile.user.bio || "No bio added yet."}</p>
             </div>
 
@@ -140,6 +182,29 @@ export default function PublicProfilePage() {
               {profile.user.portfolioUrl ? <a className="flex items-center gap-2 hover:text-moss" href={profile.user.portfolioUrl} target="_blank" rel="noreferrer"><ExternalLink size={15} /> Portfolio</a> : null}
               <p>Joined {formatDate(profile.user.createdAt.slice(0, 10))}</p>
             </div>
+
+            {isOwnProfile && !profile.user.emailVerifiedAt ? (
+              <div className="mt-3 rounded-lg border border-line bg-skyglass p-3">
+                <p className="text-sm font-extrabold text-ink">Verify profile</p>
+                <p className="mt-1 text-xs font-semibold leading-5 text-slate-500">Get the green tick by verifying the email on your profile.</p>
+                <Button type="button" variant="secondary" className="mt-3 w-full" onClick={sendVerificationCode} disabled={Boolean(verifyWorking)}>
+                  {verifyWorking === "send" ? <Loader2 className="animate-spin" size={15} /> : <Mail size={15} />}
+                  Send OTP
+                </Button>
+                {verifyOpen ? (
+                  <form onSubmit={verifyEmail} className="mt-3 flex gap-2">
+                    <Input value={otpCode} onChange={(event) => setOtpCode(event.target.value.replace(/\D/g, "").slice(0, 6))} placeholder="6-digit code" inputMode="numeric" />
+                    <Button type="submit" disabled={verifyWorking === "verify" || otpCode.length !== 6} className="shrink-0">
+                      {verifyWorking === "verify" ? <Loader2 className="animate-spin" size={15} /> : <Send size={15} />}
+                    </Button>
+                  </form>
+                ) : null}
+                {verifyMessage ? <p className="mt-2 text-xs font-bold text-slate-500">{verifyMessage}</p> : null}
+              </div>
+            ) : null}
+            {isOwnProfile && profile.user.emailVerifiedAt ? (
+              <p className="mt-3 rounded-lg border border-moss/30 bg-moss/10 px-3 py-2 text-xs font-bold text-moss">Verified with email OTP.</p>
+            ) : null}
           </section>
 
           <section className="rounded-xl border border-line bg-white p-3 shadow-soft sm:p-4">

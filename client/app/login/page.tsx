@@ -2,16 +2,35 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { ShieldCheck } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Github, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/common/Button";
 import { Field, Input } from "@/components/common/FormControls";
+import { getOAuthUrl } from "@/lib/api";
 import { useAuthStore } from "@/lib/authStore";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, viewAsViewer } = useAuthStore();
+  const { login, viewAsViewer, completeOAuthSession } = useAuthStore();
   const [error, setError] = useState("");
+  const [oauthLoading, setOauthLoading] = useState<"google" | "github" | "">("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const oauthError = params.get("oauthError");
+    const oauthCode = params.get("oauthCode");
+    if (oauthError) {
+      setError(oauthError);
+      window.history.replaceState(null, "", "/login");
+      return;
+    }
+    if (oauthCode) {
+      completeOAuthSession(oauthCode)
+        .then(() => router.replace("/"))
+        .catch((err) => setError(err instanceof Error ? err.message : "OAuth login failed."))
+        .finally(() => window.history.replaceState(null, "", "/login"));
+    }
+  }, [completeOAuthSession, router]);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -32,6 +51,18 @@ export default function LoginPage() {
       router.replace("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to start viewer mode");
+    }
+  }
+
+  async function continueWith(provider: "google" | "github") {
+    setOauthLoading(provider);
+    setError("");
+    try {
+      const data = await getOAuthUrl(provider);
+      window.location.href = data.url;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : `${provider} login is not available.`);
+      setOauthLoading("");
     }
   }
 
@@ -60,6 +91,16 @@ export default function LoginPage() {
           <Button type="submit" className="w-full">
             Login
           </Button>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <Button type="button" variant="secondary" className="w-full" onClick={() => continueWith("google")} disabled={Boolean(oauthLoading)}>
+              <span className="font-black">G</span>
+              {oauthLoading === "google" ? "Opening..." : "Google"}
+            </Button>
+            <Button type="button" variant="secondary" className="w-full" onClick={() => continueWith("github")} disabled={Boolean(oauthLoading)}>
+              <Github size={16} />
+              {oauthLoading === "github" ? "Opening..." : "GitHub"}
+            </Button>
+          </div>
           <Button type="button" variant="secondary" className="w-full" onClick={enterViewerMode}>
             View as viewer
           </Button>

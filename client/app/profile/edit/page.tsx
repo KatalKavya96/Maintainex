@@ -63,7 +63,7 @@ export default function EditProfilePage() {
         skills: csvToList(skillsText),
         mainOrganizations: csvToList(orgsText)
       });
-      updateUser({ name: updated.name, username: updated.username, email: updated.email, role: updated.role });
+      updateUser({ name: updated.name, username: updated.username, email: updated.email, role: updated.role, emailVerifiedAt: updated.emailVerifiedAt });
       setMessage("Profile updated.");
       router.replace(`/profile/${updated.username}`);
     } catch (error) {

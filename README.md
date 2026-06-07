@@ -72,9 +72,22 @@ CLIENT_URLS=http://localhost:3000,https://your-production-frontend.vercel.app
 ALLOW_VERCEL_ORIGINS=true
 JWT_SECRET=replace-with-a-long-random-secret
 SIGNUP_ADMIN_CODE=optional-admin-invite-code
+GITHUB_CLIENT_ID=your-github-oauth-client-id
+GITHUB_CLIENT_SECRET=your-github-oauth-client-secret
+GITHUB_REDIRECT_URI=https://your-backend-api-domain.vercel.app/api/github/callback
+GITHUB_AUTH_REDIRECT_URI=
+GITHUB_TOKEN_ENCRYPTION_KEY=replace-with-a-long-random-secret
+GITHUB_OAUTH_SCOPES=read:user user:email public_repo
+GOOGLE_CLIENT_ID=your-google-oauth-client-id
+GOOGLE_CLIENT_SECRET=your-google-oauth-client-secret
+GOOGLE_REDIRECT_URI=https://your-backend-api-domain.vercel.app/api/auth/oauth/google/callback
+RESEND_API_KEY=your-resend-api-key
+MAIL_FROM=Maintainex <noreply@your-domain.com>
+EMAIL_DNS_CHECK=true
 ```
 
 Use `CLIENT_URLS` for multiple frontend origins, such as localhost plus Vercel production or preview URLs.
+Use `GITHUB_REDIRECT_URI` for both GitHub login and GitHub sync unless you create a second GitHub OAuth app, in which case set `GITHUB_AUTH_REDIRECT_URI` for login.
 
 ## API Routes
 
@@ -123,7 +136,7 @@ GET /api/analytics/activity-types
 
 ## Notes
 
-When `NEXT_PUBLIC_API_URL` is set, the frontend stores activities through the backend API and Neon database. Without it, the frontend falls back to browser local storage for local-only testing.
+When `NEXT_PUBLIC_API_URL` is set, the frontend talks to the backend API and Neon database. Auth uses the `maintainex.token` cookie; user data is not stored in browser local storage.
 
 ## Vercel Env Variables
 
@@ -148,6 +161,18 @@ CLIENT_URLS=https://your-production-frontend.vercel.app
 ALLOW_VERCEL_ORIGINS=true
 JWT_SECRET=replace-with-a-long-random-secret
 SIGNUP_ADMIN_CODE=optional-admin-invite-code
+GITHUB_CLIENT_ID=your-github-oauth-client-id
+GITHUB_CLIENT_SECRET=your-github-oauth-client-secret
+GITHUB_REDIRECT_URI=https://your-backend-api-domain.vercel.app/api/github/callback
+GITHUB_AUTH_REDIRECT_URI=
+GITHUB_TOKEN_ENCRYPTION_KEY=replace-with-a-long-random-secret
+GITHUB_OAUTH_SCOPES=read:user user:email public_repo
+GOOGLE_CLIENT_ID=your-google-oauth-client-id
+GOOGLE_CLIENT_SECRET=your-google-oauth-client-secret
+GOOGLE_REDIRECT_URI=https://your-backend-api-domain.vercel.app/api/auth/oauth/google/callback
+RESEND_API_KEY=your-resend-api-key
+MAIL_FROM=Maintainex <noreply@your-domain.com>
+EMAIL_DNS_CHECK=true
 ```
 
 The first signed-up account becomes `ADMIN`. Later signups become `VIEWER` unless they provide `SIGNUP_ADMIN_CODE`.

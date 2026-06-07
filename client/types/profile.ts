@@ -7,6 +7,7 @@ export type ProfileUser = {
   name: string;
   username: string;
   email: string;
+  emailVerifiedAt?: string | null;
   role: "ADMIN" | "VIEWER";
   bio?: string | null;
   githubUrl?: string | null;

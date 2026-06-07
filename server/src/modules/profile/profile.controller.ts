@@ -29,6 +29,14 @@ export class ProfileController {
     res.json(new ApiResponse(await this.service.changePassword(req.user!.id, req.body.currentPassword, req.body.newPassword), "Password changed"));
   };
 
+  sendEmailVerification = async (req: Request, res: Response) => {
+    res.json(new ApiResponse(await this.service.sendEmailVerificationOtp(req.user!.id), "Verification code sent"));
+  };
+
+  verifyEmail = async (req: Request, res: Response) => {
+    res.json(new ApiResponse(await this.service.verifyEmailOtp(req.user!.id, req.body.code), "Email verified"));
+  };
+
   resetWorkspace = async (req: Request, res: Response) => {
     res.json(new ApiResponse(await this.service.resetWorkspace(req.user!.id, req.body?.password), "Workspace data reset"));
   };

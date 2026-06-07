@@ -85,34 +85,34 @@ export default function PublicProfilePage() {
   const totalContributions = activities.length;
 
   return (
-    <div className="space-y-5">
+    <div className="max-w-full space-y-4 overflow-hidden">
       <div className="border-b border-line">
         <div className="flex gap-5 overflow-x-auto text-sm font-semibold text-slate-500">
-          <span className="border-b-2 border-moss px-1 pb-3 text-ink">Overview</span>
+          <span className="shrink-0 border-b-2 border-moss px-1 pb-3 text-ink">Overview</span>
           {["Activity", "Pins", "Schedule"].map((item) => (
-            <Link key={item} href={`/coming-soon?feature=${encodeURIComponent(`Profile ${item}`)}`} className="border-b-2 border-transparent px-1 pb-3 transition hover:border-line hover:text-ink">
+            <Link key={item} href={`/coming-soon?feature=${encodeURIComponent(`Profile ${item}`)}`} className="shrink-0 border-b-2 border-transparent px-1 pb-3 transition hover:border-line hover:text-ink">
               {item}
             </Link>
           ))}
         </div>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[280px_1fr]">
-        <aside className="space-y-4">
-          <section className="rounded-xl border border-line bg-white p-4 shadow-soft">
-            <div className="relative mx-auto h-44 w-44 rounded-full border border-line bg-skyglass">
-              <div className="grid h-full w-full place-items-center rounded-full bg-moss text-6xl font-black text-black">
+      <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(220px,260px)_minmax(0,1fr)]">
+        <aside className="min-w-0 space-y-3">
+          <section className="rounded-xl border border-line bg-white p-3 shadow-soft sm:p-4">
+            <div className="relative mx-auto h-28 w-28 rounded-full border border-line bg-skyglass sm:h-32 sm:w-32">
+              <div className="grid h-full w-full place-items-center rounded-full bg-moss text-5xl font-black text-black">
                 {profile.user.name.slice(0, 1).toUpperCase()}
               </div>
             </div>
-            <div className="mt-4">
-              <h1 className="text-2xl font-extrabold text-ink">{profile.user.name}</h1>
-              <p className="text-lg font-semibold text-slate-500">@{profile.user.username}</p>
-              <p className="mt-3 text-sm font-semibold leading-6 text-slate-500">{profile.user.bio || "No bio added yet."}</p>
+            <div className="mt-3 min-w-0 text-center xl:text-left">
+              <h1 className="truncate text-xl font-extrabold text-ink">{profile.user.name}</h1>
+              <p className="truncate text-sm font-semibold text-slate-500">@{profile.user.username}</p>
+              <p className="mt-2 text-sm font-semibold leading-5 text-slate-500">{profile.user.bio || "No bio added yet."}</p>
             </div>
 
             {isOwnProfile ? (
-              <div className="mt-4 grid gap-2">
+              <div className="mt-3 grid gap-2">
                 <Button href="/profile/edit" variant="secondary" className="w-full">Edit profile</Button>
                 <Button href="/profile/change-password" variant="ghost" className="w-full">Change password</Button>
               </div>
@@ -122,7 +122,7 @@ export default function PublicProfilePage() {
               </Button>
             )}
 
-            <div className="mt-4 flex flex-wrap gap-x-3 gap-y-1 text-sm font-semibold text-slate-500">
+            <div className="mt-3 flex flex-wrap justify-center gap-x-3 gap-y-1 text-sm font-semibold text-slate-500 xl:justify-start">
               <Link href={`/profile/${profile.user.username}/followers`} className="inline-flex items-center gap-1 hover:text-moss">
                 <Users size={15} /> <span className="font-bold text-ink">{profile.stats.followers}</span> followers
               </Link>
@@ -131,8 +131,8 @@ export default function PublicProfilePage() {
               </Link>
             </div>
 
-            <div className="mt-4 space-y-2 border-t border-line pt-4 text-sm font-semibold text-slate-500">
-              <p className="inline-flex items-center gap-2"><Mail size={15} /> {profile.user.email}</p>
+            <div className="mt-3 min-w-0 space-y-2 border-t border-line pt-3 text-sm font-semibold text-slate-500">
+              <p className="flex min-w-0 items-center gap-2"><Mail size={15} className="shrink-0" /> <span className="truncate">{profile.user.email}</span></p>
               {profile.user.githubUrl ? <a className="flex items-center gap-2 hover:text-moss" href={profile.user.githubUrl} target="_blank" rel="noreferrer"><Github size={15} /> GitHub</a> : null}
               {profile.user.linkedinUrl ? <a className="flex items-center gap-2 hover:text-moss" href={profile.user.linkedinUrl} target="_blank" rel="noreferrer"><Linkedin size={15} /> LinkedIn</a> : null}
               {profile.user.xUrl ? <a className="flex items-center gap-2 hover:text-moss" href={profile.user.xUrl} target="_blank" rel="noreferrer"><span className="text-sm font-black">X</span> X</a> : null}
@@ -142,7 +142,7 @@ export default function PublicProfilePage() {
             </div>
           </section>
 
-          <section className="rounded-xl border border-line bg-white p-4 shadow-soft">
+          <section className="rounded-xl border border-line bg-white p-3 shadow-soft sm:p-4">
             <div className="flex items-center justify-between">
               <h2 className="font-extrabold text-ink">Badges</h2>
               <button type="button" onClick={() => setShowAllBadges((value) => !value)} className="text-xs font-bold text-moss">
@@ -160,7 +160,7 @@ export default function PublicProfilePage() {
             </div>
           </section>
 
-          <section className="rounded-xl border border-line bg-white p-4 shadow-soft">
+          <section className="rounded-xl border border-line bg-white p-3 shadow-soft sm:p-4">
             <h2 className="font-extrabold text-ink">Organizations</h2>
             <div className="mt-3 flex flex-wrap gap-2">
               {mainOrganizations.map((org) => (
@@ -173,7 +173,7 @@ export default function PublicProfilePage() {
           </section>
 
           {isOwnProfile ? (
-            <section className="rounded-xl border border-red-500/30 bg-white p-4 shadow-soft">
+            <section className="rounded-xl border border-red-500/30 bg-white p-3 shadow-soft sm:p-4">
               <button type="button" onClick={() => setResetOpen((value) => !value)} className="flex w-full items-center justify-between gap-3 text-left">
                 <span>
                   <span className="flex items-center gap-2 text-sm font-extrabold text-red-300"><ShieldAlert size={16} /> Danger zone</span>
@@ -193,13 +193,13 @@ export default function PublicProfilePage() {
           ) : null}
         </aside>
 
-        <main className="space-y-5">
-          <section className="rounded-xl border border-line bg-white p-4 shadow-soft">
+        <main className="min-w-0 space-y-4">
+          <section className="min-w-0 rounded-xl border border-line bg-white p-3 shadow-soft sm:p-4">
             <div className="mb-3 flex items-center justify-between">
               <h2 className="font-extrabold text-ink">Pinned</h2>
               {isOwnProfile ? <Link href="/pins" className="text-xs font-bold text-moss">Customize pins</Link> : null}
             </div>
-            <div className="grid gap-3 md:grid-cols-2">
+            <div className="grid min-w-0 gap-3 md:grid-cols-2">
               {profile.favoritePins.slice(0, 6).map((pin) => (
                 <a key={pin.id} href={pin.url} target="_blank" rel="noreferrer" className="rounded-lg border border-line bg-skyglass p-4 transition hover:border-moss">
                   <p className="text-sm font-extrabold text-moss">{pin.title}</p>
@@ -213,17 +213,17 @@ export default function PublicProfilePage() {
 
           <ActivityHeatmap activities={activities} ownerName={profile.user.name} />
 
-          <section className="rounded-xl border border-line bg-white p-4 shadow-soft">
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <div>
+          <section className="min-w-0 rounded-xl border border-line bg-white p-3 shadow-soft sm:p-4">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+              <div className="min-w-0">
                 <h2 className="font-extrabold text-ink">{totalContributions} contributions in the last year</h2>
                 <p className="text-sm font-semibold text-slate-500">Contributed to {repositories.size} repositories.</p>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex min-w-0 flex-wrap gap-2">
                 {Array.from(repositories).slice(0, 3).map((repo) => {
                   const [org, name] = repo.split("/");
                   return (
-                    <Link key={repo} href={`/repos/${encodeURIComponent(org)}/${encodeURIComponent(name)}`} className="rounded-lg border border-line bg-skyglass px-3 py-1.5 text-xs font-bold text-slate-500 hover:border-moss hover:text-ink">
+                    <Link key={repo} href={`/repos/${encodeURIComponent(org)}/${encodeURIComponent(name)}`} className="max-w-full truncate rounded-lg border border-line bg-skyglass px-3 py-1.5 text-xs font-bold text-slate-500 hover:border-moss hover:text-ink">
                       {repo}
                     </Link>
                   );
@@ -234,8 +234,8 @@ export default function PublicProfilePage() {
               {activities.slice(0, 8).map((activity) => (
                 <article key={activity.id} className="rounded-lg border border-line bg-skyglass p-3">
                   <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <p className="font-bold text-ink">{activity.title}</p>
+                    <div className="min-w-0">
+                      <p className="truncate font-bold text-ink">{activity.title}</p>
                       <p className="mt-1 text-sm font-semibold text-slate-500">
                         <Link href={`/repos/${encodeURIComponent(activity.organizationName)}/${encodeURIComponent(activity.repositoryName)}`} className="hover:text-moss">
                           {activity.organizationName}/{activity.repositoryName}

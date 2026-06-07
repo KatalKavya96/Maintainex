@@ -45,19 +45,19 @@ export function ActivityHeatmap({ activities, ownerName }: { activities: Activit
   const total = activities.length;
 
   return (
-    <section className="rounded-xl border border-line bg-white p-4 shadow-soft">
-      <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h3 className="text-base font-extrabold tracking-tight text-ink">Contribution heatmap</h3>
-          <p className="mt-1 text-sm font-medium text-slate-500">
+    <section className="min-w-0 overflow-hidden rounded-xl border border-line bg-white p-3 shadow-soft sm:p-4">
+      <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
+        <div className="min-w-0">
+          <h3 className="truncate text-base font-extrabold tracking-tight text-ink">Contribution heatmap</h3>
+          <p className="mt-1 text-sm font-medium leading-5 text-slate-500">
             {ownerName ? `${ownerName}'s` : "Your"} activity across the last year.
           </p>
         </div>
-        <p className="text-sm font-bold text-moss">{total} total</p>
+        <p className="shrink-0 text-sm font-bold text-moss">{total} total</p>
       </div>
-      <div className="overflow-x-auto pb-2">
-        <div className="min-w-[820px]">
-          <div className="ml-10 grid grid-flow-col auto-cols-[14px] gap-1 text-[10px] font-bold text-slate-500">
+      <div className="-mx-1 overflow-x-auto px-1 pb-2">
+        <div className="min-w-[680px] max-w-max">
+          <div className="ml-8 grid grid-flow-col auto-cols-[11px] gap-1 text-[10px] font-bold text-slate-500">
             {monthLabels.map((label, index) => (
               <span key={`${label}-${index}`} className="h-4">
                 {label}
@@ -65,7 +65,7 @@ export function ActivityHeatmap({ activities, ownerName }: { activities: Activit
             ))}
           </div>
           <div className="flex gap-2">
-            <div className="grid grid-rows-7 gap-1 pt-1 text-[10px] font-bold text-slate-500">
+            <div className="grid w-6 shrink-0 grid-rows-7 gap-1 pt-1 text-[10px] font-bold text-slate-500">
               <span />
               <span>Mon</span>
               <span />
@@ -80,14 +80,14 @@ export function ActivityHeatmap({ activities, ownerName }: { activities: Activit
                   key={day.key}
                   title={day.count === null ? day.key : `${day.key}: ${day.count} activities`}
                   data-level={levelFor(day.count)}
-                  className="heatmap-cell h-[14px] w-[14px] rounded-[3px]"
+                  className="heatmap-cell h-[11px] w-[11px] rounded-[2px]"
                 />
               ))}
             </div>
           </div>
         </div>
       </div>
-      <div className="mt-4 flex items-center justify-end gap-2 text-xs font-bold text-slate-500">
+      <div className="mt-2 flex items-center justify-end gap-2 text-xs font-bold text-slate-500">
         <span>Less</span>
         {["0", "1", "2", "3", "4"].map((level) => (
           <span key={level} data-level={level} className="heatmap-cell h-3 w-3 rounded-[3px]" />

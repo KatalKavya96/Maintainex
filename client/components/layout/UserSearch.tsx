@@ -36,10 +36,10 @@ export function UserSearch() {
         onFocus={() => setFocused(true)}
         onBlur={() => window.setTimeout(() => setFocused(false), 140)}
         placeholder="Search users..."
-        className="h-9 w-full rounded-lg border border-line bg-skyglass pl-9 pr-3 text-sm font-semibold text-ink outline-none transition placeholder:text-slate-500 focus:border-moss focus:ring-2 focus:ring-moss/10"
+        className="h-8 w-full rounded-lg border border-line bg-skyglass pl-9 pr-3 text-sm font-semibold text-ink outline-none transition placeholder:text-slate-500 focus:border-moss focus:ring-2 focus:ring-moss/10"
       />
       {showResults ? (
-        <div className="absolute left-0 right-0 top-11 z-40 overflow-hidden rounded-xl border border-line bg-white shadow-soft">
+        <div className="absolute left-0 right-0 top-10 z-40 overflow-hidden rounded-xl border border-line bg-white shadow-soft">
           <div className="border-b border-line px-3 py-2 text-xs font-bold uppercase tracking-wide text-slate-500">Developers</div>
           <div className="max-h-80 overflow-y-auto py-1">
             {results.map((profile) => (

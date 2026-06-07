@@ -23,7 +23,7 @@ const styles = {
 export function Button(props: ButtonProps | LinkButtonProps) {
   const { className, variant = "primary" } = props;
   const base = clsx(
-    "inline-flex h-10 items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold transition",
+    "inline-flex h-9 items-center justify-center gap-2 rounded-lg px-3 text-sm font-semibold transition",
     styles[variant],
     className
   );

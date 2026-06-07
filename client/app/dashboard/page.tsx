@@ -15,7 +15,7 @@ import { filterActivitiesByRange, type TimeRange } from "@/lib/timeRange";
 
 export default function DashboardPage() {
   const { activities } = useActivityStore();
-  const [range, setRange] = useState<TimeRange>("weekly");
+  const [range, setRange] = useState<TimeRange>("all");
   const [view, setView] = useState<"overview" | "repositories" | "organizations">("overview");
   const filteredActivities = useMemo(() => filterActivitiesByRange(activities, range), [activities, range]);
   const repositories = useMemo(() => chartByRepository(filteredActivities).sort((a, b) => b.value - a.value), [filteredActivities]);
@@ -29,9 +29,9 @@ export default function DashboardPage() {
     <>
       <PageTitle
         title="Dashboard"
-        description="Your contribution cards, goals, repository views, organization views, and animated activity charts."
+        description="Contribution health, goals, repositories, organizations, and activity trends."
         action={
-          <div className="flex flex-wrap gap-2">
+          <div className="flex min-w-0 flex-wrap gap-2">
             <RangeToggle value={range} onChange={setRange} />
             <Button href="/activities/new">Add activity</Button>
           </div>
@@ -40,36 +40,38 @@ export default function DashboardPage() {
 
       <GoalPanel />
 
-      <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
+      <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3 2xl:grid-cols-6">
         {dashboardStats.map((stat) => (
           <StatCard key={stat.label} {...stat} />
         ))}
       </div>
 
-      <div className="my-5 inline-flex rounded-xl border border-line bg-white p-1 shadow-soft">
-        {[
-          ["overview", "Overview"],
-          ["repositories", "Repositories"],
-          ["organizations", "Organizations"]
-        ].map(([value, label]) => (
-          <button
-            key={value}
-            type="button"
-            onClick={() => setView(value as typeof view)}
-            className={`h-9 rounded-lg px-4 text-sm font-bold transition ${view === value ? "bg-moss text-black" : "text-slate-500 hover:bg-skyglass hover:text-ink"}`}
-          >
-            {label}
-          </button>
-        ))}
+      <div className="my-4 max-w-full overflow-x-auto">
+        <div className="inline-flex rounded-xl border border-line bg-white p-1 shadow-soft">
+          {[
+            ["overview", "Overview"],
+            ["repositories", "Repositories"],
+            ["organizations", "Organizations"]
+          ].map(([value, label]) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setView(value as typeof view)}
+              className={`h-9 rounded-lg px-4 text-sm font-bold transition ${view === value ? "bg-moss text-black" : "text-slate-500 hover:bg-skyglass hover:text-ink"}`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {view === "overview" ? (
         <>
-          <div className="grid gap-6 xl:grid-cols-[1.25fr_.75fr]">
+          <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1.25fr)_minmax(280px,.75fr)]">
             <ActivityLineChart activities={filteredActivities} />
             <ActivityTypeChart activities={filteredActivities} />
           </div>
-          <div className="mt-6 grid gap-6 xl:grid-cols-3">
+          <div className="mt-4 grid min-w-0 gap-4 xl:grid-cols-3">
             <RepoChart activities={filteredActivities} />
             <OrgChart activities={filteredActivities} />
             <RecentActivities activities={activities} />
@@ -78,9 +80,9 @@ export default function DashboardPage() {
       ) : null}
 
       {view === "repositories" ? (
-        <div className="grid gap-6 xl:grid-cols-[1fr_.9fr]">
+        <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(280px,.9fr)]">
           <RepoChart activities={filteredActivities} />
-          <section className="rounded-xl border border-line bg-white p-4 shadow-soft">
+          <section className="rounded-xl border border-line bg-white p-3 shadow-soft sm:p-4">
             <h2 className="text-base font-extrabold text-ink">Repository view</h2>
             <div className="mt-3 divide-y divide-line">
               {repositories.map((repo) => {
@@ -100,9 +102,9 @@ export default function DashboardPage() {
       ) : null}
 
       {view === "organizations" ? (
-        <div className="grid gap-6 xl:grid-cols-[1fr_.9fr]">
+        <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(280px,.9fr)]">
           <OrgChart activities={filteredActivities} />
-          <section className="rounded-xl border border-line bg-white p-4 shadow-soft">
+          <section className="rounded-xl border border-line bg-white p-3 shadow-soft sm:p-4">
             <h2 className="text-base font-extrabold text-ink">Organization view</h2>
             <div className="mt-3 divide-y divide-line">
               {organizations.map((org) => (
@@ -119,4 +121,3 @@ export default function DashboardPage() {
     </>
   );
 }
-

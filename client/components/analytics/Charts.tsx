@@ -6,6 +6,7 @@ import { labelize } from "@/lib/constants";
 import type { Activity } from "@/types/activity";
 
 const colors = ["#C9F43A", "#5DE16F", "#60A5FA", "#8C7CF5", "#FB9638", "#CBD5E1", "#F87171", "#94A3B8"];
+const truncate = (value: string, size = 12) => (value.length > size ? `${value.slice(0, size - 1)}...` : value);
 
 function ChartTooltip({ active, payload, label }: { active?: boolean; payload?: { name?: string; value?: number; color?: string }[]; label?: string }) {
   if (!active || !payload?.length) return null;
@@ -24,12 +25,12 @@ function ChartTooltip({ active, payload, label }: { active?: boolean; payload?: 
 
 function ChartPanel({ title, children, empty }: { title: string; children: React.ReactNode; empty?: boolean }) {
   return (
-    <section className="rounded-xl border border-line bg-white p-4 shadow-soft">
-      <div className="mb-3 flex items-center justify-between gap-3">
-        <h3 className="text-base font-extrabold tracking-tight text-ink">{title}</h3>
-        <span className="rounded-lg border border-line bg-skyglass px-3 py-1 text-xs font-bold text-slate-400">Hover for counts</span>
+    <section className="min-w-0 rounded-xl border border-line bg-white p-3 shadow-soft sm:p-4">
+      <div className="mb-2.5 flex items-center justify-between gap-3">
+        <h3 className="truncate text-sm font-extrabold tracking-tight text-ink sm:text-base">{title}</h3>
+        <span className="hidden shrink-0 rounded-lg border border-line bg-skyglass px-2.5 py-1 text-[11px] font-bold text-slate-400 sm:inline-flex">Hover for counts</span>
       </div>
-      <div className="h-64">
+      <div className="h-56 min-h-[14rem] w-full min-w-0 overflow-hidden sm:h-60">
         {empty ? <div className="grid h-full place-items-center rounded-lg bg-skyglass text-sm font-bold text-slate-500">No activity yet.</div> : children}
       </div>
     </section>
@@ -40,10 +41,10 @@ export function ActivityLineChart({ activities }: { activities: Activity[] }) {
   const data = chartByDate(activities);
   return (
     <ChartPanel title="Activity over time" empty={data.length === 0}>
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data}>
+      <ResponsiveContainer width="100%" height="100%" debounce={80}>
+        <LineChart data={data} margin={{ top: 8, right: 10, bottom: 0, left: -18 }}>
           <CartesianGrid stroke="var(--app-line)" vertical={false} opacity={0.55} />
-          <XAxis dataKey="date" tick={{ fontSize: 12, fill: "var(--app-muted)" }} axisLine={false} tickLine={false} />
+          <XAxis dataKey="date" minTickGap={24} tick={{ fontSize: 11, fill: "var(--app-muted)" }} axisLine={false} tickLine={false} />
           <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: "var(--app-muted)" }} axisLine={false} tickLine={false} />
           <Tooltip content={<ChartTooltip />} />
           <Line
@@ -66,14 +67,14 @@ export function ActivityTypeChart({ activities }: { activities: Activity[] }) {
   const data = chartByType(activities).map((item) => ({ ...item, name: labelize(item.name) }));
   return (
     <ChartPanel title="Contribution type distribution" empty={data.length === 0}>
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" debounce={80}>
         <PieChart>
           <Pie
             data={data}
             dataKey="value"
             nameKey="name"
-            outerRadius={90}
-            innerRadius={54}
+            outerRadius="78%"
+            innerRadius="48%"
             paddingAngle={3}
             isAnimationActive
             animationBegin={80}
@@ -95,13 +96,13 @@ export function RepoChart({ activities }: { activities: Activity[] }) {
   const data = chartByRepository(activities);
   return (
     <ChartPanel title="Repository comparison" empty={data.length === 0}>
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data}>
+      <ResponsiveContainer width="100%" height="100%" debounce={80}>
+        <BarChart data={data} margin={{ top: 8, right: 10, bottom: 0, left: -18 }}>
           <CartesianGrid stroke="var(--app-line)" vertical={false} opacity={0.55} />
-          <XAxis dataKey="name" tick={{ fontSize: 12, fill: "var(--app-muted)" }} axisLine={false} tickLine={false} />
+          <XAxis dataKey="name" tickFormatter={(value) => truncate(String(value))} interval={0} minTickGap={8} tick={{ fontSize: 11, fill: "var(--app-muted)" }} axisLine={false} tickLine={false} />
           <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: "var(--app-muted)" }} axisLine={false} tickLine={false} />
           <Tooltip content={<ChartTooltip />} />
-          <Bar dataKey="value" fill="#C9F43A" radius={[8, 8, 0, 0]} barSize={34} isAnimationActive animationDuration={800} animationEasing="ease-out" />
+          <Bar dataKey="value" fill="#C9F43A" radius={[8, 8, 0, 0]} maxBarSize={34} isAnimationActive animationDuration={800} animationEasing="ease-out" />
         </BarChart>
       </ResponsiveContainer>
     </ChartPanel>
@@ -112,13 +113,13 @@ export function OrgChart({ activities }: { activities: Activity[] }) {
   const data = chartByOrganization(activities);
   return (
     <ChartPanel title="Organization comparison" empty={data.length === 0}>
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data}>
+      <ResponsiveContainer width="100%" height="100%" debounce={80}>
+        <BarChart data={data} margin={{ top: 8, right: 10, bottom: 0, left: -18 }}>
           <CartesianGrid stroke="var(--app-line)" vertical={false} opacity={0.55} />
-          <XAxis dataKey="name" tick={{ fontSize: 12, fill: "var(--app-muted)" }} axisLine={false} tickLine={false} />
+          <XAxis dataKey="name" tickFormatter={(value) => truncate(String(value))} interval={0} minTickGap={8} tick={{ fontSize: 11, fill: "var(--app-muted)" }} axisLine={false} tickLine={false} />
           <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: "var(--app-muted)" }} axisLine={false} tickLine={false} />
           <Tooltip content={<ChartTooltip />} />
-          <Bar dataKey="value" fill="#5DE16F" radius={[8, 8, 0, 0]} barSize={34} isAnimationActive animationDuration={800} animationEasing="ease-out" />
+          <Bar dataKey="value" fill="#5DE16F" radius={[8, 8, 0, 0]} maxBarSize={34} isAnimationActive animationDuration={800} animationEasing="ease-out" />
         </BarChart>
       </ResponsiveContainer>
     </ChartPanel>

@@ -1,8 +1,9 @@
 import type { Activity } from "@/types/activity";
 
-export type TimeRange = "daily" | "weekly" | "monthly" | "yearly";
+export type TimeRange = "all" | "daily" | "weekly" | "monthly" | "yearly";
 
 export const timeRangeOptions: { label: string; value: TimeRange }[] = [
+  { label: "All", value: "all" },
   { label: "Daily", value: "daily" },
   { label: "Weekly", value: "weekly" },
   { label: "Monthly", value: "monthly" },
@@ -27,6 +28,7 @@ export const filterActivitiesByRange = (activities: Activity[], range: TimeRange
   weekEnd.setDate(weekStart.getDate() + 7);
 
   return activities.filter((activity) => {
+    if (range === "all") return true;
     if (range === "daily") return activity.date === today;
     if (range === "monthly") return activity.date.startsWith(`${year}-${month}`);
     if (range === "yearly") return activity.date.startsWith(year);

@@ -1,10 +1,9 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { Activity } from "@/types/activity";
 import { apiRequest } from "@/lib/api";
-import { authChangedEvent } from "@/lib/authStore";
-import { getSessionToken } from "@/lib/sessionToken";
+import { authChangedEvent, useAuthStore } from "@/lib/authStore";
 
 export const realtimeDashboardEvent = "maintainex-realtime-dashboard";
 
@@ -60,32 +59,37 @@ const toApiPayload = (activity: ActivityInput) => ({
 
 export function ActivityProvider({ children }: { children: React.ReactNode }) {
   const [activities, setActivities] = useState<Activity[]>([]);
+  const { isReady, token, user } = useAuthStore();
+
+  const loadActivities = useCallback(() => {
+    if (!isReady) return;
+    if (!token || !user?.id) {
+      setActivities([]);
+      return;
+    }
+
+    apiRequest<{ items: ApiActivity[] }>("/activities?limit=1000")
+      .then((data) => {
+        setActivities(data.items.map(mapApiActivity));
+      })
+      .catch((error) => {
+        console.error("Failed to load activities", error);
+        setActivities([]);
+      });
+  }, [isReady, token, user?.id]);
 
   useEffect(() => {
-    const loadActivities = () => {
-      if (!getSessionToken()) {
-        setActivities([]);
-        return;
-      }
-
-      apiRequest<{ items: ApiActivity[] }>("/activities?limit=1000")
-        .then((data) => {
-          setActivities(data.items.map(mapApiActivity));
-        })
-        .catch((error) => {
-          console.error("Failed to load activities", error);
-          setActivities([]);
-        });
-    };
-
     loadActivities();
+  }, [loadActivities]);
+
+  useEffect(() => {
     window.addEventListener(authChangedEvent, loadActivities);
     window.addEventListener(realtimeDashboardEvent, loadActivities);
     return () => {
       window.removeEventListener(authChangedEvent, loadActivities);
       window.removeEventListener(realtimeDashboardEvent, loadActivities);
     };
-  }, []);
+  }, [loadActivities]);
 
   const store = useMemo<ActivityStore>(
     () => ({

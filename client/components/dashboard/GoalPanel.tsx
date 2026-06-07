@@ -37,11 +37,11 @@ export function GoalPanel() {
   }
 
   return (
-    <section className="rounded-xl border border-line bg-white p-4 shadow-soft">
+    <section className="rounded-xl border border-line bg-white p-3 shadow-soft sm:p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-base font-extrabold text-ink">Goals</h2>
-          <p className="mt-1 text-sm font-semibold text-slate-500">Track a focused contribution target without leaving home.</p>
+          <p className="mt-1 text-sm font-semibold leading-5 text-slate-500">Track focused contribution targets from the dashboard.</p>
         </div>
         <Button type="button" onClick={() => setExpanded((value) => !value)} className="h-9">
           <Plus size={15} />
@@ -50,7 +50,7 @@ export function GoalPanel() {
       </div>
 
       {expanded ? (
-        <form onSubmit={submit} className="mt-4 grid gap-3 rounded-lg border border-line bg-skyglass p-3 lg:grid-cols-[1.4fr_1fr_.7fr_.8fr_auto]">
+        <form onSubmit={submit} className="mt-3 grid gap-3 rounded-lg border border-line bg-skyglass p-3 lg:grid-cols-[minmax(0,1.4fr)_minmax(130px,1fr)_minmax(90px,.7fr)_minmax(110px,.8fr)_auto]">
           <Field label="Goal">
             <Input value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} required />
           </Field>
@@ -75,9 +75,9 @@ export function GoalPanel() {
         </form>
       ) : null}
 
-      <div className="mt-4 grid gap-3 lg:grid-cols-3">
+      <div className="mt-3 grid gap-3 lg:grid-cols-3">
         {activeGoals.map((goal) => (
-          <article key={goal.id} className="rounded-lg border border-line bg-skyglass p-3">
+          <article key={goal.id} className="min-w-0 rounded-lg border border-line bg-skyglass p-3">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="truncate text-sm font-bold text-ink">{goal.title}</p>

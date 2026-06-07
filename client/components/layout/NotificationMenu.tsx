@@ -32,14 +32,14 @@ export function NotificationMenu() {
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="relative grid h-9 w-9 place-items-center rounded-lg border border-line bg-skyglass text-slate-500 transition hover:border-moss hover:text-ink"
+        className="relative grid h-8 w-8 place-items-center rounded-lg border border-line bg-skyglass text-slate-500 transition hover:border-moss hover:text-ink"
         title="Notifications"
       >
         <Bell size={17} />
         {unread ? <span className="absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-moss px-1 text-[10px] font-black text-black">{unread}</span> : null}
       </button>
       {open ? (
-        <div className="absolute right-0 top-11 z-40 w-[min(92vw,380px)] overflow-hidden rounded-xl border border-line bg-white shadow-soft">
+        <div className="absolute right-0 top-10 z-40 w-[min(92vw,380px)] overflow-hidden rounded-xl border border-line bg-white shadow-soft">
           <div className="flex items-center justify-between border-b border-line px-4 py-3">
             <div>
               <p className="text-sm font-extrabold text-ink">Notifications</p>

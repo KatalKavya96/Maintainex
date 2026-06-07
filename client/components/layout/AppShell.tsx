@@ -93,10 +93,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-[var(--app-bg)] lg:flex">
-      <aside className={clsx("border-line bg-white transition-all lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:flex-col lg:border-r", collapsed ? "lg:w-[76px]" : "lg:w-64")}>
-        <div className={clsx("flex h-16 items-center gap-3 border-b border-line px-4", collapsed ? "justify-center" : "justify-between")}>
+      <aside className={clsx("border-line bg-white transition-all lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:flex-col lg:border-r", collapsed ? "lg:w-[68px]" : "lg:w-60")}>
+        <div className={clsx("flex h-14 items-center gap-3 border-b border-line px-3", collapsed ? "justify-center" : "justify-between")}>
           <Link href="/" className={clsx("min-w-0", collapsed && "hidden lg:block")}>
-            <p className={clsx("font-extrabold tracking-tight text-ink", collapsed ? "text-xl" : "text-2xl")}>
+            <p className={clsx("font-extrabold tracking-tight text-ink", collapsed ? "text-lg" : "text-xl")}>
               {collapsed ? "Mx" : <>Maintain<span className="text-moss">ex</span></>}
             </p>
           </Link>
@@ -109,7 +109,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
           </button>
         </div>
-        <nav className={clsx("flex gap-2 overflow-x-auto px-3 py-5 lg:block lg:flex-1 lg:space-y-1 lg:overflow-y-auto", collapsed && "lg:px-2")}>
+        <nav className={clsx("flex gap-2 overflow-x-auto px-3 py-3 lg:block lg:flex-1 lg:space-y-1 lg:overflow-y-auto", collapsed && "lg:px-2")}>
           {navItems.map((item) => {
             const Icon = item.icon;
             const active =
@@ -121,7 +121,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 key={item.href}
                 href={item.href}
                 className={clsx(
-                  "flex min-w-max items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition",
+                  "flex min-w-max items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition",
                   collapsed && "lg:justify-center lg:px-0",
                   active ? "bg-[#39A84A] text-white" : "text-slate-400 hover:bg-skyglass hover:text-ink"
                 )}
@@ -133,9 +133,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             );
           })}
         </nav>
-        <div className="border-t border-line px-3 py-3">
+        <div className="border-t border-line px-3 py-2.5">
           <button
-            className={clsx("flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-400 transition hover:bg-skyglass hover:text-ink", collapsed && "lg:justify-center lg:px-0")}
+            className={clsx("flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-slate-400 transition hover:bg-skyglass hover:text-ink", collapsed && "lg:justify-center lg:px-0")}
             onClick={() => {
               logout();
               router.replace("/login");
@@ -147,20 +147,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </button>
         </div>
       </aside>
-      <main className={clsx("w-full transition-all", collapsed ? "lg:pl-[76px]" : "lg:pl-64")}>
-        <header className="sticky top-0 z-30 border-b border-line bg-white/90 px-4 py-3 backdrop-blur lg:px-6">
+      <main className={clsx("w-full min-w-0 transition-all", collapsed ? "lg:pl-[68px]" : "lg:pl-60")}>
+        <header className="sticky top-0 z-30 border-b border-line bg-white/90 px-3 py-2.5 backdrop-blur lg:px-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex min-w-0 items-center gap-3">
-              <Link href="/" className="hidden h-9 items-center rounded-lg px-2 text-sm font-extrabold text-ink transition hover:bg-skyglass sm:inline-flex">
+            <div className="flex min-w-[min(100%,22rem)] flex-1 items-center gap-2 sm:min-w-0">
+              <Link href="/" className="hidden h-8 items-center rounded-lg px-2 text-sm font-extrabold text-ink transition hover:bg-skyglass sm:inline-flex">
                 Home
               </Link>
               <UserSearch />
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={toggleTheme}
-                className="inline-flex h-9 items-center gap-2 rounded-lg border border-line bg-skyglass px-3 text-sm font-semibold text-ink transition hover:border-moss"
+                className="inline-flex h-8 items-center gap-2 rounded-lg border border-line bg-skyglass px-2.5 text-sm font-semibold text-ink transition hover:border-moss"
                 title="Toggle theme"
               >
                 {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
@@ -169,7 +169,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <NotificationMenu />
               <Link
                 href={profileHref}
-                className="flex items-center gap-2 rounded-lg border border-line bg-skyglass px-2 py-1.5 transition hover:border-moss"
+                className="flex h-8 items-center gap-2 rounded-lg border border-line bg-skyglass px-2 transition hover:border-moss"
                 title="Open profile"
               >
                 <span className="grid h-6 w-6 place-items-center rounded-full bg-moss text-xs font-black text-black">{user.name.slice(0, 1).toUpperCase()}</span>
@@ -178,7 +178,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
         </header>
-        <div className="mx-auto w-full max-w-[1280px] px-4 py-5 lg:px-6">{children}</div>
+        <div className="mx-auto w-full max-w-[1180px] px-3 py-4 lg:px-5">{children}</div>
       </main>
     </div>
   );

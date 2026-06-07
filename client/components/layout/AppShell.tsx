@@ -13,6 +13,7 @@ import {
   LogOut,
   Moon,
   ClipboardList,
+  Sparkles,
   Settings,
   Sun,
   Trophy
@@ -28,6 +29,7 @@ const navItems = [
   { href: "/", label: "Home", icon: Home },
   { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
   { href: "/activities", label: "Activities", icon: Activity },
+  { href: "/reports", label: "Reports", icon: Sparkles },
   { href: "/pins", label: "Pins", icon: Link2 },
   { href: "/schedule", label: "Schedule", icon: ClipboardList },
   { href: "/leaderboard", label: "Leaderboard", icon: Trophy },

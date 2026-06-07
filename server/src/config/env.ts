@@ -26,5 +26,12 @@ export const env = {
   clientUrls,
   allowVercelOrigins,
   jwtSecret: process.env.JWT_SECRET ?? "dev-only-maintainex-secret-change-me",
-  signupAdminCode: process.env.SIGNUP_ADMIN_CODE
+  signupAdminCode: process.env.SIGNUP_ADMIN_CODE,
+  githubClientId: process.env.GITHUB_CLIENT_ID,
+  githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
+  githubRedirectUri: process.env.GITHUB_REDIRECT_URI,
+  githubWebhookSecret: process.env.GITHUB_WEBHOOK_SECRET,
+  githubTokenEncryptionKey: process.env.GITHUB_TOKEN_ENCRYPTION_KEY,
+  githubApiVersion: process.env.GITHUB_API_VERSION ?? "2026-03-10",
+  githubOAuthScopes: process.env.GITHUB_OAUTH_SCOPES ?? "read:user public_repo"
 };

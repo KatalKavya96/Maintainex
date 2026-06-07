@@ -53,6 +53,10 @@ export interface Activity {
   description?: string;
   notes?: string;
   tags: string[];
+  source?: "MANUAL" | "GITHUB_SYNC" | "IMPORTED";
+  externalId?: string | null;
+  githubNodeId?: string | null;
+  syncedAt?: string | null;
   createdAt: string;
   updatedAt: string;
 }

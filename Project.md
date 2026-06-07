@@ -1,320 +1,130 @@
-# 1. Profile System
+# 11. Agentic AI Features
 
-Add a public/private profile page for each user.
+This is where Maintainex can become really powerful.
 
-## Features
+## A. Weekly AI Report Agent
 
-```
-/profile/[username]
-```
-
-Show:
-
-- Name
-- Username
-- Bio
-- GitHub profile
-- LinkedIn
-- Portfolio
-- Skills
-- Main open-source organizations
-- Total PRs raised
-- Total PRs reviewed
-- Total issues raised
-- Total issues closed
-- Repositories contributed to
-- Monthly activity graph
-- Contribution streak
-- Top repositories
-- Top organizations
-- Recent public activity
-- Badges earned
-
-This can become like a **GitHub + LeetCode-style profile for maintainers**.
-
----
-
-# 2. Follow System
-
-Allow users to follow each other.
-
-## Features
-
-- Follow user
-- Unfollow user
-- Followers count
-- Following count
-- View follower list
-- View following list
-- See followed users’ public activity
-- Compare stats with followed users
-
-Useful pages:
+Every week, AI generates a summary:
 
 ```
-/profile/[username]/followers
-/profile/[username]/following
-/feed
+This week you reviewed 12 PRs, raised 4 issues, and closed 3 stale PRs.
+
+Your most active repo was layer5io/layer5.
+
+You spent most effort on UI-related issues.
+
+Compared to last week:
+- PR reviews increased by 40%
+- Issue activity decreased by 10%
+
+Suggested focus next week:
+- Finish 2 overdue scheduled tasks
+- Review pending PRs in sistent
+- Raise more high-quality issues
+```
+
+Page:
+
+```
+/reports
 ```
 
 ---
 
-# 3. Public Activity Feed
+## B. AI Progress Coach
 
-Create a social feed where users can see updates from people they follow.
+A small assistant inside the app.
 
-Example feed items:
+Ask:
 
 ```
-Kavya reviewed PR #7786 in layer5io/layer5
-Kavya raised issue #1546 in sistent
-Kavya completed scheduled work on talawa-admin
-Kavya hit a 7-day maintenance streak
+What should I work on today?
+Which repo am I neglecting?
+Which scheduled work is urgent?
+How did I perform this month?
+Which organization should I focus on?
+Am I improving as a maintainer?
 ```
 
-Filters:
-
-- All activity
-- PR reviews
-- Issues
-- Closed PRs
-- Scheduled work completed
-- Same organization
-- Same repository
+AI uses your activity data, scheduled work, pins, goals, and repo stats.
 
 ---
 
-# 4. Repo Contribution Profile Pages
+## C. AI Contribution Planner
 
-Create individual pages for each repository.
-
-```
-/repos/[org]/[repo]
-```
-
-Show:
-
-- Total activities done in this repo
-- PRs reviewed
-- PRs raised
-- Issues raised
-- Issues closed
-- Scheduled work pending
-- Contribution timeline
-- Most active month
-- Notes about repo
-- Important pinned links
-- Maintainer contacts
-- Contribution rules
-- Setup instructions
-- Labels I usually work on
-
-This helps you maintain strong context repo-wise.
-
----
-
-# 5. Organization Profile Pages
-
-Create pages for organizations.
-
-```
-/orgs/[orgName]
-```
-
-Show:
-
-- All repos under the org
-- Total contribution count
-- Top repos
-- Monthly activity
-- Pending scheduled work
-- Pinned org links
-- Notes
-- Contribution strategy for that org
+Given your goals and pending work, AI creates a plan.
 
 Example:
 
 ```
-Layer5
-- layer5
-- meshery
-- sistent
-- meshery.io
+Goal: Become more active in Layer5 this month.
+
+AI Plan:
+Day 1: Review 2 open PRs in layer5
+Day 2: Raise 1 UI improvement issue
+Day 3: Work on one assigned issue
+Day 4: Review stale PRs
+Day 5: Update your contribution notes
 ```
 
 ---
 
-# 6. Goals and Streaks
+## D. AI Issue/PR Context Generator
 
-Add goals to make Maintainex motivating.
+When you manually add a PR/issue link, AI can generate context fields:
 
-## Goals
-
-Examples:
+Input:
 
 ```
-Review 20 PRs this month
-Raise 10 issues this month
-Contribute to 5 repos this year
-Close 5 stale PRs this week
-Review at least 1 PR daily
+https://github.com/layer5io/layer5/pull/7786
 ```
 
-## Streaks
+AI can help fill:
 
-Track:
+- Title
+- Repo
+- Org
+- Type
+- Suggested tags
+- Review checklist
+- Possible closing reason
+- Summary
+- Risk level
+- Priority
 
-- Current streak
-- Longest streak
-- Weekly consistency
-- Monthly consistency
-- Missed days
-- Best contribution day
-
-This makes the app more addictive and progress-focused.
+Even before GitHub automation, this can save time.
 
 ---
 
-# 7. Badges and Achievements
+## E. AI Review Notes Generator
 
-Add a badge system.
-
-Examples:
+You enter rough notes:
 
 ```
-First PR Reviewed
-10 PRs Reviewed
-50 PRs Reviewed
-100 PRs Reviewed
-First Issue Raised
-7-Day Streak
-30-Day Streak
-Layer5 Contributor
-Bug Hunter
-Review Machine
-Maintainer Mode
-Consistency King
+border is not visible in dark mode
 ```
 
-Badge page:
+AI converts into professional review:
 
 ```
-/badges
+The implementation improves the visibility of the card boundary in dark mode. I verified that the updated border color creates better contrast without affecting the light theme. One small suggestion would be to ensure the same token-based color is reused consistently across similar card components.
 ```
 
-Profile should display earned badges.
+Very useful for open-source reviews.
 
 ---
 
-# 8. Leaderboard
+## F. AI Maintainer Memory
 
-Add leaderboard features.
-
-Types:
-
-- Global leaderboard
-- Friends leaderboard
-- Organization-specific leaderboard
-- Repository-specific leaderboard
-- Monthly leaderboard
-- Weekly leaderboard
-
-Metrics:
-
-- PRs reviewed
-- PRs raised
-- Issues raised
-- Issues closed
-- Total contribution score
-- Streak
-
-You can create a scoring system:
+For each repo, AI keeps context:
 
 ```
-PR raised = 10 points
-PR reviewed = 7 points
-Issue raised = 5 points
-Issue closed = 8 points
-Scheduled work completed = 4 points
+In layer5/layer5, Kavya usually works on UI polish, dark theme issues, and careers pages.
+
+Common review pattern:
+- Checks light/dark theme
+- Checks responsiveness
+- Checks visual consistency
 ```
 
----
-
-# 9. WebSocket Real-Time Features
-
-WebSockets can make Maintainex feel alive.
-
-Use:
-
-```
-Socket.io
-```
-
-## Real-time features
-
-### Live Feed
-
-When a followed user adds an activity, show it instantly.
-
-```
-Kavya just reviewed PR #7786
-```
-
-### Real-time Dashboard Updates
-
-When you add, edit, or delete an activity, update dashboard stats instantly without refresh.
-
-### Live Notifications
-
-Notify when:
-
-- Someone follows you
-- Someone reacts to your activity
-- Scheduled work is due soon
-- Work becomes overdue
-- Goal is completed
-- Badge is unlocked
-- Follower completed major activity
-
-### Collaboration Rooms
-
-For each repo/org, create a small live room:
-
-```
-Currently working on:
-- Kavya: reviewing PR #1546
-- Aryan: fixing issue #432
-```
-
-This is useful later if Maintainex becomes team-based.
-
----
-
-# 10. Notification System
-
-Add in-app notifications.
-
-Notification examples:
-
-```
-Your scheduled work "Review PR #1546" is due today.
-You completed your weekly PR review goal.
-Aryan followed you.
-Your issue #4185 has been assigned for 5 days.
-You have 3 overdue scheduled work items.
-```
-
-Notification types:
-
-- System
-- Social
-- Goal
-- Schedule
-- Badge
-- Reminder
-
-Later you can add:
-
-- Email notifications
-- Push notifications
-- Slack/Discord notifications
+This helps Maintainex become your personal open-source brain.

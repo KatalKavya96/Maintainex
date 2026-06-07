@@ -1,6 +1,28 @@
 import type { Activity } from "@/types/activity";
 import type { ProfileUser } from "@/types/profile";
 
+export type ActivityReactionType = "LIKE" | "FIRE" | "CLAP" | "EYES";
+export type ActivityShareTarget = "COPY_LINK" | "X" | "LINKEDIN" | "OTHER";
+
+export type ActivityEngagement = {
+  reactionCounts: Record<ActivityReactionType, number>;
+  viewerReactionTypes: ActivityReactionType[];
+  commentCount: number;
+  bookmarkCount: number;
+  shareCount: number;
+  viewerBookmarked: boolean;
+};
+
+export type ActivityComment = {
+  id: string;
+  activityId: string;
+  userId: string;
+  body: string;
+  createdAt: string;
+  updatedAt: string;
+  user: ProfileUser;
+};
+
 export type GoalMetric = "PR_RAISED" | "PR_REVIEWED" | "ISSUE_RAISED" | "ISSUE_CLOSED" | "REPO_CONTRIBUTIONS" | "TOTAL_ACTIVITY" | "STREAK";
 export type GoalPeriod = "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY" | "CUSTOM";
 
@@ -30,6 +52,7 @@ export type FeedItem = {
   text: string;
   user: ProfileUser;
   activity: Activity;
+  engagement: ActivityEngagement;
 };
 
 export type FollowRecord = {

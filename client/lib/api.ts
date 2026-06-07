@@ -46,7 +46,9 @@ export async function apiRequest<T>(path: string, options?: RequestInit): Promis
 import type { PinInput, PinListResponse } from "@/types/pin";
 import type { ProfileDashboard, ProfileSummary, ProfileUpdateInput, ProfileUser, UsernameAvailability } from "@/types/profile";
 import type { ScheduledWorkInput, ScheduledWorkListResponse, ScheduledWorkStatus } from "@/types/scheduledWork";
-import type { Badge, FeedItem, FollowRecord, Goal, GoalInput, LeaderboardEntry, NotificationItem } from "@/types/social";
+import type { ActivityComment, ActivityEngagement, ActivityReactionType, ActivityShareTarget, Badge, FeedItem, FollowRecord, Goal, GoalInput, LeaderboardEntry, NotificationItem } from "@/types/social";
+import type { AiCoachResponse, AiContributionPlan, AiIssuePrContext, AiMaintainerMemory, AiReviewNotes, AiWeeklyReport } from "@/types/ai";
+import type { GitHubStatus, GitHubSyncResult } from "@/types/github";
 
 export const getPins = (params?: Record<string, string | number | boolean | undefined>) => apiRequest<PinListResponse>(`/pins${queryString(params)}`);
 export const getPinById = (id: string) => apiRequest<PinListResponse["items"][number]>(`/pins/${id}`);
@@ -83,8 +85,29 @@ export const getLeaderboard = (params?: Record<string, string | number | boolean
 export const getBadges = (username: string) => apiRequest<Badge[]>(`/social/${username}/badges`);
 export const getNotifications = () => apiRequest<NotificationItem[]>("/social/notifications");
 export const markNotificationRead = (id: string) => apiRequest<unknown>(`/social/notifications/${id}/read`, { method: "PATCH" });
+export const getActivityEngagement = (activityId: string) => apiRequest<ActivityEngagement>(`/social/activities/${activityId}/engagement`);
+export const reactToActivity = (activityId: string, type: ActivityReactionType) => apiRequest<ActivityEngagement>(`/social/activities/${activityId}/reactions`, { method: "POST", body: JSON.stringify({ type }) });
+export const unreactToActivity = (activityId: string, type: ActivityReactionType) => apiRequest<ActivityEngagement>(`/social/activities/${activityId}/reactions/${type}`, { method: "DELETE" });
+export const getActivityComments = (activityId: string) => apiRequest<{ comments: ActivityComment[]; engagement: ActivityEngagement }>(`/social/activities/${activityId}/comments`);
+export const commentOnActivity = (activityId: string, body: string) => apiRequest<ActivityComment>(`/social/activities/${activityId}/comments`, { method: "POST", body: JSON.stringify({ body }) });
+export const deleteActivityComment = (activityId: string, commentId: string) => apiRequest<{ deleted: boolean }>(`/social/activities/${activityId}/comments/${commentId}`, { method: "DELETE" });
+export const bookmarkActivity = (activityId: string) => apiRequest<ActivityEngagement>(`/social/activities/${activityId}/bookmark`, { method: "POST" });
+export const unbookmarkActivity = (activityId: string) => apiRequest<ActivityEngagement>(`/social/activities/${activityId}/bookmark`, { method: "DELETE" });
+export const shareActivity = (activityId: string, target: ActivityShareTarget = "COPY_LINK") => apiRequest<{ shareUrl: string; engagement: ActivityEngagement }>(`/social/activities/${activityId}/share`, { method: "POST", body: JSON.stringify({ target }) });
 
 export const getGoals = () => apiRequest<Goal[]>("/goals");
 export const createGoal = (data: GoalInput) => apiRequest<Goal>("/goals", { method: "POST", body: JSON.stringify(data) });
 export const updateGoal = (id: string, data: Partial<GoalInput>) => apiRequest<Goal>(`/goals/${id}`, { method: "PUT", body: JSON.stringify(data) });
 export const deleteGoal = (id: string) => apiRequest<unknown>(`/goals/${id}`, { method: "DELETE" });
+
+export const getAiWeeklyReport = () => apiRequest<AiWeeklyReport>("/ai/report");
+export const askAiCoach = (question: string) => apiRequest<AiCoachResponse>("/ai/coach", { method: "POST", body: JSON.stringify({ question }) });
+export const getAiContributionPlan = () => apiRequest<AiContributionPlan>("/ai/plan");
+export const generateAiIssuePrContext = (url: string) => apiRequest<AiIssuePrContext>("/ai/context", { method: "POST", body: JSON.stringify({ url }) });
+export const generateAiReviewNotes = (notes: string) => apiRequest<AiReviewNotes>("/ai/review-notes", { method: "POST", body: JSON.stringify({ notes }) });
+export const getAiMaintainerMemory = () => apiRequest<AiMaintainerMemory>("/ai/memory");
+
+export const getGitHubStatus = () => apiRequest<GitHubStatus>("/github/status");
+export const getGitHubOAuthUrl = () => apiRequest<{ url: string }>("/github/oauth-url");
+export const syncGitHub = (data?: { since?: string; maxPages?: number }) => apiRequest<GitHubSyncResult>("/github/sync", { method: "POST", body: JSON.stringify(data ?? {}) });
+export const disconnectGitHub = () => apiRequest<{ connected: boolean }>("/github/disconnect", { method: "DELETE" });

@@ -6,7 +6,14 @@ import { AuthProvider } from "@/lib/authStore";
 
 export const metadata: Metadata = {
   title: "Maintainex",
-  description: "Personal open-source maintenance tracking dashboard"
+  description: "Personal open-source maintenance tracking dashboard",
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/icon.png", sizes: "512x512", type: "image/png" }
+    ],
+    apple: "/apple-icon.png"
+  }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

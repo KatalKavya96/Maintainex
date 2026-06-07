@@ -1,4 +1,4 @@
-import type { Activity, ActivityType, Prisma } from "@prisma/client";
+import type { Activity, ActivityReactionType, ActivityShareTarget, ActivityType, Prisma } from "@prisma/client";
 import { prisma } from "../../config/database";
 import { emitToUser } from "../../realtime/socket";
 import { ApiError } from "../../utils/ApiError";
@@ -132,6 +132,7 @@ export class SocialService {
       orderBy: { createdAt: "desc" },
       take: 80
     });
+    const engagement = await this.engagementSummary(currentUserId, activities.map((activity) => activity.id));
 
     return activities.map((activity) => ({
       id: activity.id,
@@ -143,7 +144,8 @@ export class SocialService {
         ...activity,
         organizationName: activity.organizationNameSnapshot,
         repositoryName: activity.repositoryNameSnapshot
-      }
+      },
+      engagement: engagement[activity.id] ?? this.emptyEngagement()
     }));
   }
 
@@ -265,10 +267,155 @@ export class SocialService {
     return prisma.notification.updateMany({ where: { id, recipientId: currentUserId }, data: { readAt: new Date() } });
   }
 
+  async engagement(currentUserId: string, activityId: string) {
+    await this.publicActivity(activityId);
+    const summary = await this.engagementSummary(currentUserId, [activityId]);
+    return summary[activityId] ?? this.emptyEngagement();
+  }
+
+  async react(currentUserId: string, activityId: string, type: ActivityReactionType) {
+    const activity = await this.publicActivity(activityId);
+    await prisma.activityReaction.upsert({
+      where: { activityId_userId_type: { activityId, userId: currentUserId, type } },
+      update: {},
+      create: { activityId, userId: currentUserId, type }
+    });
+    await this.notifyActivityOwner(activity, currentUserId, "New reaction", "Someone reacted to your Maintainex activity.");
+    return this.engagement(currentUserId, activityId);
+  }
+
+  async unreact(currentUserId: string, activityId: string, type: ActivityReactionType) {
+    await prisma.activityReaction.deleteMany({ where: { activityId, userId: currentUserId, type } });
+    return this.engagement(currentUserId, activityId);
+  }
+
+  async comments(currentUserId: string, activityId: string) {
+    await this.publicActivity(activityId);
+    const comments = await prisma.activityComment.findMany({
+      where: { activityId, deletedAt: null },
+      include: { user: { select: publicUserSelect } },
+      orderBy: { createdAt: "asc" },
+      take: 100
+    });
+    const engagement = await this.engagement(currentUserId, activityId);
+    return { comments, engagement };
+  }
+
+  async comment(currentUserId: string, activityId: string, body: string) {
+    const clean = body.trim();
+    if (!clean) throw new ApiError(400, "Comment cannot be empty");
+    if (clean.length > 1200) throw new ApiError(400, "Comment is too long");
+    const activity = await this.publicActivity(activityId);
+    const comment = await prisma.activityComment.create({
+      data: { activityId, userId: currentUserId, body: clean },
+      include: { user: { select: publicUserSelect } }
+    });
+    await this.notifyActivityOwner(activity, currentUserId, "New comment", "Someone commented on your Maintainex activity.");
+    return comment;
+  }
+
+  async deleteComment(currentUserId: string, activityId: string, commentId: string) {
+    const activity = await this.publicActivity(activityId);
+    const comment = await prisma.activityComment.findFirst({ where: { id: commentId, activityId } });
+    if (!comment) throw new ApiError(404, "Comment not found");
+    if (comment.userId !== currentUserId && activity.userId !== currentUserId) throw new ApiError(403, "You cannot delete this comment");
+    await prisma.activityComment.update({ where: { id: commentId }, data: { deletedAt: new Date(), body: "" } });
+    return { deleted: true };
+  }
+
+  async bookmark(currentUserId: string, activityId: string) {
+    await this.publicActivity(activityId);
+    await prisma.activityBookmark.upsert({
+      where: { activityId_userId: { activityId, userId: currentUserId } },
+      update: {},
+      create: { activityId, userId: currentUserId }
+    });
+    return this.engagement(currentUserId, activityId);
+  }
+
+  async unbookmark(currentUserId: string, activityId: string) {
+    await prisma.activityBookmark.deleteMany({ where: { activityId, userId: currentUserId } });
+    return this.engagement(currentUserId, activityId);
+  }
+
+  async share(currentUserId: string, activityId: string, target: ActivityShareTarget = "COPY_LINK") {
+    await this.publicActivity(activityId);
+    await prisma.activityShare.create({ data: { activityId, userId: currentUserId, target } });
+    return {
+      shareUrl: `/activities/${activityId}`,
+      engagement: await this.engagement(currentUserId, activityId)
+    };
+  }
+
   private async userByUsername(username: string) {
     const user = await prisma.user.findUnique({ where: { username }, select: publicUserSelect });
     if (!user) throw new ApiError(404, "User not found");
     return user;
+  }
+
+  private async publicActivity(activityId: string) {
+    const activity = await prisma.activity.findUnique({ where: { id: activityId }, include: { user: { select: publicUserSelect } } });
+    if (!activity) throw new ApiError(404, "Activity not found");
+    return activity;
+  }
+
+  private async engagementSummary(currentUserId: string, activityIds: string[]) {
+    if (!activityIds.length) return {};
+    const [reactionGroups, comments, bookmarks, shares, viewerReactions, viewerBookmarks] = await Promise.all([
+      prisma.activityReaction.groupBy({ by: ["activityId", "type"], where: { activityId: { in: activityIds } }, _count: { _all: true } }),
+      prisma.activityComment.groupBy({ by: ["activityId"], where: { activityId: { in: activityIds }, deletedAt: null }, _count: { _all: true } }),
+      prisma.activityBookmark.groupBy({ by: ["activityId"], where: { activityId: { in: activityIds } }, _count: { _all: true } }),
+      prisma.activityShare.groupBy({ by: ["activityId"], where: { activityId: { in: activityIds } }, _count: { _all: true } }),
+      prisma.activityReaction.findMany({ where: { activityId: { in: activityIds }, userId: currentUserId }, select: { activityId: true, type: true } }),
+      prisma.activityBookmark.findMany({ where: { activityId: { in: activityIds }, userId: currentUserId }, select: { activityId: true } })
+    ]);
+
+    const byId = Object.fromEntries(activityIds.map((id) => [id, this.emptyEngagement()]));
+    reactionGroups.forEach((group) => {
+      byId[group.activityId].reactionCounts[group.type] = group._count._all;
+    });
+    comments.forEach((group) => {
+      byId[group.activityId].commentCount = group._count._all;
+    });
+    bookmarks.forEach((group) => {
+      byId[group.activityId].bookmarkCount = group._count._all;
+    });
+    shares.forEach((group) => {
+      byId[group.activityId].shareCount = group._count._all;
+    });
+    viewerReactions.forEach((reaction) => {
+      byId[reaction.activityId].viewerReactionTypes.push(reaction.type);
+    });
+    viewerBookmarks.forEach((bookmark) => {
+      byId[bookmark.activityId].viewerBookmarked = true;
+    });
+    return byId;
+  }
+
+  private emptyEngagement() {
+    return {
+      reactionCounts: { LIKE: 0, FIRE: 0, CLAP: 0, EYES: 0 },
+      viewerReactionTypes: [] as ActivityReactionType[],
+      commentCount: 0,
+      bookmarkCount: 0,
+      shareCount: 0,
+      viewerBookmarked: false
+    };
+  }
+
+  private async notifyActivityOwner(activity: Activity, actorId: string, title: string, body: string) {
+    if (activity.userId === actorId) return;
+    const notification = await prisma.notification.create({
+      data: {
+        recipientId: activity.userId,
+        actorId,
+        type: "SOCIAL",
+        title,
+        body,
+        metadata: { activityId: activity.id }
+      }
+    });
+    emitToUser(activity.userId, "notification:new", notification);
   }
 
   private feedActivityType(filter?: string): ActivityType | undefined {

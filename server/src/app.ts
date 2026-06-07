@@ -1,10 +1,12 @@
 import cors from "cors";
 import express from "express";
 import { env } from "./config/env";
+import { aiRoutes } from "./modules/ai/ai.routes";
 import { analyticsRoutes } from "./modules/analytics/analytics.routes";
 import { activityRoutes } from "./modules/activity/activity.routes";
 import { authRoutes } from "./modules/auth/auth.routes";
 import { goalRoutes } from "./modules/goal/goal.routes";
+import { githubRoutes } from "./modules/github/github.routes";
 import { organizationRoutes } from "./modules/organization/organization.routes";
 import { pinRoutes } from "./modules/pin/pin.routes";
 import { profileRoutes } from "./modules/profile/profile.routes";
@@ -42,16 +44,24 @@ app.use(
     credentials: true
   })
 );
-app.use(express.json());
+app.use(
+  express.json({
+    verify: (req, _res, buffer) => {
+      (req as typeof req & { rawBody?: Buffer }).rawBody = Buffer.from(buffer);
+    }
+  })
+);
 
 app.get("/health", (_req, res) => res.json({ status: "ok" }));
 app.get("/api/health", (_req, res) => res.json({ status: "ok" }));
 app.use("/api/auth", authRoutes);
 app.use("/api/goals", goalRoutes);
+app.use("/api/github", githubRoutes);
 app.use("/api/activities", activityRoutes);
 app.use("/api/organizations", organizationRoutes);
 app.use("/api/repositories", repositoryRoutes);
 app.use("/api/analytics", analyticsRoutes);
+app.use("/api/ai", aiRoutes);
 app.use("/api/pins", pinRoutes);
 app.use("/api/scheduled-work", scheduledWorkRoutes);
 app.use("/api/profiles", profileRoutes);

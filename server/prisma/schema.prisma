@@ -51,6 +51,33 @@ enum ClosingReason {
   OTHER
 }
 
+enum DataSource {
+  MANUAL
+  GITHUB_SYNC
+  IMPORTED
+}
+
+enum ActivityReactionType {
+  LIKE
+  FIRE
+  CLAP
+  EYES
+}
+
+enum ActivityShareTarget {
+  COPY_LINK
+  X
+  LINKEDIN
+  OTHER
+}
+
+enum WebhookProcessingStatus {
+  RECEIVED
+  PROCESSED
+  SKIPPED
+  FAILED
+}
+
 enum UserRole {
   ADMIN
   VIEWER
@@ -82,6 +109,11 @@ model User {
   followers     Follow[]        @relation("UserFollowers")
   notifications Notification[]  @relation("UserNotifications")
   sentNotifications Notification[] @relation("NotificationActor")
+  githubIntegration GitHubIntegration?
+  activityReactions ActivityReaction[]
+  activityComments ActivityComment[]
+  activityBookmarks ActivityBookmark[]
+  activityShares ActivityShare[]
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
 }
@@ -224,14 +256,22 @@ model Pin {
   tags           Json?
   sortOrder      Int         @default(0)
   lastOpenedAt   DateTime?
+  source         DataSource  @default(MANUAL)
+  externalId     String?
+  githubNodeId   String?
+  syncedAt       DateTime?
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
   user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@index([source])
+  @@index([externalId])
+  @@index([githubNodeId])
   @@index([category])
   @@index([isFavorite])
   @@index([createdAt])
+  @@unique([userId, source, externalId])
 }
 
 model ScheduledWork {
@@ -259,16 +299,24 @@ model ScheduledWork {
   plan             String?             @db.Text
   blockers         String?             @db.Text
   closingNotes     String?             @db.Text
+  source           DataSource          @default(MANUAL)
+  externalId       String?
+  githubNodeId     String?
+  syncedAt         DateTime?
   createdAt        DateTime            @default(now())
   updatedAt        DateTime            @updatedAt
   user             User                @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@index([source])
+  @@index([externalId])
+  @@index([githubNodeId])
   @@index([status])
   @@index([priority])
   @@index([type])
   @@index([dueDate])
   @@index([assignedToMe])
+  @@unique([userId, source, externalId])
 }
 
 model Activity {
@@ -289,17 +337,29 @@ model Activity {
   repositoryId             String?
   organizationNameSnapshot String
   repositoryNameSnapshot   String
+  source                   DataSource     @default(MANUAL)
+  externalId               String?
+  githubNodeId             String?
+  syncedAt                 DateTime?
   organization             Organization?  @relation(fields: [organizationId], references: [id], onDelete: SetNull)
   repository               Repository?    @relation(fields: [repositoryId], references: [id], onDelete: SetNull)
   user                     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reactions                ActivityReaction[]
+  comments                 ActivityComment[]
+  bookmarks                ActivityBookmark[]
+  shares                   ActivityShare[]
   createdAt                DateTime       @default(now())
   updatedAt                DateTime       @updatedAt
 
   @@index([userId])
+  @@index([source])
+  @@index([externalId])
+  @@index([githubNodeId])
   @@index([date])
   @@index([activityType])
   @@index([organizationId])
   @@index([repositoryId])
+  @@unique([userId, source, externalId])
 }
 
 model Organization {
@@ -309,6 +369,10 @@ model Organization {
   website      String?
   githubUrl    String?
   description  String?      @db.Text
+  source       DataSource   @default(MANUAL)
+  externalId   String?
+  githubNodeId String?
+  syncedAt     DateTime?
   user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   repositories Repository[]
   activities   Activity[]
@@ -316,7 +380,11 @@ model Organization {
   updatedAt    DateTime     @updatedAt
 
   @@unique([userId, name])
+  @@unique([userId, source, externalId])
   @@index([userId])
+  @@index([source])
+  @@index([externalId])
+  @@index([githubNodeId])
 }
 
 model Repository {
@@ -328,6 +396,10 @@ model Repository {
   description      String?       @db.Text
   primaryTechStack String?
   isActive         Boolean       @default(true)
+  source           DataSource    @default(MANUAL)
+  externalId       String?
+  githubNodeId     String?
+  syncedAt         DateTime?
   user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   organization     Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   activities       Activity[]
@@ -335,6 +407,98 @@ model Repository {
   updatedAt        DateTime      @updatedAt
 
   @@unique([userId, organizationId, name])
+  @@unique([userId, source, externalId])
   @@index([userId])
   @@index([organizationId])
+  @@index([source])
+  @@index([externalId])
+  @@index([githubNodeId])
+}
+
+model GitHubIntegration {
+  id                   String    @id @default(cuid())
+  userId               String    @unique
+  githubUserId         String    @unique
+  login                String
+  accessTokenEncrypted String    @db.Text
+  tokenType            String?
+  scope                String?
+  lastSyncedAt         DateTime?
+  syncCursor           DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([login])
+}
+
+model GitHubWebhookDelivery {
+  id          String                  @id @default(cuid())
+  deliveryId  String                  @unique
+  event       String
+  action      String?
+  status      WebhookProcessingStatus @default(RECEIVED)
+  error       String?                 @db.Text
+  payload     Json?
+  processedAt DateTime?
+  createdAt   DateTime                @default(now())
+
+  @@index([event])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model ActivityReaction {
+  id         String               @id @default(cuid())
+  activityId String
+  userId     String
+  type       ActivityReactionType
+  createdAt  DateTime             @default(now())
+  activity   Activity             @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  user       User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([activityId, userId, type])
+  @@index([activityId])
+  @@index([userId])
+}
+
+model ActivityComment {
+  id         String    @id @default(cuid())
+  activityId String
+  userId     String
+  body       String    @db.Text
+  deletedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  activity   Activity  @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([activityId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model ActivityBookmark {
+  activityId String
+  userId     String
+  createdAt  DateTime @default(now())
+  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([activityId, userId])
+  @@index([userId])
+}
+
+model ActivityShare {
+  id         String              @id @default(cuid())
+  activityId String
+  userId     String
+  target     ActivityShareTarget @default(COPY_LINK)
+  createdAt  DateTime            @default(now())
+  activity   Activity            @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  user       User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([activityId])
+  @@index([userId])
+  @@index([createdAt])
 }

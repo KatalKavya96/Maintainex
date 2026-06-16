@@ -48,7 +48,9 @@ import type { ProfileDashboard, ProfileSummary, ProfileUpdateInput, ProfileUser,
 import type { ScheduledWorkInput, ScheduledWorkListResponse, ScheduledWorkStatus } from "@/types/scheduledWork";
 import type { ActivityComment, ActivityEngagement, ActivityReactionType, ActivityShareTarget, Badge, FeedItem, FollowRecord, Goal, GoalInput, LeaderboardEntry, NotificationItem } from "@/types/social";
 import type { AiCoachResponse, AiContributionPlan, AiIssuePrContext, AiMaintainerMemory, AiReviewNotes, AiWeeklyReport } from "@/types/ai";
+import type { ExploreOrganization, ExploreOrganizationsResponse, OrganizationContributorsResponse, OrganizationQuestsResponse, OrganizationRepositoriesResponse, SavedOpportunitiesResponse } from "@/types/explore";
 import type { GitHubStatus, GitHubSyncResult } from "@/types/github";
+import type { ActiveRepositoryEntry, CollectionEntry, OpenSourceIndexResponse, TopContributorEntry, TopOrganizationEntry } from "@/types/leaderboards";
 
 export const getPins = (params?: Record<string, string | number | boolean | undefined>) => apiRequest<PinListResponse>(`/pins${queryString(params)}`);
 export const getPinById = (id: string) => apiRequest<PinListResponse["items"][number]>(`/pins/${id}`);
@@ -115,3 +117,18 @@ export const getGitHubStatus = () => apiRequest<GitHubStatus>("/github/status");
 export const getGitHubOAuthUrl = () => apiRequest<{ url: string }>("/github/oauth-url");
 export const syncGitHub = (data?: { since?: string; maxPages?: number }) => apiRequest<GitHubSyncResult>("/github/sync", { method: "POST", body: JSON.stringify(data ?? {}) });
 export const disconnectGitHub = () => apiRequest<{ connected: boolean }>("/github/disconnect", { method: "DELETE" });
+
+export const getExploreOrganizations = (params?: Record<string, string | number | boolean | undefined>) => apiRequest<ExploreOrganizationsResponse>(`/explore/organizations${queryString(params)}`);
+export const getExploreOrganization = (slug: string) => apiRequest<ExploreOrganization>(`/explore/organizations/${encodeURIComponent(slug)}`);
+export const getExploreOrganizationContributors = (slug: string) => apiRequest<OrganizationContributorsResponse>(`/explore/organizations/${encodeURIComponent(slug)}/contributors`);
+export const getExploreOrganizationRepositories = (slug: string) => apiRequest<OrganizationRepositoriesResponse>(`/explore/organizations/${encodeURIComponent(slug)}/repositories`);
+export const getExploreOrganizationQuests = (slug: string) => apiRequest<OrganizationQuestsResponse>(`/explore/organizations/${encodeURIComponent(slug)}/quests`);
+export const toggleSavedOpportunity = (data: { type: "ORGANIZATION" | "REPOSITORY" | "QUEST" | "ISSUE"; organizationId?: string; repositoryId?: string; questId?: string; externalUrl?: string }) =>
+  apiRequest<{ saved: boolean }>("/explore/saved", { method: "POST", body: JSON.stringify(data) });
+export const getSavedOpportunities = () => apiRequest<SavedOpportunitiesResponse>("/explore/saved");
+
+export const getTopContributors = () => apiRequest<TopContributorEntry[]>("/leaderboards/top-contributors");
+export const getTopOrganizations = () => apiRequest<TopOrganizationEntry[]>("/leaderboards/top-organizations");
+export const getActiveRepositories = () => apiRequest<ActiveRepositoryEntry[]>("/leaderboards/active-repositories");
+export const getOpenSourceIndex = () => apiRequest<OpenSourceIndexResponse>("/open-source-index");
+export const getCollections = () => apiRequest<CollectionEntry[]>("/collections");

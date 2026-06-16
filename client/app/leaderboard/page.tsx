@@ -1,62 +1,237 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { PageTitle } from "@/components/common/PageTitle";
-import { getLeaderboard } from "@/lib/api";
-import type { LeaderboardEntry } from "@/types/social";
+import type { ReactNode } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Boxes, Cloud, Code2, Crown, Database, Grid2X2, Heart, Layers3 } from "lucide-react";
+import clsx from "clsx";
+import { Button } from "@/components/common/Button";
+import { EmptyState } from "@/components/common/MetricCard";
+import { LeaderboardCard, type RankingRow } from "@/components/leaderboards/LeaderboardCard";
+import { getActiveRepositories, getCollections, getOpenSourceIndex, getTopContributors, getTopOrganizations } from "@/lib/api";
+import type { ActiveRepositoryEntry, CollectionEntry, OpenSourceIndexItem, OpenSourceIndexResponse, TopContributorEntry, TopOrganizationEntry } from "@/types/leaderboards";
 
-const periods = ["all", "weekly", "monthly", "yearly"];
+type IndexTab = "byStack" | "byIndustry" | "bySoftwareValue";
+
+const compact = new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 });
 
 export default function LeaderboardPage() {
-  const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
-  const [period, setPeriod] = useState("monthly");
+  const [contributors, setContributors] = useState<TopContributorEntry[]>([]);
+  const [organizations, setOrganizations] = useState<TopOrganizationEntry[]>([]);
+  const [repositories, setRepositories] = useState<ActiveRepositoryEntry[]>([]);
+  const [indexData, setIndexData] = useState<OpenSourceIndexResponse>({ byStack: [], byIndustry: [], bySoftwareValue: [] });
+  const [collections, setCollections] = useState<CollectionEntry[]>([]);
+  const [activeIndexTab, setActiveIndexTab] = useState<IndexTab>("byStack");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const load = () => {
+    setLoading(true);
+    setError("");
+    Promise.all([getTopContributors(), getTopOrganizations(), getActiveRepositories(), getOpenSourceIndex(), getCollections()])
+      .then(([contributorData, organizationData, repositoryData, indexResponse, collectionData]) => {
+        setContributors(contributorData);
+        setOrganizations(organizationData);
+        setRepositories(repositoryData);
+        setIndexData(indexResponse);
+        setCollections(collectionData);
+      })
+      .catch((err) => setError(err instanceof Error ? err.message : "Unable to load leaderboards."))
+      .finally(() => setLoading(false));
+  };
 
   useEffect(() => {
-    getLeaderboard({ period: period === "all" ? "" : period }).then(setEntries).catch(() => setEntries([]));
-  }, [period]);
+    load();
+  }, []);
+
+  const contributorRows: RankingRow[] = useMemo(
+    () =>
+      contributors.map((entry) => ({
+        id: entry.id,
+        label: entry.name,
+        sublabel: `@${entry.username}`,
+        avatarUrl: entry.avatarUrl,
+        value: compact.format(entry.contributions),
+        href: `/profile/${entry.username}`
+      })),
+    [contributors]
+  );
+  const organizationRows: RankingRow[] = useMemo(
+    () =>
+      organizations.map((entry) => ({
+        id: entry.id,
+        label: entry.name,
+        avatarUrl: entry.logoUrl,
+        value: compact.format(entry.contributions),
+        href: `/explore/organizations/${entry.slug}`
+      })),
+    [organizations]
+  );
+  const repositoryRows: RankingRow[] = useMemo(
+    () =>
+      repositories.map((entry) => ({
+        id: entry.id,
+        label: entry.name,
+        sublabel: entry.organization.name,
+        avatarUrl: entry.logoUrl,
+        value: compact.format(entry.uniqueContributors),
+        href: `/repos/${entry.organization.slug}/${entry.slug}`
+      })),
+    [repositories]
+  );
+
+  const activeIndexItems = indexData[activeIndexTab];
 
   return (
-    <>
-      <PageTitle title="Leaderboard" description="Compare contribution score across Maintainex users." />
-      <div className="mb-5 flex flex-wrap gap-2">
-        {periods.map((item) => (
-          <button key={item} type="button" onClick={() => setPeriod(item)} className={`rounded-lg px-4 py-2 text-sm font-bold capitalize ${period === item ? "bg-moss text-black" : "border border-line bg-white text-slate-500"}`}>
-            {item}
-          </button>
-        ))}
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-black tracking-tight text-ink">Leaderboards</h1>
+          <p className="mt-2 text-base font-medium text-slate-500">Compare open-source organizations and contributors across key performance metrics.</p>
+        </div>
+        <Button href="/coming-soon?feature=all-leaderboards" variant="secondary">
+          <Grid2X2 size={16} />
+          View all leaderboards
+        </Button>
       </div>
-      <div className="overflow-hidden rounded-2xl border border-line bg-white shadow-soft">
-        <table className="w-full min-w-[720px] text-left text-sm">
-          <thead className="bg-skyglass text-xs uppercase tracking-wide text-slate-500">
-            <tr>
-              <th className="px-4 py-3">Rank</th>
-              <th className="px-4 py-3">User</th>
-              <th className="px-4 py-3">Score</th>
-              <th className="px-4 py-3">PR reviews</th>
-              <th className="px-4 py-3">PRs raised</th>
-              <th className="px-4 py-3">Issues</th>
-              <th className="px-4 py-3">Streak</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-line">
-            {entries.map((entry, index) => (
-              <tr key={entry.user.id}>
-                <td className="px-4 py-3 font-extrabold text-moss">#{index + 1}</td>
-                <td className="px-4 py-3">
-                  <Link href={`/profile/${entry.user.username}`} className="font-bold text-ink hover:text-moss">{entry.user.name}</Link>
-                  <p className="text-xs font-semibold text-slate-500">@{entry.user.username}</p>
-                </td>
-                <td className="px-4 py-3 font-extrabold">{entry.score}</td>
-                <td className="px-4 py-3">{entry.counts.PR_REVIEWED ?? 0}</td>
-                <td className="px-4 py-3">{entry.counts.PR_RAISED ?? 0}</td>
-                <td className="px-4 py-3">{(entry.counts.ISSUE_RAISED ?? 0) + (entry.counts.ISSUE_CLOSED ?? 0)}</td>
-                <td className="px-4 py-3">{entry.streak}</td>
-              </tr>
+
+      {error ? (
+        <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 p-4 text-sm font-semibold text-rose-200">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <span>{error}</span>
+            <Button type="button" variant="secondary" onClick={load}>
+              Retry
+            </Button>
+          </div>
+        </div>
+      ) : null}
+
+      {loading ? (
+        <div className="grid gap-4 xl:grid-cols-3">
+          {Array.from({ length: 3 }, (_, index) => (
+            <div key={index} className="h-72 animate-pulse rounded-lg border border-line bg-white" />
+          ))}
+        </div>
+      ) : (
+        <div className="grid gap-4 xl:grid-cols-3">
+          <LeaderboardCard title="Top Contributors" description="Ranked by contributions over the last 12 months." icon={<Crown size={24} />} rows={contributorRows} valueLabel="Contributions (12M)" />
+          <LeaderboardCard title="Top Organizations" description="Ranked by total contributions over the last 12 months." icon={<Database size={24} />} rows={organizationRows} valueLabel="Contributions (12M)" />
+          <LeaderboardCard title="Most Active Repositories" description="Ranked by unique contributors over the last 12 months." icon={<Code2 size={24} />} rows={repositoryRows} valueLabel="Unique Contributors (12M)" />
+        </div>
+      )}
+
+      <section className="grid gap-5 rounded-lg border border-line bg-white p-5 shadow-soft xl:grid-cols-[420px_1fr]">
+        <div className="flex gap-5">
+          <div className="grid h-16 w-16 shrink-0 place-items-center rounded-full border border-moss/30 bg-moss/10 text-moss">
+            <Layers3 size={32} />
+          </div>
+          <div>
+            <p className="text-xs font-black uppercase tracking-wide text-slate-500">The Maintainex Foundation</p>
+            <h2 className="mt-1 text-2xl font-black tracking-tight text-ink">Open Source Index</h2>
+            <p className="mt-2 text-sm font-medium leading-6 text-slate-500">Discover critical open-source stacks ranked by contributor volume from synced database activity.</p>
+            <Button href="/coming-soon?feature=open-source-index" className="mt-5">
+              Explore Open Source Index
+            </Button>
+          </div>
+        </div>
+        <div className="min-w-0">
+          <div className="flex flex-wrap gap-6 border-b border-line text-sm font-bold">
+            <IndexTabButton active={activeIndexTab === "byStack"} onClick={() => setActiveIndexTab("byStack")}>
+              By Stack
+            </IndexTabButton>
+            <IndexTabButton active={activeIndexTab === "byIndustry"} onClick={() => setActiveIndexTab("byIndustry")}>
+              By Industry
+            </IndexTabButton>
+            <IndexTabButton active={activeIndexTab === "bySoftwareValue"} onClick={() => setActiveIndexTab("bySoftwareValue")}>
+              By Software Value
+            </IndexTabButton>
+          </div>
+          <div className="mt-4">
+            {activeIndexItems.length ? <IndexBars items={activeIndexItems} /> : <EmptyState title="No index data available yet." description="Index bars will appear when synced activity can be grouped by stack, category, or repository technology." />}
+          </div>
+        </div>
+      </section>
+
+      <section className="rounded-lg border border-line bg-white p-4 shadow-soft">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className="text-moss">
+              <Boxes size={26} />
+            </span>
+            <div>
+              <h2 className="text-lg font-extrabold text-ink">Curated Collections</h2>
+              <p className="mt-1 text-sm font-medium text-slate-500">Hand-picked collections from stored Maintainex collection data.</p>
+            </div>
+          </div>
+          <Button href="/coming-soon?feature=collections" variant="ghost">
+            View all collections
+          </Button>
+        </div>
+        {collections.length ? (
+          <div className="grid gap-4 xl:grid-cols-3">
+            {collections.map((collection) => (
+              <CollectionCard key={collection.id} collection={collection} />
             ))}
-          </tbody>
-        </table>
-      </div>
-    </>
+          </div>
+        ) : (
+          <EmptyState title="No collections available yet." description="Create collection rows in the database to populate this section." />
+        )}
+      </section>
+    </div>
   );
+}
+
+function IndexTabButton({ active, children, onClick }: { active: boolean; children: ReactNode; onClick: () => void }) {
+  return (
+    <button type="button" onClick={onClick} className={clsx("border-b-2 pb-2 transition", active ? "border-moss text-moss" : "border-transparent text-slate-400 hover:text-ink")}>
+      {children}
+    </button>
+  );
+}
+
+function IndexBars({ items }: { items: OpenSourceIndexItem[] }) {
+  const max = Math.max(...items.map((item) => item.contributors), 1);
+  return (
+    <div className="space-y-4">
+      {items.slice(0, 5).map((item, index) => (
+        <div key={item.name} className="grid items-center gap-3 md:grid-cols-[180px_1fr_auto]">
+          <div className="flex items-center gap-3 text-sm font-bold text-ink">
+            <span className="text-slate-400">{indexIcon(index)}</span>
+            {item.name}
+          </div>
+          <div className="h-2.5 overflow-hidden rounded-full bg-skyglass">
+            <div className="h-full rounded-full bg-moss shadow-[0_0_18px_rgba(201,244,58,0.25)]" style={{ width: `${Math.max(8, (item.contributors / max) * 100)}%` }} />
+          </div>
+          <span className="text-sm font-semibold text-slate-500">{item.contributors.toLocaleString()} contributors</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function CollectionCard({ collection }: { collection: CollectionEntry }) {
+  return (
+    <article className="rounded-lg border border-line bg-[#111514] p-4">
+      <div className="flex -space-x-2">
+        {collection.logoUrls.slice(0, 5).map((url) => (
+          <img key={url} src={url} alt="" className="h-9 w-9 rounded-full border border-line object-cover" />
+        ))}
+        {!collection.logoUrls.length ? <span className="grid h-9 w-9 place-items-center rounded-full border border-moss/30 bg-moss/10 text-xs font-black text-moss">{collection.title.slice(0, 1).toUpperCase()}</span> : null}
+      </div>
+      <h3 className="mt-4 text-lg font-extrabold text-ink">{collection.title}</h3>
+      <p className="mt-2 line-clamp-2 min-h-10 text-sm font-medium leading-5 text-slate-500">{collection.description}</p>
+      <div className="mt-4 flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-500">
+        <span>{collection.itemCount.toLocaleString()} {collection.type.toLowerCase()}</span>
+        <span>Updated {new Date(collection.updatedAt).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</span>
+        <span className="ml-auto inline-flex items-center gap-1">
+          <Heart size={14} />
+          {collection.saveCount.toLocaleString()}
+        </span>
+      </div>
+    </article>
+  );
+}
+
+function indexIcon(index: number) {
+  const icons = [<Cloud key="cloud" size={18} />, <Code2 key="code" size={18} />, <Layers3 key="layers" size={18} />, <Database key="database" size={18} />];
+  return icons[index % icons.length];
 }

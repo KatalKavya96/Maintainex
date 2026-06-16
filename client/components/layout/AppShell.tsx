@@ -6,15 +6,21 @@ import { useEffect, useState } from "react";
 import {
   Activity,
   BarChart3,
+  Bookmark,
   ChevronLeft,
   ChevronRight,
+  ChevronUp,
   Home,
+  Compass,
+  Code2,
+  Heart,
   Link2,
   LogOut,
   Moon,
   ClipboardList,
   Sparkles,
   Settings,
+  Star,
   Sun,
   Trophy
 } from "lucide-react";
@@ -32,8 +38,16 @@ const navItems = [
   { href: "/reports", label: "Reports", icon: Sparkles },
   { href: "/pins", label: "Pins", icon: Link2 },
   { href: "/schedule", label: "Schedule", icon: ClipboardList },
-  { href: "/leaderboard", label: "Leaderboard", icon: Trophy },
+  { href: "/leaderboard", label: "Leaderboards", icon: Trophy },
   { href: "/settings", label: "Settings", icon: Settings }
+];
+
+const startContributingItems = [
+  { href: "/explore/organizations", label: "Explore Organizations", icon: Compass },
+  { href: "/explore/repositories", label: "Find Repositories", icon: Code2 },
+  { href: "/explore/quests", label: "Browse Quests", icon: Bookmark },
+  { href: "/explore/recommended", label: "Recommended for You", icon: Star },
+  { href: "/explore/saved", label: "Saved Opportunities", icon: Heart }
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -95,45 +109,93 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-[var(--app-bg)] lg:flex">
-      <aside className={clsx("border-line bg-white transition-all lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:flex-col lg:border-r", collapsed ? "lg:w-[68px]" : "lg:w-60")}>
-        <div className={clsx("flex h-14 items-center gap-3 border-b border-line px-3", collapsed ? "justify-center" : "justify-between")}>
+      <aside className={clsx("border-line bg-white transition-all lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:flex-col lg:border-r", collapsed ? "lg:w-[68px]" : "lg:w-[260px]")}>
+        <div className={clsx("flex h-16 items-center gap-3 border-b border-line px-4", collapsed ? "justify-center" : "justify-between")}>
           <Link href="/" className={clsx("min-w-0", collapsed && "hidden lg:block")}>
-            <p className={clsx("font-extrabold tracking-tight text-ink", collapsed ? "text-lg" : "text-xl")}>
+            <p className={clsx("font-extrabold tracking-tight text-ink", collapsed ? "text-lg" : "text-2xl")}>
               {collapsed ? "Mx" : <>Maintain<span className="text-moss">ex</span></>}
             </p>
           </Link>
           <button
             type="button"
             onClick={toggleSidebar}
-            className="grid h-8 w-8 place-items-center rounded-lg border border-line bg-skyglass text-slate-500 transition hover:border-moss hover:text-ink"
+            className="grid h-8 w-8 place-items-center rounded-lg border border-line bg-skyglass text-moss transition hover:border-moss hover:text-ink"
             title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
           </button>
         </div>
-        <nav className={clsx("flex gap-2 overflow-x-auto px-3 py-3 lg:block lg:flex-1 lg:space-y-1 lg:overflow-y-auto", collapsed && "lg:px-2")}>
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const active =
-              pathname === item.href ||
-              (item.href === "/activities" && pathname.startsWith("/activities/") && pathname !== "/activities/new") ||
-              (item.href !== "/" && item.href !== "/activities" && item.href !== "/activities/new" && pathname.startsWith(item.href));
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={clsx(
-                  "flex min-w-max items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition",
-                  collapsed && "lg:justify-center lg:px-0",
-                  active ? "bg-[#39A84A] text-white" : "text-slate-400 hover:bg-skyglass hover:text-ink"
-                )}
-                title={item.label}
-              >
-                <Icon size={19} />
-                <span className={clsx(collapsed && "lg:hidden")}>{item.label}</span>
-              </Link>
-            );
-          })}
+        <nav className={clsx("flex gap-2 overflow-x-auto px-3 py-4 lg:flex lg:flex-1 lg:flex-col lg:overflow-y-auto", collapsed && "lg:px-2")}>
+          <div className="space-y-1">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const active =
+                pathname === item.href ||
+                (item.href === "/activities" && pathname.startsWith("/activities/") && pathname !== "/activities/new") ||
+                (item.href !== "/" && item.href !== "/activities" && item.href !== "/activities/new" && pathname.startsWith(item.href));
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={clsx(
+                    "flex min-w-max items-center gap-3 rounded-lg px-3 py-2.5 text-[15px] font-semibold transition",
+                    collapsed && "lg:justify-center lg:px-0",
+                    active
+                      ? "border border-moss/30 bg-moss/25 text-moss shadow-[0_0_28px_rgba(201,244,58,0.12)]"
+                      : "text-slate-400 hover:bg-skyglass hover:text-ink"
+                  )}
+                  title={item.label}
+                >
+                  <Icon size={20} />
+                  <span className={clsx(collapsed && "lg:hidden")}>{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+          <div className={clsx("mt-4 border-t border-line pt-4", collapsed && "lg:hidden")}>
+            <div className="mb-2 flex items-center justify-between px-3 text-sm font-extrabold text-moss">
+              <span>Start Contributing</span>
+              <ChevronUp size={16} />
+            </div>
+            <div className="space-y-1">
+              {startContributingItems.map((item) => {
+                const Icon = item.icon;
+                const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={clsx(
+                      "flex min-w-max items-center gap-3 rounded-lg border px-3 py-2.5 text-[15px] font-semibold transition",
+                      active
+                        ? "border-moss bg-moss/25 text-ink shadow-[0_0_30px_rgba(201,244,58,0.15)]"
+                        : "border-transparent text-slate-400 hover:bg-skyglass hover:text-ink"
+                    )}
+                    title={item.label}
+                  >
+                    <Icon size={20} />
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+          <div className={clsx("hidden space-y-1 border-t border-line pt-4", collapsed && "lg:block")}>
+            {startContributingItems.map((item) => {
+              const Icon = item.icon;
+              const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={clsx("flex items-center justify-center rounded-lg border py-2.5 transition", active ? "border-moss bg-moss/25 text-moss" : "border-transparent text-slate-400 hover:bg-skyglass hover:text-ink")}
+                  title={item.label}
+                >
+                  <Icon size={20} />
+                </Link>
+              );
+            })}
+          </div>
         </nav>
         <div className="border-t border-line px-3 py-2.5">
           <button
@@ -149,13 +211,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </button>
         </div>
       </aside>
-      <main className={clsx("w-full min-w-0 transition-all", collapsed ? "lg:pl-[68px]" : "lg:pl-60")}>
-        <header className="sticky top-0 z-30 border-b border-line bg-white/90 px-3 py-2.5 backdrop-blur lg:px-5">
+      <main className={clsx("w-full min-w-0 transition-all", collapsed ? "lg:pl-[68px]" : "lg:pl-[260px]")}>
+        <header className="sticky top-0 z-30 border-b border-line bg-white/90 px-3 py-3 backdrop-blur lg:px-7">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex min-w-[min(100%,22rem)] flex-1 items-center gap-2 sm:min-w-0">
-              <Link href="/" className="hidden h-8 items-center rounded-lg px-2 text-sm font-extrabold text-ink transition hover:bg-skyglass sm:inline-flex">
-                Home
-              </Link>
               <UserSearch />
             </div>
             <div className="flex items-center gap-2">
@@ -180,7 +239,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
         </header>
-        <div className="mx-auto w-full max-w-[1180px] px-3 py-4 lg:px-5">{children}</div>
+        <div className="mx-auto w-full max-w-[1540px] px-3 py-4 lg:px-7">{children}</div>
       </main>
     </div>
   );

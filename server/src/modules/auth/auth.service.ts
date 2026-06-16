@@ -26,6 +26,7 @@ type OAuthProfile = {
   rawProfile: Record<string, unknown>;
   githubLogin?: string;
   githubUrl?: string;
+  avatarUrl?: string;
 };
 
 type GitHubUser = {
@@ -34,6 +35,7 @@ type GitHubUser = {
   name?: string | null;
   email?: string | null;
   html_url?: string;
+  avatar_url?: string;
 };
 
 type GitHubEmail = {
@@ -217,7 +219,8 @@ export class AuthService {
       expiresAt: token.expires_in ? new Date(Date.now() + token.expires_in * 1000) : undefined,
       scope: token.scope,
       tokenType: token.token_type,
-      rawProfile: userinfo as unknown as Record<string, unknown>
+      rawProfile: userinfo as unknown as Record<string, unknown>,
+      avatarUrl: userinfo.picture
     };
   }
 
@@ -254,7 +257,8 @@ export class AuthService {
       tokenType: token.token_type,
       rawProfile: { ...user, emails } as unknown as Record<string, unknown>,
       githubLogin: user.login,
-      githubUrl: user.html_url
+      githubUrl: user.html_url,
+      avatarUrl: user.avatar_url
     };
   }
 
@@ -281,7 +285,20 @@ export class AuthService {
         passwordHash,
         passwordSetAt: null,
         role,
-        githubUrl: profile.githubUrl ?? undefined
+        githubUrl: profile.githubUrl ?? undefined,
+        avatarUrl: profile.avatarUrl,
+        githubUsername: profile.githubLogin,
+        githubId: profile.provider === "GITHUB" ? profile.providerAccountId : undefined
+      });
+    } else if (profile.provider === "GITHUB") {
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          githubUrl: profile.githubUrl ?? user.githubUrl,
+          avatarUrl: profile.avatarUrl ?? user.avatarUrl,
+          githubUsername: profile.githubLogin ?? user.githubUsername,
+          githubId: profile.providerAccountId
+        }
       });
     }
 

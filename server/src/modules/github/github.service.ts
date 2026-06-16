@@ -19,6 +19,7 @@ type GitHubUser = {
   login: string;
   name?: string | null;
   html_url?: string;
+  avatar_url?: string;
 };
 
 type GitHubRepo = {
@@ -29,6 +30,11 @@ type GitHubRepo = {
   html_url: string;
   description?: string | null;
   language?: string | null;
+  stargazers_count?: number;
+  forks_count?: number;
+  watchers_count?: number;
+  open_issues_count?: number;
+  license?: { key?: string; name?: string; spdx_id?: string } | null;
   owner: GitHubUser & { node_id?: string };
   updated_at?: string;
 };
@@ -83,6 +89,15 @@ const splitFullName = (fullName: string) => {
   const [organizationName, repositoryName] = fullName.split("/");
   return { organizationName, repositoryName };
 };
+
+const slugify = (value: string) =>
+  value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
+const scopedSlug = (name: string, userId: string) => `${slugify(name)}-${userId.slice(0, 8).toLowerCase()}`;
 
 const statusForIssue = (item: Pick<GitHubSearchItem, "state">): ActivityStatus => (item.state === "closed" ? "CLOSED" : "OPEN");
 
@@ -162,6 +177,15 @@ export class GitHubService {
     }
 
     const profile = await this.githubRequest<GitHubUser>("/user", tokenJson.access_token);
+    await prisma.user.update({
+      where: { id: decoded.userId },
+      data: {
+        avatarUrl: profile.avatar_url,
+        githubUsername: profile.login,
+        githubId: String(profile.id),
+        githubUrl: profile.html_url
+      }
+    });
     const integration = await prisma.gitHubIntegration.upsert({
       where: { userId: decoded.userId },
       update: {
@@ -483,6 +507,8 @@ export class GitHubService {
           where: { id: existingOrganization.id },
           data: {
             githubUrl: existingOrganization.githubUrl ?? repo.owner.html_url,
+            logoUrl: existingOrganization.logoUrl ?? repo.owner.avatar_url,
+            slug: existingOrganization.slug ?? scopedSlug(organizationName, userId),
             externalId: existingOrganization.externalId ?? orgExternalId,
             githubNodeId: existingOrganization.githubNodeId ?? repo.owner.node_id,
             syncedAt: new Date()
@@ -492,6 +518,8 @@ export class GitHubService {
           data: {
             userId,
             name: organizationName,
+            slug: scopedSlug(organizationName, userId),
+            logoUrl: repo.owner.avatar_url,
             githubUrl: repo.owner.html_url,
             source,
             externalId: orgExternalId,
@@ -507,9 +535,19 @@ export class GitHubService {
       ? await prisma.repository.update({
           where: { id: existingRepository.id },
           data: {
-            githubUrl: existingRepository.githubUrl ?? repo.html_url,
-            description: existingRepository.description ?? repo.description,
-            primaryTechStack: existingRepository.primaryTechStack ?? repo.language,
+            githubRepoId: String(repo.id),
+            slug: existingRepository.slug ?? slugify(repositoryName),
+            fullName: repo.full_name,
+            githubUrl: repo.html_url,
+            description: repo.description ?? existingRepository.description,
+            primaryLanguage: repo.language,
+            primaryTechStack: repo.language ?? existingRepository.primaryTechStack,
+            license: repo.license?.spdx_id ?? repo.license?.name ?? existingRepository.license,
+            stars: repo.stargazers_count ?? existingRepository.stars,
+            forks: repo.forks_count ?? existingRepository.forks,
+            watchers: repo.watchers_count ?? existingRepository.watchers,
+            openIssues: repo.open_issues_count ?? existingRepository.openIssues,
+            ...(repo.language ? { techStack: [repo.language] } : {}),
             externalId: existingRepository.externalId ?? repositoryExternalId,
             githubNodeId: existingRepository.githubNodeId ?? repo.node_id,
             syncedAt: new Date()
@@ -519,9 +557,19 @@ export class GitHubService {
           data: {
             userId,
             organizationId: organization.id,
+            githubRepoId: String(repo.id),
             name: repositoryName,
+            slug: slugify(repositoryName),
+            fullName: repo.full_name,
             githubUrl: repo.html_url,
             description: repo.description ?? null,
+            primaryLanguage: repo.language ?? null,
+            license: repo.license?.spdx_id ?? repo.license?.name ?? null,
+            stars: repo.stargazers_count ?? 0,
+            forks: repo.forks_count ?? 0,
+            watchers: repo.watchers_count ?? 0,
+            openIssues: repo.open_issues_count ?? 0,
+            techStack: repo.language ? [repo.language] : [],
             primaryTechStack: repo.language ?? null,
             source,
             externalId: repositoryExternalId,

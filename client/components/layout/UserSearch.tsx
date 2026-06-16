@@ -28,16 +28,19 @@ export function UserSearch() {
   const showResults = focused && (query.trim().length > 0 || profiles.length > 0);
 
   return (
-    <div className="relative w-full max-w-md">
+    <div className="relative w-full max-w-[520px]">
       <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
       <input
         value={query}
         onChange={(event) => setQuery(event.target.value)}
         onFocus={() => setFocused(true)}
         onBlur={() => window.setTimeout(() => setFocused(false), 140)}
-        placeholder="Search users..."
-        className="h-8 w-full rounded-lg border border-line bg-skyglass pl-9 pr-3 text-sm font-semibold text-ink outline-none transition placeholder:text-slate-500 focus:border-moss focus:ring-2 focus:ring-moss/10"
+        placeholder="Search organizations, projects, technologies..."
+        className="h-9 w-full rounded-lg border border-line bg-skyglass pl-9 pr-12 text-sm font-semibold text-ink outline-none transition placeholder:text-slate-500 focus:border-moss focus:ring-2 focus:ring-moss/10"
       />
+      <span className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 rounded border border-line bg-white px-1.5 py-0.5 text-[11px] font-black text-slate-500 sm:inline-flex">
+        ⌘ K
+      </span>
       {showResults ? (
         <div className="absolute left-0 right-0 top-10 z-40 overflow-hidden rounded-xl border border-line bg-white shadow-soft">
           <div className="border-b border-line px-3 py-2 text-xs font-bold uppercase tracking-wide text-slate-500">Developers</div>

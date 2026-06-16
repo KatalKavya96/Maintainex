@@ -1,707 +1,913 @@
-Yes. Think of this in two parts:
+You are working on the Maintianex project.
 
-How Maintainex can scale to millions of users
-How to make backend/API fetching feel instant
+Maintianex is a GitHub-linked open-source contribution intelligence and gamified growth dashboard. The current product direction is:
 
-Right now your app is probably slow because every page is directly waiting for backend + database queries before showing data. Big apps like GitHub feel fast because they use caching, pagination, optimistic UI, indexing, background jobs, CDNs, and prefetching.
+1. Users connect/sign in with GitHub.
+2. Maintianex fetches real GitHub organizations, repositories, PRs, issues, reviews, contributors, and activity.
+3. Maintianex shows contribution intelligence similar to LFX Insights but in Maintianex’s own dark neon-green theme.
+4. Maintianex has a “Start Contributing” sidebar section where users can discover organizations, repositories, quests, recommendations, and saved opportunities.
+5. Nothing should be fake or visually-only. Every visible count, score, list, repo, organization, contributor, leaderboard, and card must come from the database/API. If data is not available yet, show a proper empty state or redirect to a Coming Soon page.
 
-1. How Maintainex Can Serve Millions of Users
+Important requirement:
+Do not hardcode UI data except for fallback empty states, labels, filter options, and temporary seed scripts. No static fake org cards, fake contributors, fake scores, or fake leaderboard entries in production UI.
 
-Your current architecture:
+Build the following feature set exactly.
 
-Next.js frontend
-Node.js + Express backend
-MySQL database
-Prisma ORM
-JWT auth
+==================================================
 
-This is good for MVP, but for millions of users, you need layers.
+1. SIDEBAR STRUCTURE
+   ==================================================
 
-Target scalable architecture:
+Update the existing Maintianex sidebar to include this structure:
 
-Client / Browser
-   ↓
-CDN
-   ↓
-Next.js Frontend
-   ↓
-API Gateway / Load Balancer
-   ↓
-Multiple Node.js Backend Instances
-   ↓
-Redis Cache
-   ↓
-Queue Workers
-   ↓
-MySQL Primary + Read Replicas
-   ↓
-Object Storage / Logs / Analytics
-2. Immediate Backend Speed Improvements
+Main navigation:
 
-Start with these before thinking about millions.
+* Home
+* Dashboard
+* Activities
+* Reports
+* Pins
+* Schedule
+* Leaderboard
+* Settings
 
-A. Add Database Indexes
+Add a grouped section:
 
-Most slow APIs are slow because database queries scan too much data.
+Start Contributing
 
-For your app, add indexes on fields used in filters:
+* Explore Organizations
+* Find Repositories
+* Browse Quests
+* Recommended for You
+* Saved Opportunities
 
-model Activity {
-  id           String   @id @default(cuid())
-  userId       String
-  date         DateTime
-  activityType ActivityType
-  status       ActivityStatus
-  repositoryId String?
-  organizationId String?
-  createdAt    DateTime @default(now())
+The active item should be highlighted using Maintianex’s current neon green/dark theme.
 
-  @@index([userId])
-  @@index([userId, date])
-  @@index([userId, activityType])
-  @@index([userId, status])
-  @@index([userId, repositoryId])
-  @@index([userId, organizationId])
-  @@index([userId, createdAt])
-}
+Routes:
 
-For scheduled work:
+/explore/organizations
+/explore/repositories
+/explore/quests
+/explore/recommended
+/explore/saved
 
-model ScheduledWork {
-  id           String @id @default(cuid())
-  userId       String
-  status       ScheduledWorkStatus
-  priority     Priority
-  dueDate      DateTime?
-  assignedToMe Boolean
-  createdAt    DateTime @default(now())
+If a route is not fully implemented yet, do not leave it broken. Redirect it to:
 
-  @@index([userId])
-  @@index([userId, status])
-  @@index([userId, priority])
-  @@index([userId, dueDate])
-  @@index([userId, assignedToMe])
-}
+/coming-soon?feature=<feature-name>
 
-For pins:
+Create a reusable ComingSoon page with:
 
-model Pin {
-  id         String @id @default(cuid())
-  userId     String
-  category   PinCategory
-  isFavorite Boolean
-  sortOrder  Int
-  createdAt  DateTime @default(now())
+* Feature name
+* Short description
+* “Back to Dashboard” button
+* “Explore Organizations” button
 
-  @@index([userId])
-  @@index([userId, category])
-  @@index([userId, isFavorite])
-  @@index([userId, sortOrder])
-  @@index([userId, createdAt])
-}
+==================================================
+2. MAINTIANEX THEME REQUIREMENTS
+================================
 
-Then run:
+Use the existing Maintianex dark theme style.
 
-npx prisma migrate dev --name add_performance_indexes
+Visual direction:
 
-This alone can make your APIs much faster.
+* Dark charcoal / black background
+* Neon lime-green primary accent
+* Fresh green secondary accent
+* Subtle blue-green borders
+* Rounded cards
+* Soft glow on active states
+* Professional SaaS dashboard look
+* Consistent spacing and typography
+* Do not copy LFX/GSoC branding directly; only use their layout inspiration
 
-B. Never Fetch Everything at Once
+Keep the UI visually close to the provided design mockups:
 
-If your dashboard loads all activities, all pins, all scheduled work, all users, and all stats together, it will become slow.
+* Explore Organizations page with sidebar filters and org cards
+* Organization detail page with metrics, tabs, contributor leaderboard, and repo cards
+* Leaderboards page with contributor/org/repo rankings, Open Source Index, and collections
 
-Use pagination.
+==================================================
+3. EXPLORE ORGANIZATIONS PAGE
+=============================
 
-Example:
+Create route:
 
-GET /api/activities?page=1&limit=20
-GET /api/pins?page=1&limit=30
-GET /api/scheduled-work?page=1&limit=20
+/explore/organizations
 
-Backend should return:
+This is the main public/open-source discovery page.
+
+Layout:
+
+* Top header with global search
+* Page title: “Explore Organizations”
+* Subtitle: “Discover open-source organizations and find the perfect place to contribute.”
+* Left filter panel
+* Top filter dropdown row
+* Organization card grid
+* Pagination
+* Loading state
+* Error state
+* Empty state
+
+Filters:
+
+Programs:
+
+* GSoC
+* LFX
+* CNCF
+* Outreachy
+* MLH
+
+Years:
+
+* All Years
+* 2026
+* 2025
+* 2024
+* 2023
+* 2022 & earlier
+
+Tech Stack:
+
+* Cloud Native
+* Developer Tools
+* Web Development
+* DevOps
+* Data & AI
+* Security
+* JavaScript
+* TypeScript
+* React
+* Go
+* Python
+* Rust
+* Kubernetes
+* Docker
+* GraphQL
+
+Category:
+
+* All Categories
+* Artificial Intelligence
+* Cloud Native
+* Developer Tools
+* Web Development
+* Infrastructure
+* Security
+* Documentation
+* Data
+
+Beginner Friendly:
+
+* All
+* 1 star+
+* 2 stars+
+* 3 stars+
+* 4 stars+
+
+Sort by:
+
+* Most Relevant
+* Maintianex Score
+* Most Active
+* Fastest Review
+* Most Quests
+* Highest Reputation
+* Beginner Friendly
+
+Each organization card must show real data:
+
+* Organization logo/avatar
+* Organization name
+* Short description
+* Program badges: GSoC, LFX, CNCF, etc.
+* Tech stack tags
+* Maintianex Score
+* Active repositories count
+* Open quests count
+* Average review time
+* Top repository
+* Beginner friendly rating
+* “View Org” button
+* “Save” button
+
+Card data must be fetched from backend endpoint, not hardcoded.
+
+Create API endpoint:
+
+GET /api/explore/organizations
+
+Query params:
+
+* search
+* program
+* year
+* techStack
+* category
+* beginnerFriendly
+* sort
+* page
+* limit
+
+Response shape:
 
 {
-  data: [],
-  pagination: {
-    page: 1,
-    limit: 20,
-    total: 500,
-    totalPages: 25
-  }
+"items": [
+{
+"id": "...",
+"name": "...",
+"slug": "...",
+"logoUrl": "...",
+"description": "...",
+"programs": [
+{
+"name": "GSoC",
+"years": [2026, 2025],
+"sourceUrl": "..."
+}
+],
+"techStack": ["Go", "React", "Kubernetes"],
+"category": "Cloud Native",
+"maintianexScore": 94,
+"scoreLabel": "Excellent",
+"activeReposCount": 32,
+"openQuestsCount": 14,
+"averageReviewTimeDays": 2.3,
+"topRepository": {
+"name": "meshery",
+"slug": "meshery"
+},
+"beginnerFriendlyScore": 4.2,
+"isSaved": false
+}
+],
+"pagination": {
+"page": 1,
+"limit": 6,
+"total": 438,
+"totalPages": 73
+}
 }
 
-For infinite scroll:
+==================================================
+4. ORGANIZATION DETAIL PAGE
+===========================
 
-GET /api/feed?cursor=activityId&limit=20
+Create route:
 
-Cursor pagination is better than page pagination for large data.
+/explore/organizations/[slug]
 
-C. Use Select Instead of Returning Full Objects
+This page should look like the organization detail mockup.
 
-Do not return unnecessary fields.
+Header section:
 
-Bad:
+* Org logo
+* Org name
+* Description
+* Program badges
+* Tech stack tags
+* Maintianex Score
+* Active Repos
+* Open Quests
+* Avg Review Time
+* Beginner Friendly
+* Follow button
+* Start Quest button
+* Save Org button
 
-prisma.activity.findMany()
+Tabs:
 
-Better:
+* Overview
+* Contributors
+* Repositories
+* Quests
+* Leaderboards
 
-prisma.activity.findMany({
-  where: { userId },
-  select: {
-    id: true,
-    title: true,
-    date: true,
-    activityType: true,
-    status: true,
-    repositoryNameSnapshot: true,
-    organizationNameSnapshot: true,
-    link: true,
-  },
-  orderBy: {
-    date: "desc",
-  },
-  take: 20,
-});
+Default tab:
 
-For list pages, return small data.
+* Overview or Contributors, whichever is easier with current data
 
-For detail pages, return full data.
+Contributors tab:
 
-3. Make Frontend Feel Instant
+* Activity filter
+* Time range dropdown
+* Contributors leaderboard table
 
-Big apps do not always wait for the backend before updating UI.
+Contributor table fields:
 
-A. Use React Query / TanStack Query
+* Rank
+* Avatar
+* Contributor name/login
+* Role: Maintainer / Contributor
+* Total contribution points
+* Contribution percentage
+* Quests completed
+* Current streak
 
-Install:
+Right summary cards:
 
-npm install @tanstack/react-query
+* Top Contributor
+* Contribution distribution donut/chart
+* Total contributions
 
-It gives:
+Bottom section:
 
-API caching
-background refetching
-loading states
-retry logic
-optimistic updates
-stale data display
-instant navigation feel
+* Top repositories cards
+
+Repository card fields:
+
+* Repo avatar/icon
+* Repo name
+* Description
+* Language
+* License
+* Stars
+* Forks
+* Open issues
+* Maintianex Score
+
+Create API endpoints:
+
+GET /api/explore/organizations/[slug]
+
+GET /api/explore/organizations/[slug]/contributors
+
+GET /api/explore/organizations/[slug]/repositories
+
+GET /api/explore/organizations/[slug]/quests
+
+If quests are not implemented yet, show a “Coming Soon” state inside the tab or redirect to /coming-soon?feature=quests.
+
+==================================================
+5. LEADERBOARDS PAGE
+====================
+
+Update or create route:
+
+/leaderboard
+
+Page sections:
+
+1. Top Contributors
+2. Top Organizations
+3. Most Active Repositories
+4. Open Source Index
+5. Curated Collections
+
+Top Contributors card:
+
+* Rank
+* Avatar
+* Name/login
+* Contributions in last 12 months
+* View full leaderboard button
+
+Top Organizations card:
+
+* Rank
+* Org logo
+* Org name
+* Contributions in last 12 months
+* View full leaderboard button
+
+Most Active Repositories card:
+
+* Rank
+* Repo logo/icon
+* Repo name
+* Unique contributors in last 12 months
+* View full leaderboard button
+
+Open Source Index section:
+
+* Tabs: By Stack, By Industry, By Software Value
+* Horizontal bars showing contributor counts by category
+* Button: Explore Open Source Index
+
+Curated Collections section:
+
+* Collection cards
+* Each card shows title, description, number of projects/orgs/repos, last updated, save count
+
+Create API endpoints:
+
+GET /api/leaderboards/top-contributors
+GET /api/leaderboards/top-organizations
+GET /api/leaderboards/active-repositories
+GET /api/open-source-index
+GET /api/collections
+
+Again: no hardcoded leaderboard rows. If there is no data, show empty state.
+
+==================================================
+6. DATABASE MODELS
+==================
+
+Add or update database models as needed.
+
+Required models:
+
+User
+
+* id
+* name
+* email
+* avatarUrl
+* githubUsername
+* githubId
+* createdAt
+* updatedAt
+
+Organization
+
+* id
+* name
+* slug
+* logoUrl
+* description
+* websiteUrl
+* githubUrl
+* category
+* techStack as JSON/string array
+* maintianexScore
+* beginnerFriendlyScore
+* reputationScore
+* activityScore
+* reviewSpeedScore
+* createdAt
+* updatedAt
+
+ProgramParticipation
+
+* id
+* organizationId
+* programName
+* year
+* sourceUrl
+* createdAt
+* updatedAt
+
+Repository
+
+* id
+* organizationId
+* githubRepoId
+* name
+* slug
+* fullName
+* githubUrl
+* description
+* primaryLanguage
+* license
+* stars
+* forks
+* watchers
+* openIssues
+* techStack as JSON/string array
+* activityScore
+* difficultyScore
+* beginnerFriendlyScore
+* maintianexScore
+* createdAt
+* updatedAt
+
+Contribution
+
+* id
+* userId
+* organizationId
+* repositoryId
+* type
+* title
+* url
+* githubNodeId/githubId
+* state
+* points
+* metadata as JSON
+* createdAt
+* updatedAt
+
+Quest
+
+* id
+* organizationId
+* repositoryId nullable
+* title
+* description
+* type
+* difficulty
+* points
+* isActive
+* createdAt
+* updatedAt
+
+UserQuest
+
+* id
+* userId
+* questId
+* status
+* completedAt
+* createdAt
+* updatedAt
+
+SavedOpportunity
+
+* id
+* userId
+* type // ORGANIZATION, REPOSITORY, QUEST, ISSUE
+* organizationId nullable
+* repositoryId nullable
+* questId nullable
+* externalUrl nullable
+* createdAt
+
+Collection
+
+* id
+* title
+* description
+* type
+* itemCount
+* logoUrls as JSON/string array
+* saveCount
+* updatedAt
+* createdAt
+
+ScoreEvent
+
+* id
+* userId nullable
+* organizationId nullable
+* repositoryId nullable
+* contributionId nullable
+* type
+* basePoints
+* multiplier
+* finalPoints
+* reason
+* metadata as JSON
+* createdAt
+
+==================================================
+7. GITHUB INTEGRATION
+=====================
+
+If GitHub auth is already implemented, reuse it.
+
+If not, add GitHub OAuth sign-in/linking.
+
+Required GitHub data fetching:
+
+* User profile
+* User organizations
+* Repositories
+* Pull requests
+* Issues
+* Reviews where possible
+* Repo metadata: stars, forks, open issues, primary language, license
+* Contributors for tracked repositories
+* Recent merged PRs
+* Recent issue activity
+
+Do not overload GitHub API on every request.
+
+Implement sync strategy:
+
+* Store data in DB
+* Add sync job or manual sync endpoint
+* Cache expensive data
+* Use updatedAt checks
+* Avoid repeated API calls on page refresh
+
+Suggested endpoints:
+
+POST /api/github/sync/me
+POST /api/github/sync/organization/:slug
+POST /api/github/sync/repository/:owner/:repo
+
+Add UI states:
+
+* “Syncing GitHub data…”
+* “Last synced X minutes ago”
+* “Sync failed. Retry”
+* “Connect GitHub to unlock personalized recommendations”
+
+==================================================
+8. SCORE CALCULATION
+====================
+
+Implement transparent score calculation helpers.
+
+Do not create random scores in components.
+
+Create reusable service:
+
+services/scoring.ts
+
+Functions:
+
+calculateOrganizationScore(org)
+calculateRepositoryScore(repo)
+calculateContributionPoints(contribution)
+calculateBeginnerFriendlyScore(repoOrOrg)
+calculateAverageReviewTime(prs)
+calculateActivityScore(activity)
+calculateReputationScore(stars, forks, contributors)
+
+Initial scoring can be simple but must be deterministic.
+
+Organization score example:
+
+Org Score =
+25% repo activity
+20% beginner friendliness
+20% maintainer response speed
+15% reputation
+10% program credibility
+10% quest availability
+
+Repository score example:
+
+Repo Score =
+25% recent activity
+20% PR merge/review speed
+20% beginner-friendly issues
+15% reputation
+10% documentation/setup quality
+10% quest availability
+
+Contribution points example:
+
+Issue opened: 5
+Valid issue: 10
+PR opened: 15
+PR merged: 50
+PR review submitted: 20
+Docs PR merged: 35
+Bug fix merged: 60
+Feature merged: 80
+CI/build fix merged: 55
+Security/performance fix merged: 90
+First contribution to new repo: 25
+First contribution to new org: 40
+
+Create score explanations in API response where possible.
 
 Example:
-
-const { data, isLoading } = useQuery({
-  queryKey: ["activities"],
-  queryFn: getActivities,
-  staleTime: 1000 * 60,
-});
-
-Meaning: once activities are fetched, keep them fresh for 1 minute.
-
-When user returns to page, show cached data instantly.
-
-B. Use Optimistic UI
-
-When user adds activity, show it instantly before backend confirms.
-
-Example:
-
-User clicks Add Activity
-↓
-UI instantly shows new activity
-↓
-Backend saves in background
-↓
-If success, keep it
-↓
-If error, rollback
-
-This is how modern apps feel fast.
-
-Use React Query mutation:
-
-useMutation({
-  mutationFn: createActivity,
-  onMutate: async (newActivity) => {
-    queryClient.setQueryData(["activities"], (old: any) => {
-      return [newActivity, ...old];
-    });
-  },
-});
-C. Prefetch Pages
-
-When user hovers over sidebar links like Dashboard, Activities, Pins, Schedule, prefetch data.
-
-Next.js already prefetches routes using <Link />, but you can also prefetch API data:
-
-queryClient.prefetchQuery({
-  queryKey: ["pins"],
-  queryFn: getPins,
-});
-
-This makes navigation feel instant.
-
-D. Use Skeleton Loading
-
-Do not show blank screens.
-
-Show skeleton cards:
-
-█████████
-██████████████
-██████
-
-This makes app feel much faster even when loading takes a second.
-
-4. Add Redis Cache
-
-For fast dashboard stats, add Redis.
-
-Use Redis for:
-
-Dashboard summary
-Profile stats
-Leaderboard
-Activity count by month
-Pinned favorites
-Public feed
-User session/token blacklist if needed
-
-Example:
-
-GET /api/dashboard/summary
-
-Instead of calculating every time from MySQL:
-
-Check Redis first
-If found → return instantly
-If not found → query MySQL → store in Redis → return
-
-Pseudo flow:
-
-const cacheKey = `dashboard:${userId}`;
-
-const cached = await redis.get(cacheKey);
-
-if (cached) {
-  return JSON.parse(cached);
-}
-
-const summary = await calculateDashboardSummary(userId);
-
-await redis.set(cacheKey, JSON.stringify(summary), "EX", 60);
-
-return summary;
-
-Even 30–60 seconds cache is enough.
-
-5. Precompute Heavy Stats
-
-Dashboard stats become slow if calculated live every time.
-
-Bad:
-
-Every dashboard load:
-- Count all PR reviews
-- Count all issues
-- Count all repos
-- Count monthly data
-- Count yearly data
-
-Better:
-
-Create a table:
-
-model UserStats {
-  id                 String @id @default(cuid())
-  userId             String @unique
-
-  totalActivities    Int @default(0)
-  totalPrReviewed    Int @default(0)
-  totalPrRaised      Int @default(0)
-  totalIssuesRaised  Int @default(0)
-  totalPrClosed      Int @default(0)
-  totalIssuesClosed  Int @default(0)
-
-  currentStreak      Int @default(0)
-  longestStreak      Int @default(0)
-
-  updatedAt          DateTime @updatedAt
-}
-
-Whenever activity is added/updated/deleted, update this stats table.
-
-Then dashboard becomes instant:
-
-GET /api/dashboard/summary
-
-Only reads one row.
-
-6. Use Background Jobs
-
-Do not make user wait for heavy work.
-
-Use queue system:
-
-BullMQ + Redis
-
-Use background jobs for:
-
-Recalculating stats
-Sending notifications
-AI reports
-GitHub sync
-Favicon fetching
-Leaderboard calculation
-Weekly summaries
-Email sending
-
-Example:
-
-User adds activity
-↓
-Backend saves activity immediately
-↓
-API responds fast
-↓
-Queue updates stats in background
-
-This makes app feel instant.
-
-7. Split Read and Write APIs
-
-For scale:
-
-Write APIs:
-POST /api/activities
-PUT /api/activities/:id
-
-Read APIs:
-GET /api/dashboard
-GET /api/feed
-GET /api/profile/:username
-
-Reads happen much more than writes.
-
-Later you can use:
-
-MySQL Primary DB → writes
-MySQL Read Replicas → reads
-
-Architecture:
-
-POST/PUT/DELETE → Primary MySQL
-GET requests → Read replica / Redis cache
-8. Use WebSockets for Real-Time Feel
-
-Use Socket.io for:
-
-Live notifications
-Real-time dashboard updates
-Activity feed updates
-Badge unlocks
-Follow notifications
-Schedule reminders
-
-Flow:
-
-User creates activity
-↓
-Backend saves it
-↓
-Backend emits socket event
-↓
-Dashboard updates instantly
-
-Example:
-
-io.to(userId).emit("activity:created", activity);
-io.to(userId).emit("dashboard:stats-updated", stats);
-
-Frontend listens:
-
-socket.on("activity:created", (activity) => {
-  queryClient.setQueryData(["activities"], old => [activity, ...old]);
-});
-
-Use WebSockets for updates, not initial heavy fetching.
-
-Initial data still comes from REST API.
-
-9. CDN and Static Optimization
-
-For frontend speed:
-
-Deploy Next.js on Vercel
-Use CDN caching for public pages
-Optimize images
-Use lazy loading
-Use dynamic imports for heavy charts
-Avoid loading all chart libraries on homepage
-
-Example:
-
-const AnalyticsChart = dynamic(() => import("@/components/AnalyticsChart"), {
-  ssr: false,
-});
-
-This stops charts from slowing initial page load.
-
-10. API Design for Fast Dashboard
-
-Do not make 10 API calls on dashboard.
-
-Bad:
-
-GET /activities
-GET /pins
-GET /scheduled-work
-GET /stats
-GET /leaderboard
-GET /notifications
-
-Better:
-
-GET /api/dashboard
-
-Return everything needed for initial dashboard:
 
 {
-  summary: {},
-  recentActivities: [],
-  upcomingWork: [],
-  favoritePins: [],
-  notifications: []
+"maintianexScore": 94,
+"scoreBreakdown": {
+"repoActivity": 23,
+"beginnerFriendliness": 18,
+"reviewSpeed": 19,
+"reputation": 14,
+"programCredibility": 10,
+"questAvailability": 10
+}
 }
 
-This reduces network delay.
+==================================================
+9. SAVE / FOLLOW FUNCTIONALITY
+==============================
 
-11. Best Database Strategy for Millions
+Implement working save buttons.
 
-Start:
+When user clicks Save on organization/repo/quest:
 
-Single MySQL DB
+* If logged in: save to SavedOpportunity
+* If not logged in: redirect to GitHub login or show auth modal
 
-Then:
+Routes:
 
-MySQL + indexes + Redis
+* /explore/saved
 
-Then:
+Saved page should show:
 
-MySQL primary + read replicas
+* Saved Organizations
+* Saved Repositories
+* Saved Quests
+* Saved Issues
 
-Then if very large:
+If some tabs are not implemented, show Coming Soon inside that tab.
 
-Partition activity table by userId/date
+==================================================
+10. RECOMMENDED FOR YOU
+=======================
 
-Your largest table will be:
+Route:
 
-Activity
-ScheduledWork
-Notifications
-FeedEvents
+/explore/recommended
 
-For millions of users, activity/feed tables should use cursor pagination and indexes.
+If GitHub is not connected:
 
-12. What To Tell Codex To Improve Speed
+* Show connect GitHub CTA
 
-Paste this to Codex:
+If recommendation engine is not ready:
 
-# Maintainex Performance and Scalability Upgrade
+* Redirect to /coming-soon?feature=recommended-for-you
 
-Improve Maintainex backend and frontend performance so the app feels instant and can scale to a large number of users.
+Do not show fake recommendations.
 
-Current stack:
-- Next.js frontend
-- Node.js + Express backend
-- TypeScript
-- MySQL
-- Prisma
-- JWT auth
+Later this page should use:
 
-Do not rewrite the app. Improve the existing architecture.
+* User’s GitHub languages
+* Previous contribution types
+* Saved interests
+* Repo activity
+* Maintianex score
+* Quest availability
 
-## Backend Requirements
+==================================================
+11. QUESTS PAGE
+===============
 
-1. Add proper Prisma indexes for all frequently queried fields:
-   - Activity: userId, date, activityType, status, repositoryId, organizationId, createdAt
-   - Pins: userId, category, isFavorite, sortOrder, createdAt
-   - ScheduledWork: userId, status, priority, dueDate, assignedToMe, type
-   - Notifications if present: userId, isRead, createdAt
+Route:
 
-2. Update all list APIs to use pagination.
-   Use:
-   - page + limit for normal lists
-   - cursor pagination for feed/activity timeline if possible
+/explore/quests
 
-3. Use Prisma `select` to avoid returning unnecessary fields in list APIs.
+If quest data model and API are ready, show:
 
-4. Create a combined dashboard API:
+Quest categories:
 
-```txt
-GET /api/dashboard
+* Beginner Quests
+* Weekly Quests
+* Skill-Based Quests
+* Org-Specific Quests
+* Repo-Specific Quests
+* Competitive Quests
 
-It should return:
+Quest card:
 
-{
-  summary,
-  recentActivities,
-  favoritePins,
-  upcomingWork,
-  notifications
-}
+* Title
+* Description
+* Difficulty
+* Points
+* Linked org/repo
+* Estimated effort
+* Reward badge
+* Start Quest button
 
-Avoid making the frontend call many APIs separately on dashboard load.
+If not ready:
 
-Add Redis caching support.
+* Redirect to /coming-soon?feature=quests
 
-Use Redis for:
+Do not create fake quest cards in production UI.
 
-Dashboard summary
-Public profile stats
-Leaderboard
-Favorite pins
-Monthly/yearly analytics
+==================================================
+12. FIND REPOSITORIES PAGE
+==========================
 
-Cache keys should include userId.
+Route:
 
-Example:
+/explore/repositories
 
-dashboard:USER_ID
-profile:USERNAME
-leaderboard:monthly
-analytics:USER_ID:monthly
+If implemented, show repository discovery with filters:
 
-Use short TTL like 30 to 120 seconds.
+* Organization
+* Language
+* Tech stack
+* Difficulty
+* Repo reputation
+* Open issues
+* Good first issues
+* Review speed
+* Setup difficulty
+* Quest availability
+
+Repository card:
+
+* Repo name
+* Parent org
+* Description
+* Stars
+* Forks
+* Primary language
+* Open issues
+* Good first issues
+* Maintianex Repo Score
+* Difficulty Score
+* Average PR Merge Time
+* View Repo
+* Save Repo
 
-Add cache invalidation after create/update/delete activity, pin, or scheduled work.
-Add a UserStats model for precomputed dashboard stats.
-
-Whenever an activity is created, updated, or deleted, update user stats instead of recalculating everything on every dashboard request.
-
-Add background job support using BullMQ and Redis.
-
-Use jobs for:
-
-Recalculate stats
-Recalculate leaderboard
-Generate weekly reports later
-Fetch favicon metadata later
-Send notifications later
-Add response compression.
-
-Use Express compression middleware.
-
-Add API response time logging in development.
-
-Log method, path, status, and response time.
-
-Frontend Requirements
-Add TanStack Query / React Query.
-
-Use it for:
-
-Activities
-Pins
-Scheduled work
-Dashboard
-Profile stats
-Notifications
-Configure caching:
-staleTime: 60 * 1000
-gcTime: 5 * 60 * 1000
-Add optimistic updates for:
-Creating activity
-Editing activity
-Deleting activity
-Adding pin
-Deleting pin
-Marking scheduled work done
-Updating scheduled work status
-Add skeleton loaders instead of blank loading screens.
-Prefetch important pages and data:
-Dashboard
-Activities
-Pins
-Schedule
-Lazy load heavy chart components using dynamic imports.
-Avoid fetching all records at once.
-Use paginated APIs everywhere.
-On dashboard, use only:
-GET /api/dashboard
-
-for initial data.
-
-Optional Real-Time Upgrade
-
-Add Socket.io.
-
-Use it for:
-
-Live dashboard stats update
-New activity events
-New notification events
-Scheduled work due reminders
-Badge unlock notifications
-
-When activity is created, emit:
-
-activity:created
-dashboard:updated
-notification:new
-
-Frontend should update React Query cache when socket events arrive.
-
-Database Models To Add
-
-Add UserStats model:
-
-model UserStats {
-  id                String   @id @default(cuid())
-  userId            String   @unique
-
-  totalActivities   Int      @default(0)
-  totalPrReviewed   Int      @default(0)
-  totalPrRaised     Int      @default(0)
-  totalIssuesRaised Int      @default(0)
-  totalPrClosed     Int      @default(0)
-  totalIssuesClosed Int      @default(0)
-
-  currentStreak     Int      @default(0)
-  longestStreak     Int      @default(0)
-
-  updatedAt         DateTime @updatedAt
-
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-Update User model:
-
-stats UserStats?
-Final Goal
-
-After this upgrade:
-
-Dashboard should load instantly from cache or precomputed stats
-List pages should be fast because of pagination and indexes
-UI should feel instant because of React Query cache and optimistic updates
-Heavy calculations should move to background jobs
-App should be ready to scale to many users
-
----
-
-# 13. Priority Order For You
-
-Do this in this order:
-
-```txt
-1. Add DB indexes
-2. Add pagination
-3. Use Prisma select
-4. Add combined dashboard API
-5. Add React Query
-6. Add optimistic UI
-7. Add Redis cache
-8. Add UserStats table
-9. Add background jobs
-10. Add WebSockets
+If not ready:
+
+* Redirect to /coming-soon?feature=find-repositories
+
+==================================================
+13. EMPTY / LOADING / ERROR STATES
+==================================
+
+Every page and API-backed component must have:
+
+Loading:
+
+* skeleton cards
+* table skeletons
+* loading message
+
+Empty:
+
+* friendly empty state
+* clear next action
+* no fake rows
+
+Error:
+
+* error message
+* retry button
+* fallback action
+
+Examples:
+
+* “No organizations found for these filters.”
+* “No leaderboard data available yet.”
+* “Connect GitHub to calculate personalized recommendations.”
+* “This feature is coming soon.”
+
+==================================================
+14. QUALITY REQUIREMENTS
+========================
+
+Before finishing:
+
+* Ensure every route works.
+* Ensure no broken buttons.
+* Ensure buttons either perform real action or redirect to Coming Soon.
+* Ensure no dummy fake data is displayed in production UI.
+* Ensure all lists/cards/tables are API-backed.
+* Ensure filters update query params and refetch data.
+* Ensure pagination works.
+* Ensure save buttons persist data.
+* Ensure organization detail pages are dynamic by slug.
+* Ensure responsive layout does not break.
+* Ensure dark theme matches Maintianex.
+* Ensure TypeScript types are clean.
+* Ensure lint/build pass.
+
+Run:
+
+npm run lint
+npm run build
+
+Fix all errors.
+
+==================================================
+15. IMPLEMENTATION PRIORITY
+===========================
+
+Priority 1:
+
+* Sidebar Start Contributing section
+* Coming Soon page
+* Explore Organizations page
+* API for organizations
+* DB models for Organization, ProgramParticipation, Repository
+* Real database-backed org cards
+* Filters, sorting, pagination
+
+Priority 2:
+
+* Organization detail page
+* Contributors tab
+* Repositories tab
+* Save organization functionality
+
+Priority 3:
+
+* Leaderboards page
+* Open Source Index
+* Collections
+
+Priority 4:
+
+* Quests
+* Recommended for You
+* Advanced GitHub sync
+* Momentum Engine
+
+Build this carefully and make the code modular. Use reusable components:
+
+components/explore/OrganizationCard.tsx
+components/explore/OrganizationFilters.tsx
+components/explore/RepositoryCard.tsx
+components/explore/QuestCard.tsx
+components/leaderboards/LeaderboardCard.tsx
+components/common/ComingSoon.tsx
+components/common/MetricCard.tsx
+components/common/ScoreBadge.tsx
+components/common/ProgramBadge.tsx
+components/common/TechTag.tsx
+
+Use API/service separation:
+
+services/github.ts
+services/scoring.ts
+services/explore.ts
+services/leaderboards.ts
+
+Final expected result:
+A fully working Maintianex “Start Contributing” experience where users can browse real organizations, filter by GSoC/LFX/tech stack, open organization detail pages, see real stats from database/API, and use only working buttons. Any feature not ready must gracefully redirect to a Coming Soon page instead of showing broken or fake UI.

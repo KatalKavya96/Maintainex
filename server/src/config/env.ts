@@ -1,6 +1,9 @@
 import dotenv from "dotenv";
+import path from "path";
 
-dotenv.config();
+dotenv.config({ path: path.resolve(process.cwd(), ".env") });
+dotenv.config({ path: path.resolve(process.cwd(), "server/.env") });
+dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
 const splitOrigins = (value?: string) =>
   value
@@ -35,7 +38,7 @@ export const env = {
   githubAuthRedirectUri: process.env.GITHUB_AUTH_REDIRECT_URI,
   githubWebhookSecret: process.env.GITHUB_WEBHOOK_SECRET,
   githubTokenEncryptionKey: process.env.GITHUB_TOKEN_ENCRYPTION_KEY,
-  githubApiVersion: process.env.GITHUB_API_VERSION ?? "2026-03-10",
+  githubApiVersion: process.env.GITHUB_API_VERSION ?? "2022-11-28",
   githubOAuthScopes: process.env.GITHUB_OAUTH_SCOPES ?? "read:user user:email public_repo",
   googleClientId: process.env.GOOGLE_CLIENT_ID,
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,

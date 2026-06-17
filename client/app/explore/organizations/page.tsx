@@ -42,7 +42,7 @@ const filterParams = (filters: OrganizationFilterState) => ({
   beginnerFriendly: filters.beginnerFriendly,
   sort: filters.sort,
   page: filters.page,
-  limit: 6
+  limit: 9
 });
 
 export default function ExploreOrganizationsPage() {
@@ -101,17 +101,17 @@ export default function ExploreOrganizationsPage() {
   const pagination = data?.pagination;
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[280px_1fr]">
+    <div className="grid gap-8 xl:grid-cols-[270px_1fr]">
       <OrganizationFilters filters={filters} onChange={updateFilters} onReset={() => router.replace(pathname, { scroll: false })} />
-      <section className="min-w-0 border-line xl:border-l xl:pl-7">
-        <div className="flex flex-wrap items-start justify-between gap-4">
+      <section className="min-w-0 border-line xl:border-l xl:pl-8">
+        <div className="flex flex-wrap items-start justify-between gap-5">
           <div>
-            <h1 className="text-3xl font-black tracking-tight text-ink">Explore Organizations</h1>
-            <p className="mt-2 text-base font-medium text-slate-500">Discover open-source organizations and find the perfect place to contribute.</p>
+            <h1 className="text-4xl font-black tracking-tight text-ink">Explore Organizations</h1>
+            <p className="mt-3 text-base font-medium text-slate-500">Discover open-source organizations and find the perfect place to contribute.</p>
           </div>
         </div>
 
-        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-6">
+        <div className="mt-7 grid gap-4 md:grid-cols-2 min-[1700px]:grid-cols-3 min-[2100px]:grid-cols-6">
           <TopSelect label="Program" value={filters.program} options={["All", ...programOptions]} onChange={(value) => updateFilters({ program: value === "All" ? "" : value, page: 1 })} />
           <TopSelect label="Year" value={filters.year} options={yearOptions} emptyLabel="All Years" onChange={(value) => updateFilters({ year: value === "All Years" ? "" : value, page: 1 })} />
           <TopSelect label="Tech Stack" value={filters.techStack} options={["All", ...techStackOptions]} onChange={(value) => updateFilters({ techStack: value === "All" ? "" : value, page: 1 })} />
@@ -120,16 +120,16 @@ export default function ExploreOrganizationsPage() {
           <TopSelect label="Sort By" value={filters.sort} options={sortOptions} onChange={(value) => updateFilters({ sort: value, page: 1 })} />
         </div>
 
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
           <p className="text-sm font-semibold text-ink">{loading ? "Loading organizations..." : `${data?.pagination.total ?? 0} organizations found`}</p>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-3">
             <div className="relative">
               <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
               <input
                 value={filters.search}
                 onChange={(event) => updateFilters({ search: event.target.value, page: 1 })}
                 placeholder="Search organizations..."
-                className="h-9 w-64 max-w-full rounded-lg border border-line bg-skyglass pl-9 pr-3 text-sm font-semibold text-ink outline-none placeholder:text-slate-500 focus:border-moss"
+                className="h-10 w-80 max-w-full rounded-lg border border-line bg-skyglass pl-9 pr-3 text-sm font-semibold text-ink outline-none placeholder:text-slate-500 focus:border-moss"
               />
             </div>
             <ViewButton active={view === "grid"} label="Grid view" onClick={() => setView("grid")}>
@@ -152,7 +152,7 @@ export default function ExploreOrganizationsPage() {
           </div>
         ) : null}
 
-        <div className={clsx("mt-5 grid gap-4", view === "grid" ? "lg:grid-cols-2 2xl:grid-cols-3" : "grid-cols-1")}>
+        <div className={clsx("mt-6 grid gap-6", view === "grid" ? "min-[1500px]:grid-cols-2 min-[2100px]:grid-cols-3" : "grid-cols-1")}>
           {loading
             ? Array.from({ length: 6 }, (_, index) => <OrganizationSkeleton key={index} />)
             : data?.items.map((organization) => (
@@ -161,7 +161,7 @@ export default function ExploreOrganizationsPage() {
         </div>
 
         {!loading && data && data.items.length === 0 ? (
-          <div className="mt-5">
+          <div className="mt-6">
             <EmptyState
               title="No organizations found for these filters."
               description="Try clearing one or two filters, or sync GitHub data so Maintainex can calculate discovery results."
@@ -171,7 +171,7 @@ export default function ExploreOrganizationsPage() {
         ) : null}
 
         {pagination && pagination.totalPages > 1 ? (
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center justify-center gap-2">
               <PageButton disabled={pagination.page <= 1} onClick={() => updateFilters({ page: pagination.page - 1 })}>
                 ‹
@@ -218,9 +218,9 @@ function TopSelect({
 }) {
   const displayValue = valueForLabel ? options.find((option) => valueForLabel(option) === value) ?? options[0] : value || emptyLabel || options[0];
   return (
-    <label className="flex h-11 items-center justify-between gap-3 rounded-lg border border-line bg-white px-3 text-sm font-semibold text-slate-400">
+    <label className="flex min-h-12 items-center justify-between gap-4 rounded-lg border border-line bg-white px-4 text-sm font-semibold text-slate-400">
       <span>{label}</span>
-      <select value={displayValue} onChange={(event) => onChange(valueForLabel ? valueForLabel(event.target.value) : event.target.value)} className="min-w-0 rounded border border-line bg-skyglass px-2 py-1 text-xs font-bold text-ink outline-none">
+      <select value={displayValue} onChange={(event) => onChange(valueForLabel ? valueForLabel(event.target.value) : event.target.value)} className="min-w-0 rounded border border-line bg-skyglass px-3 py-1.5 text-xs font-bold text-ink outline-none">
         {options.map((option) => (
           <option key={option} value={option}>
             {option}
@@ -237,7 +237,7 @@ function ViewButton({ active, label, children, onClick }: { active: boolean; lab
       type="button"
       aria-label={label}
       onClick={onClick}
-      className={clsx("grid h-9 w-10 place-items-center rounded-lg border transition", active ? "border-moss bg-moss/15 text-moss" : "border-line bg-white text-slate-400 hover:text-ink")}
+      className={clsx("grid h-10 w-11 place-items-center rounded-lg border transition", active ? "border-moss bg-moss/15 text-moss" : "border-line bg-white text-slate-400 hover:text-ink")}
     >
       {children}
     </button>
@@ -250,7 +250,7 @@ function PageButton({ children, active, disabled, onClick }: { children: ReactNo
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className={clsx("grid h-9 min-w-9 place-items-center rounded-lg border px-3 text-sm font-extrabold transition", active ? "border-moss bg-moss/15 text-moss" : "border-line bg-white text-slate-400 hover:text-ink", disabled && "cursor-not-allowed opacity-40")}
+      className={clsx("grid h-10 min-w-10 place-items-center rounded-lg border px-3 text-sm font-extrabold transition", active ? "border-moss bg-moss/15 text-moss" : "border-line bg-white text-slate-400 hover:text-ink", disabled && "cursor-not-allowed opacity-40")}
     >
       {children}
     </button>
@@ -259,9 +259,9 @@ function PageButton({ children, active, disabled, onClick }: { children: ReactNo
 
 function OrganizationSkeleton() {
   return (
-    <div className="animate-pulse rounded-lg border border-line bg-white p-4 shadow-soft">
-      <div className="flex gap-4">
-        <div className="h-14 w-14 rounded-full bg-skyglass" />
+    <div className="animate-pulse rounded-lg border border-line bg-white p-5 shadow-soft">
+      <div className="flex gap-5">
+        <div className="h-16 w-16 rounded-full bg-skyglass" />
         <div className="flex-1 space-y-3">
           <div className="h-5 w-2/3 rounded bg-skyglass" />
           <div className="h-4 w-1/2 rounded bg-skyglass" />

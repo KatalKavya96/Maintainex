@@ -45,10 +45,10 @@ export default function SavedOpportunitiesPage() {
   const empty = data && !data.organizations.length && !data.repositories.length && !data.quests.length && !data.issues.length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-black tracking-tight text-ink">Saved Opportunities</h1>
-        <p className="mt-2 text-base font-medium text-slate-500">Your saved organizations, repositories, quests, and issue links from real Maintainex data.</p>
+        <h1 className="text-4xl font-black tracking-tight text-ink">Saved Opportunities</h1>
+        <p className="mt-3 text-base font-medium text-slate-500">Your saved organizations, repositories, quests, and issue links from real Maintainex data.</p>
       </div>
 
       {error ? (
@@ -81,7 +81,7 @@ export default function SavedOpportunitiesPage() {
       {!loading && data ? (
         <>
           <SavedSection title="Saved Organizations" empty="No saved organizations yet." count={data.organizations.length}>
-            <div className="grid gap-4 lg:grid-cols-2 2xl:grid-cols-3">
+            <div className="grid gap-6 xl:grid-cols-2 min-[1800px]:grid-cols-3">
               {data.organizations.map((organization) => (
                 <OrganizationCard key={organization.id} organization={organization} onSave={unsaveOrganization} saving={savingId === organization.id} />
               ))}
@@ -89,7 +89,7 @@ export default function SavedOpportunitiesPage() {
           </SavedSection>
 
           <SavedSection title="Saved Repositories" empty="No saved repositories yet." count={data.repositories.length}>
-            <div className="grid gap-4 lg:grid-cols-2 2xl:grid-cols-3">
+            <div className="grid gap-6 xl:grid-cols-2 min-[1800px]:grid-cols-3">
               {data.repositories.map((repository) => (
                 <RepositoryCard key={repository.id} repository={repository} orgSlug={repository.organization?.slug} />
               ))}
@@ -97,7 +97,7 @@ export default function SavedOpportunitiesPage() {
           </SavedSection>
 
           <SavedSection title="Saved Quests" empty="No saved quests yet." count={data.quests.length}>
-            <div className="grid gap-4 lg:grid-cols-2 2xl:grid-cols-3">
+            <div className="grid gap-6 xl:grid-cols-2 min-[1800px]:grid-cols-3">
               {data.quests.map((quest) => (
                 <QuestCard key={quest.id} quest={quest} />
               ))}
@@ -122,9 +122,9 @@ export default function SavedOpportunitiesPage() {
 
 function SavedSection({ title, empty, count, children }: { title: string; empty: string; count: number; children: ReactNode }) {
   return (
-    <section className="rounded-lg border border-line bg-white p-4 shadow-soft">
-      <h2 className="text-lg font-extrabold text-ink">{title}</h2>
-      <div className="mt-4">{count > 0 ? children : <EmptyState title={empty} description="Maintainex only shows saved items that exist in the database." />}</div>
+    <section className="rounded-lg border border-line bg-white p-6 shadow-soft">
+      <h2 className="text-xl font-extrabold text-ink">{title}</h2>
+      <div className="mt-5">{count > 0 ? children : <EmptyState title={empty} description="Maintainex only shows saved items that exist in the database." />}</div>
     </section>
   );
 }

@@ -85,9 +85,9 @@ export default function OrganizationDetailPage() {
   }
 
   return (
-    <div className="space-y-4">
-      <section className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex min-w-0 gap-5">
+    <div className="space-y-8">
+      <section className="flex flex-col gap-7 2xl:flex-row 2xl:items-center 2xl:justify-between">
+        <div className="flex min-w-0 gap-6">
           {organization.logoUrl ? (
             <img src={organization.logoUrl} alt="" className="h-28 w-28 rounded-full border border-line object-cover shadow-soft" />
           ) : (
@@ -102,7 +102,7 @@ export default function OrganizationDetailPage() {
                 <ProgramBadge key={program.name} name={program.name} />
               ))}
             </div>
-            <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-slate-500">{organization.description || "No organization description has been synced yet."}</p>
+            <p className="mt-4 max-w-3xl text-sm font-medium leading-6 text-slate-500">{organization.description || "No organization description has been synced yet."}</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {organization.techStack.slice(0, 6).map((tag) => (
                 <TechTag key={tag}>{tag}</TechTag>
@@ -111,7 +111,7 @@ export default function OrganizationDetailPage() {
           </div>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 min-[1800px]:grid-cols-5">
           <MetricCard label="Maintainex Score" value={<span className="text-moss">{organization.maintianexScore || "--"}</span>} detail={organization.scoreLabel} icon={<Info size={15} />} />
           <MetricCard label="Active Repos" value={organization.activeReposCount} detail="tracked repositories" />
           <MetricCard label="Open Quests" value={organization.openQuestsCount} detail="available now" />
@@ -124,7 +124,7 @@ export default function OrganizationDetailPage() {
         </div>
       </section>
 
-      <div className="flex flex-wrap justify-end gap-3">
+      <div className="flex flex-wrap justify-end gap-4">
         <Button href="/coming-soon?feature=follow-organization" variant="secondary">
           <UserPlus size={16} />
           Follow
@@ -154,14 +154,14 @@ export default function OrganizationDetailPage() {
               key={tab}
               type="button"
               onClick={() => setActiveTab(tab)}
-              className={clsx("h-12 px-5 text-sm font-bold transition", activeTab === tab ? "border-b-2 border-moss bg-moss/10 text-moss" : "text-slate-400 hover:text-ink")}
+              className={clsx("h-14 px-6 text-sm font-bold transition", activeTab === tab ? "border-b-2 border-moss bg-moss/10 text-moss" : "text-slate-400 hover:text-ink")}
             >
               {tab}
             </button>
           ))}
         </div>
 
-        <div className="p-3">
+        <div className="p-5">
           {activeTab === "Overview" ? <OverviewTab organization={organization} repositories={topRepositories} /> : null}
           {activeTab === "Contributors" ? <ContributorsTab data={contributors} /> : null}
           {activeTab === "Repositories" ? <RepositoriesTab repositories={repositories?.items ?? []} orgSlug={organization.slug} /> : null}
@@ -172,15 +172,15 @@ export default function OrganizationDetailPage() {
         </div>
       </section>
 
-      <section className="rounded-lg border border-line bg-white p-4 shadow-soft">
-        <div className="mb-3 flex items-center justify-between">
+      <section className="rounded-lg border border-line bg-white p-6 shadow-soft">
+        <div className="mb-5 flex items-center justify-between">
           <h2 className="text-lg font-extrabold text-ink">Top repositories</h2>
           <button type="button" onClick={() => setActiveTab("Repositories")} className="text-sm font-bold text-moss">
             View all repositories →
           </button>
         </div>
         {topRepositories.length ? (
-          <div className="grid gap-3 lg:grid-cols-2 2xl:grid-cols-4">
+          <div className="grid gap-5 xl:grid-cols-2 min-[1800px]:grid-cols-4">
             {topRepositories.map((repository) => (
               <RepositoryCard key={repository.id} repository={repository} orgSlug={organization.slug} />
             ))}
@@ -196,8 +196,8 @@ export default function OrganizationDetailPage() {
 function OverviewTab({ organization, repositories }: { organization: ExploreOrganization; repositories: OrganizationRepositoriesResponse["items"] }) {
   const breakdown = organization.scoreBreakdown ? Object.entries(organization.scoreBreakdown).filter(([, value]) => value > 0) : [];
   return (
-    <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
-      <div className="rounded-lg border border-line bg-[#111514] p-4">
+    <div className="grid gap-6 2xl:grid-cols-[1fr_400px]">
+      <div className="rounded-lg border border-line bg-[#111514] p-5">
         <h2 className="text-lg font-extrabold text-ink">Score breakdown</h2>
         {breakdown.length ? (
           <div className="mt-4 space-y-3">
@@ -217,7 +217,7 @@ function OverviewTab({ organization, repositories }: { organization: ExploreOrga
           <EmptyState title="No score explanation yet." description="Score breakdowns will appear once enough activity, repository, and program data exists." />
         )}
       </div>
-      <div className="rounded-lg border border-line bg-[#111514] p-4">
+      <div className="rounded-lg border border-line bg-[#111514] p-5">
         <ScoreBadge score={organization.maintianexScore} label={organization.scoreLabel} />
         <p className="mt-4 text-sm font-medium leading-6 text-slate-500">{repositories.length} top repositories are available from synced data.</p>
       </div>
@@ -231,9 +231,9 @@ function ContributorsTab({ data }: { data: OrganizationContributorsResponse | nu
   }
 
   return (
-    <div className="grid gap-3 xl:grid-cols-[1fr_360px]">
+    <div className="grid gap-6 2xl:grid-cols-[1fr_400px]">
       <div className="overflow-hidden rounded-lg border border-line">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line bg-[#111514] p-3">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line bg-[#111514] p-4">
           <button type="button" className="inline-flex h-9 items-center gap-2 rounded-lg border border-line bg-skyglass px-3 text-sm font-bold text-ink">
             All activities
           </button>
@@ -297,8 +297,8 @@ function ContributorSummary({ data }: { data: OrganizationContributorsResponse }
   const top = data.topContributor;
   const gradient = distributionGradient(data.distribution);
   return (
-    <div className="space-y-3">
-      <div className="rounded-lg border border-line bg-[#111514] p-4">
+    <div className="space-y-5">
+      <div className="rounded-lg border border-line bg-[#111514] p-5">
         <h3 className="text-sm font-extrabold text-ink">Top Contributor</h3>
         {top ? (
           <div className="mt-5 flex items-center gap-4">
@@ -315,7 +315,7 @@ function ContributorSummary({ data }: { data: OrganizationContributorsResponse }
           </div>
         ) : null}
       </div>
-      <div className="rounded-lg border border-line bg-[#111514] p-4">
+      <div className="rounded-lg border border-line bg-[#111514] p-5">
         <h3 className="text-sm font-extrabold text-ink">Contribution distribution</h3>
         {data.distribution.length ? (
           <div className="mt-5 grid items-center gap-5 sm:grid-cols-[140px_1fr]">
@@ -350,7 +350,7 @@ function ContributorSummary({ data }: { data: OrganizationContributorsResponse }
 function RepositoriesTab({ repositories, orgSlug }: { repositories: OrganizationRepositoriesResponse["items"]; orgSlug: string }) {
   if (!repositories.length) return <EmptyState title="No repositories synced yet." description="Repository cards will appear after GitHub repository data is stored in Maintainex." />;
   return (
-    <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
+    <div className="grid gap-5 xl:grid-cols-2 min-[1800px]:grid-cols-3">
       {repositories.map((repository) => (
         <RepositoryCard key={repository.id} repository={repository} orgSlug={orgSlug} />
       ))}
@@ -363,7 +363,7 @@ function QuestsTab({ quests }: { quests: OrganizationQuestsResponse["items"] }) 
     return <EmptyState title="Quests are coming soon for this organization." description="No active quest rows exist yet, so Maintainex is not showing placeholder quests." action={<Button href="/coming-soon?feature=quests">Open Quests Roadmap</Button>} />;
   }
   return (
-    <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
+    <div className="grid gap-5 xl:grid-cols-2 min-[1800px]:grid-cols-3">
       {quests.map((quest) => (
         <QuestCard key={quest.id} quest={quest} />
       ))}

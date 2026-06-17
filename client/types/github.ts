@@ -6,6 +6,10 @@ export type GitHubStatus = {
   scope: string | null;
   lastSyncedAt: string | null;
   syncCursor: string | null;
+  redirectUri: string;
+  scopes: string;
+  missingConfig: string[];
+  tokenEncryptionConfigured: boolean;
 };
 
 export type GitHubSyncResult = {

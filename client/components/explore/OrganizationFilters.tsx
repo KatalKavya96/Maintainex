@@ -47,20 +47,20 @@ const checkboxClass = (active: boolean) =>
 
 export function OrganizationFilters({ filters, onChange, onReset }: { filters: OrganizationFilterState; onChange: (next: Partial<OrganizationFilterState>) => void; onReset: () => void }) {
   return (
-    <aside className="rounded-lg border border-line bg-white p-4 shadow-soft">
-      <div className="flex items-center justify-between gap-3 border-b border-line pb-3">
+    <aside className="rounded-lg border border-line bg-white p-5 shadow-soft">
+      <div className="flex items-center justify-between gap-3 border-b border-line pb-4">
         <h2 className="text-lg font-extrabold text-ink">Filters</h2>
         <button type="button" onClick={onReset} className="inline-flex items-center gap-1.5 text-sm font-bold text-moss">
           <RotateCcw size={14} />
           Reset all
         </button>
       </div>
-      <div className="space-y-5 pt-4">
+      <div className="space-y-6 pt-5">
         <FilterGroup title="Programs">
           {programOptions.map((program) => {
             const active = filters.program === program;
             return (
-              <button key={program} type="button" onClick={() => onChange({ program: active ? "" : program, page: 1 })} className="flex w-full items-center gap-3 text-left text-sm font-semibold text-slate-400 transition hover:text-ink">
+              <button key={program} type="button" onClick={() => onChange({ program: active ? "" : program, page: 1 })} className="flex w-full items-center gap-3 py-0.5 text-left text-sm font-semibold text-slate-400 transition hover:text-ink">
                 <span className={checkboxClass(active)}>{active ? "✓" : null}</span>
                 <span>{program}</span>
               </button>
@@ -73,7 +73,7 @@ export function OrganizationFilters({ filters, onChange, onReset }: { filters: O
             const value = year === "All Years" ? "" : year;
             const active = filters.year === value || (!filters.year && year === "All Years");
             return (
-              <button key={year} type="button" onClick={() => onChange({ year: value, page: 1 })} className="flex w-full items-center gap-3 text-left text-sm font-semibold text-slate-400 transition hover:text-ink">
+              <button key={year} type="button" onClick={() => onChange({ year: value, page: 1 })} className="flex w-full items-center gap-3 py-0.5 text-left text-sm font-semibold text-slate-400 transition hover:text-ink">
                 <span className={clsx("h-4 w-4 rounded-full border", active ? "border-moss bg-moss shadow-[inset_0_0_0_4px_#101111]" : "border-line")} />
                 <span>{year}</span>
               </button>
@@ -94,7 +94,7 @@ export function OrganizationFilters({ filters, onChange, onReset }: { filters: O
           {techStackOptions.slice(0, 6).map((stack) => {
             const active = filters.techStack === stack;
             return (
-              <button key={stack} type="button" onClick={() => onChange({ techStack: active ? "" : stack, page: 1 })} className="flex w-full items-center gap-3 text-left text-sm font-semibold text-slate-400 transition hover:text-ink">
+              <button key={stack} type="button" onClick={() => onChange({ techStack: active ? "" : stack, page: 1 })} className="flex w-full items-center gap-3 py-0.5 text-left text-sm font-semibold text-slate-400 transition hover:text-ink">
                 <span className={checkboxClass(active)}>{active ? "✓" : null}</span>
                 <span>{stack}</span>
               </button>
@@ -141,9 +141,9 @@ export function OrganizationFilters({ filters, onChange, onReset }: { filters: O
 
 function FilterGroup({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="space-y-3 border-b border-line pb-4 last:border-b-0 last:pb-0">
+    <section className="space-y-4 border-b border-line pb-5 last:border-b-0 last:pb-0">
       <h3 className="text-sm font-extrabold text-slate-400">{title}</h3>
-      <div className="space-y-2.5">{children}</div>
+      <div className="space-y-3">{children}</div>
     </section>
   );
 }

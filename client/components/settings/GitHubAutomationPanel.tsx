@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Github, Loader2, RefreshCw, ShieldCheck, Unplug } from "lucide-react";
 import { Button } from "@/components/common/Button";
 import { disconnectGitHub, getGitHubOAuthUrl, getGitHubStatus, syncGitHub } from "@/lib/api";
+import { useAuthStore } from "@/lib/authStore";
 import type { GitHubStatus, GitHubSyncResult } from "@/types/github";
 
 function formatDate(value?: string | null) {
@@ -12,6 +13,7 @@ function formatDate(value?: string | null) {
 }
 
 export function GitHubAutomationPanel() {
+  const { isViewer } = useAuthStore();
   const [status, setStatus] = useState<GitHubStatus | null>(null);
   const [syncResult, setSyncResult] = useState<GitHubSyncResult | null>(null);
   const [loading, setLoading] = useState(true);
@@ -34,7 +36,24 @@ export function GitHubAutomationPanel() {
     loadStatus();
   }, []);
 
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const github = searchParams.get("github");
+    const login = searchParams.get("login");
+    const error = searchParams.get("message");
+    if (github === "connected") {
+      setMessage(login ? `GitHub connected as @${login}. You can sync now.` : "GitHub connected. You can sync now.");
+    }
+    if (github === "error") {
+      setMessage(error ?? "GitHub connection failed.");
+    }
+  }, []);
+
   async function connect() {
+    if (isViewer) {
+      setMessage("Sign in with a real account before connecting GitHub.");
+      return;
+    }
     setWorking(true);
     setMessage("");
     try {
@@ -47,6 +66,10 @@ export function GitHubAutomationPanel() {
   }
 
   async function runSync() {
+    if (isViewer) {
+      setMessage("Sign in with a real account before syncing GitHub.");
+      return;
+    }
     setWorking(true);
     setMessage("");
     try {
@@ -61,6 +84,10 @@ export function GitHubAutomationPanel() {
   }
 
   async function disconnect() {
+    if (isViewer) {
+      setMessage("Sign in with a real account before changing GitHub connection.");
+      return;
+    }
     setWorking(true);
     setMessage("");
     try {
@@ -75,7 +102,7 @@ export function GitHubAutomationPanel() {
   }
 
   return (
-    <section className="mb-4 rounded-xl border border-line bg-white p-4 shadow-soft">
+    <section className="mb-4 rounded-xl border border-line bg-white p-5 shadow-soft">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex min-w-0 gap-3">
           <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-skyglass text-moss">
@@ -83,7 +110,7 @@ export function GitHubAutomationPanel() {
           </span>
           <div className="min-w-0">
             <h2 className="text-base font-extrabold text-ink">GitHub automation</h2>
-            <p className="mt-1 max-w-3xl text-sm font-semibold leading-5 text-slate-500">
+            <p className="mt-1 max-w-3xl text-sm font-semibold leading-6 text-slate-500">
               OAuth sync imports only contribution-related repositories, PRs, reviews, issues, comments, and assigned issues. Synced rows stay separate from manual data.
             </p>
           </div>
@@ -105,27 +132,44 @@ export function GitHubAutomationPanel() {
             </Button>
           </div>
         ) : (
-          <Button type="button" onClick={connect} disabled={working || !status?.configAvailable}>
+          <Button type="button" onClick={connect} disabled={working || !status?.configAvailable || isViewer}>
             {working ? <Loader2 className="animate-spin" size={16} /> : <ShieldCheck size={16} />}
-            Connect GitHub
+            {isViewer ? "Sign in to connect" : "Connect GitHub"}
           </Button>
         )}
       </div>
 
-      <div className="mt-4 grid gap-3 text-sm md:grid-cols-3">
+      <div className="mt-5 grid gap-3 text-sm md:grid-cols-3">
         <div className="rounded-lg border border-line bg-skyglass p-3">
           <p className="text-xs font-black uppercase tracking-wide text-slate-500">Connection</p>
-          <p className="mt-1 font-extrabold text-ink">{status?.connected ? `@${status.login}` : status?.configAvailable ? "Ready to connect" : "OAuth env missing"}</p>
+          <p className="mt-1 font-extrabold text-ink">{status?.connected ? `@${status.login}` : isViewer ? "Sign in required" : status?.configAvailable ? "Ready to connect" : "OAuth env missing"}</p>
         </div>
         <div className="rounded-lg border border-line bg-skyglass p-3">
           <p className="text-xs font-black uppercase tracking-wide text-slate-500">Last sync</p>
           <p className="mt-1 font-extrabold text-ink">{formatDate(status?.lastSyncedAt)}</p>
         </div>
         <div className="rounded-lg border border-line bg-skyglass p-3">
-          <p className="text-xs font-black uppercase tracking-wide text-slate-500">Webhook</p>
-          <p className="mt-1 font-extrabold text-ink">{status?.webhookConfigured ? "Signature verification ready" : "Secret not configured"}</p>
+          <p className="text-xs font-black uppercase tracking-wide text-slate-500">Token storage</p>
+          <p className="mt-1 font-extrabold text-ink">{status?.tokenEncryptionConfigured ? "Encryption key set" : "Needs secret key"}</p>
         </div>
       </div>
+
+      <div className="mt-3 grid gap-3 text-sm lg:grid-cols-[1.5fr_1fr]">
+        <div className="rounded-lg border border-line bg-skyglass p-3">
+          <p className="text-xs font-black uppercase tracking-wide text-slate-500">Callback URL</p>
+          <p className="mt-1 break-all font-extrabold text-ink">{status?.redirectUri ?? "Checking..."}</p>
+        </div>
+        <div className="rounded-lg border border-line bg-skyglass p-3">
+          <p className="text-xs font-black uppercase tracking-wide text-slate-500">Scopes</p>
+          <p className="mt-1 font-extrabold text-ink">{status?.scopes ?? "Checking..."}</p>
+        </div>
+      </div>
+
+      {status && status.missingConfig.length > 0 ? (
+        <p className="mt-3 rounded-lg bg-red-500/10 px-3 py-2 text-sm font-semibold text-red-300">
+          Missing server env: {status.missingConfig.join(", ")}
+        </p>
+      ) : null}
 
       {syncResult ? (
         <div className="mt-4 grid gap-2 text-xs font-black text-slate-500 sm:grid-cols-4">
@@ -137,7 +181,11 @@ export function GitHubAutomationPanel() {
         </div>
       ) : null}
 
-      {message ? <p className="mt-3 rounded-lg bg-red-500/10 px-3 py-2 text-sm font-semibold text-red-300">{message}</p> : null}
+      {message ? (
+        <p className={`mt-3 rounded-lg px-3 py-2 text-sm font-semibold ${message.toLowerCase().includes("failed") || message.toLowerCase().includes("missing") ? "bg-red-500/10 text-red-300" : "bg-lime/10 text-moss"}`}>
+          {message}
+        </p>
+      ) : null}
     </section>
   );
 }

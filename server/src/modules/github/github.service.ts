@@ -128,23 +128,30 @@ const closingReasonFor = (item: Pick<GitHubSearchItem, "state" | "pull_request" 
 export class GitHubService {
   async status(userId: string) {
     const integration = await prisma.gitHubIntegration.findUnique({ where: { userId } });
+    const missingConfig = this.missingOAuthConfig();
     return {
       connected: Boolean(integration),
-      configAvailable: this.isOAuthConfigured(),
+      configAvailable: missingConfig.length === 0,
       webhookConfigured: Boolean(env.githubWebhookSecret),
       login: integration?.login ?? null,
       scope: integration?.scope ?? null,
       lastSyncedAt: integration?.lastSyncedAt ?? null,
-      syncCursor: integration?.syncCursor ?? null
+      syncCursor: integration?.syncCursor ?? null,
+      redirectUri: this.redirectUri(),
+      scopes: env.githubOAuthScopes,
+      missingConfig,
+      tokenEncryptionConfigured: this.isTokenEncryptionConfigured()
     };
   }
 
   async oauthUrl(userId: string) {
-    if (!env.githubClientId) throw new ApiError(503, "GitHub OAuth is not configured");
+    this.ensurePersistedUser(userId);
+    this.ensureOAuthConfigured();
+    const clientId = env.githubClientId!;
     const redirectUri = this.redirectUri();
     const state = jwt.sign({ userId, purpose: "github-oauth" }, env.jwtSecret, { expiresIn: "10m" });
     const params = new URLSearchParams({
-      client_id: env.githubClientId,
+      client_id: clientId,
       redirect_uri: redirectUri,
       scope: env.githubOAuthScopes,
       state,
@@ -154,9 +161,12 @@ export class GitHubService {
   }
 
   async oauthCallback(code: string, state: string) {
-    if (!this.isOAuthConfigured()) throw new ApiError(503, "GitHub OAuth is not configured");
+    this.ensureOAuthConfigured();
+    const clientId = env.githubClientId!;
+    const clientSecret = env.githubClientSecret!;
     const decoded = jwt.verify(state, env.jwtSecret) as { userId?: string; purpose?: string };
     if (!decoded.userId || decoded.purpose !== "github-oauth") throw new ApiError(400, "Invalid OAuth state");
+    this.ensurePersistedUser(decoded.userId);
 
     const tokenResponse = await fetch("https://github.com/login/oauth/access_token", {
       method: "POST",
@@ -165,8 +175,8 @@ export class GitHubService {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        client_id: env.githubClientId,
-        client_secret: env.githubClientSecret,
+        client_id: clientId,
+        client_secret: clientSecret,
         code,
         redirect_uri: this.redirectUri()
       })
@@ -209,11 +219,13 @@ export class GitHubService {
   }
 
   async disconnect(userId: string) {
+    this.ensurePersistedUser(userId);
     await prisma.gitHubIntegration.deleteMany({ where: { userId } });
     return { connected: false };
   }
 
   async sync(userId: string, options?: { since?: string; maxPages?: number }) {
+    this.ensurePersistedUser(userId);
     const integration = await prisma.gitHubIntegration.findUnique({ where: { userId } });
     if (!integration) throw new ApiError(400, "Connect GitHub before syncing");
     const token = this.decryptToken(integration.accessTokenEncrypted);
@@ -643,12 +655,34 @@ export class GitHubService {
   }
 
   private isOAuthConfigured() {
-    return Boolean(env.githubClientId && env.githubClientSecret);
+    return this.missingOAuthConfig().length === 0;
+  }
+
+  private ensureOAuthConfigured() {
+    const missing = this.missingOAuthConfig();
+    if (missing.length) throw new ApiError(503, `GitHub OAuth is missing: ${missing.join(", ")}`);
+  }
+
+  private ensurePersistedUser(userId: string) {
+    if (userId === "viewer") throw new ApiError(403, "Sign in with a real account before connecting GitHub.");
+  }
+
+  private missingOAuthConfig() {
+    const missing: string[] = [];
+    if (!env.githubClientId) missing.push("GITHUB_CLIENT_ID");
+    if (!env.githubClientSecret) missing.push("GITHUB_CLIENT_SECRET");
+    if (!this.redirectUri()) missing.push("GITHUB_REDIRECT_URI");
+    return missing;
   }
 
   private redirectUri() {
     if (env.githubRedirectUri) return env.githubRedirectUri;
     return `http://localhost:${env.port}/api/github/callback`;
+  }
+
+  private isTokenEncryptionConfigured() {
+    if (!env.githubTokenEncryptionKey) return false;
+    return !/^use_a_long_random_secret/i.test(env.githubTokenEncryptionKey);
   }
 
   private encryptToken(token: string) {

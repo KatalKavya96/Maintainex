@@ -34,8 +34,13 @@ export class GitHubController {
       return;
     }
 
-    const data = await this.service.oauthCallback(code, state);
-    res.redirect(`${env.clientAppUrl}/settings?github=connected&login=${encodeURIComponent(data.login)}`);
+    try {
+      const data = await this.service.oauthCallback(code, state);
+      res.redirect(`${env.clientAppUrl}/settings?github=connected&login=${encodeURIComponent(data.login)}`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "GitHub connection failed.";
+      res.redirect(`${env.clientAppUrl}/settings?github=error&message=${encodeURIComponent(message)}`);
+    }
   };
 
   sync = async (req: Request, res: Response) => {

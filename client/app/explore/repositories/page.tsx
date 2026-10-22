@@ -1,5 +1,2 @@
-import { redirect } from "next/navigation";
-
-export default function ExploreRepositoriesPage() {
-  redirect("/coming-soon?feature=find-repositories");
-}
+// Route adapter: presentation and behavior belong to the owning feature.
+export { default } from "@/features/repositories/screens/ExploreRepositoriesScreen";

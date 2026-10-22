@@ -1,14 +1,2 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-
-export default function GoalsPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.replace("/");
-  }, [router]);
-
-  return <main className="grid min-h-[50vh] place-items-center text-sm font-semibold text-slate-500">Opening Home...</main>;
-}
+// Route adapter: presentation and behavior belong to the owning feature.
+export { default } from "@/features/overview/screens/GoalsScreen";

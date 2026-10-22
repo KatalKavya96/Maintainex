@@ -1,3 +1,5 @@
+> Historical specification. Current architecture, product boundaries and agent rules are in [AGENTS.md](./AGENTS.md) and [docs/architecture/README.md](./docs/architecture/README.md). Current instructions supersede conflicting requirements below.
+
 You are working on the Maintianex project.
 
 Maintianex is a GitHub-linked open-source contribution intelligence and gamified growth dashboard. The current product direction is:

@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "npm run check:architecture",
+    "inventory:update": "node scripts/design-inventory.mjs --write",
+    "check:architecture": "node scripts/check-architecture.mjs",
+    "test:architecture": "node --test scripts/architecture.test.mjs",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run check:architecture && npm run test:architecture && npm run typecheck",
+    "prebuild": "npm run check:architecture"
   },
   "dependencies": {
     "@types/node": "^20.14.10",

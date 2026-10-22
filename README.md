@@ -13,6 +13,10 @@ It currently includes:
 
 ## Project Structure
 
+Quest discovery, publishing, private planning, evidence, and self-reported completion are implemented alongside unified search. See the [implementation and migration guide](docs/implementation/quest-flow/README.md) before starting the updated backend. The included quest-workspace migration must be applied to the database first.
+
+Run the quest/search regression suite with `npm test --workspace maintainex-server`.
+
 ```txt
 client/   Next.js frontend
 server/   Express API and Prisma schema
@@ -176,3 +180,8 @@ EMAIL_DNS_CHECK=true
 ```
 
 The first signed-up account becomes `ADMIN`. Later signups become `VIEWER` unless they provide `SIGNUP_ADMIN_CODE`.
+
+
+## Architecture and design inventory
+
+Read [agent boundaries](./AGENTS.md), [architecture](./docs/architecture/README.md), and [component lifecycle](./docs/design/inventory/README.md). Run `npm run check` before building. The live component reference is `/design-system`; it requires no account or backend. Generate its source inventory with `npm run inventory:update --workspace maintainex-client`.

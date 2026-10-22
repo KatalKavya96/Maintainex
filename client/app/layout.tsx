@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import "@/design-system/tokens.css";
+import "@/design-system/components.css";
 import "./globals.css";
-import { AppShell } from "@/components/layout/AppShell";
-import { ActivityProvider } from "@/lib/activityStore";
-import { AuthProvider } from "@/lib/authStore";
+import { AppShell } from "@/shell/AppShell";
+import { ActivityProvider } from "@/state/activities";
+import { AuthProvider } from "@/state/auth";
 
 export const metadata: Metadata = {
   title: "Maintainex",

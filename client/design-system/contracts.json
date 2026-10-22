@@ -1,0 +1,15 @@
+{
+  "design-system.Button": {"revision":1,"variants":["primary","secondary","ghost","danger","sm","md"],"states":["default","hover","focus-visible","disabled"],"description":"Native button or navigational link. Explicit variants own the action styling.","review":"implemented and catalogued"},
+  "design-system.Badge": {"revision":1,"variants":["neutral","accent","danger"],"states":["default"],"description":"Text-first semantic badge; no arbitrary feature colors.","review":"implemented and catalogued"},
+  "design-system.Input": {"revision":1,"variants":["text","native input types"],"states":["default","focus-visible","invalid","disabled"],"review":"implemented and catalogued"},
+  "design-system.Select": {"revision":1,"variants":["native select"],"states":["default","focus-visible","disabled"],"review":"implemented and catalogued"},
+  "design-system.Textarea": {"revision":1,"variants":["resizable"],"states":["default","focus-visible","invalid","disabled"],"review":"implemented and catalogued"},
+  "design-system.Field": {"revision":1,"variants":["label","hint","error"],"states":["default","invalid"],"review":"implemented and catalogued"},
+  "design-system.PageHeader": {"revision":1,"variants":["title","description","eyebrow","actions"],"states":["default","narrow layout"],"review":"implemented and catalogued"},
+  "design-system.Metric": {"revision":1,"variants":["value","detail","icon"],"states":["default","zero"],"description":"Neutral value; no invented trends or context labels.","review":"implemented and catalogued"},
+  "design-system.EmptyState": {"revision":1,"variants":["explanation","action"],"states":["empty","filtered empty"],"review":"implemented and catalogued"},
+  "design-system.AsyncState": {"revision":1,"variants":["loading","error","empty","ready"],"states":["loading","error","empty","ready"],"review":"implemented and catalogued"},
+  "design-system.Surface": {"revision":1,"variants":["section"],"states":["default"],"review":"implemented and catalogued"},
+  "design-system.Toolbar": {"revision":1,"variants":["wrapping group"],"states":["default","narrow layout"],"review":"implemented and catalogued"},
+  "design-system.DataTable": {"revision":1,"variants":["typed columns","native table"],"states":["populated","horizontal overflow"],"description":"Callers own empty/loading states and row actions. No data fetching.","review":"implemented and catalogued"}
+}

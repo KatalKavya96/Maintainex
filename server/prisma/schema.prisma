@@ -359,6 +359,7 @@ model ScheduledWork {
   createdAt        DateTime            @default(now())
   updatedAt        DateTime            @updatedAt
   user             User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userQuest        UserQuest?
 
   @@unique([userId, source, externalId])
   @@index([userId])
@@ -555,6 +556,8 @@ model Quest {
   repositoryId       String?
   title              String
   description        String             @db.Text
+  sourceUrl          String?
+  acceptanceCriteria String?            @db.Text
   type               String
   difficulty         String
   points             Int                @default(0)
@@ -578,11 +581,15 @@ model UserQuest {
   userId      String
   questId     String
   status      String    @default("STARTED")
+  scheduledWorkId String? @unique
+  evidenceUrl String?
+  completionNote String? @db.Text
   completedAt DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   quest       Quest     @relation(fields: [questId], references: [id], onDelete: Cascade)
+  scheduledWork ScheduledWork? @relation(fields: [scheduledWorkId], references: [id], onDelete: SetNull)
 
   @@unique([userId, questId])
   @@index([userId])

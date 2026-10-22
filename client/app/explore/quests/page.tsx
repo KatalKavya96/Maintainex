@@ -1,5 +1,2 @@
-import { redirect } from "next/navigation";
-
-export default function ExploreQuestsPage() {
-  redirect("/coming-soon?feature=quests");
-}
+// Route adapter: presentation and behavior belong to the owning feature.
+export { default } from "@/features/quests/screens/ExploreQuestsScreen";

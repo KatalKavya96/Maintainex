@@ -76,8 +76,10 @@ export class ScheduledWorkService {
   }
 
   async update(userId: string, id: string, payload: ScheduledWorkPayload) {
-    await this.get(userId, id);
-    return this.repository.update(id, this.toDatabasePayload(payload) as Prisma.ScheduledWorkUncheckedUpdateInput);
+    const current = await this.get(userId, id);
+    const data = this.toDatabasePayload(payload);
+    if (payload.status !== undefined) data.completedAt = payload.status === "DONE" ? current.completedAt ?? new Date() : null;
+    return this.repository.update(id, data as Prisma.ScheduledWorkUncheckedUpdateInput);
   }
 
   async delete(userId: string, id: string) {
@@ -86,8 +88,8 @@ export class ScheduledWorkService {
   }
 
   async updateStatus(userId: string, id: string, status: ScheduledWorkStatus) {
-    await this.get(userId, id);
-    return this.repository.update(id, { status, completedAt: status === "DONE" ? new Date() : undefined });
+    const current = await this.get(userId, id);
+    return this.repository.update(id, { status, completedAt: status === "DONE" ? current.completedAt ?? new Date() : null });
   }
 
   markDone(userId: string, id: string) {
@@ -107,7 +109,7 @@ export class ScheduledWorkService {
       organizationName: payload.organizationName,
       repositoryName: payload.repositoryName,
       itemNumber: payload.itemNumber,
-      itemUrl: payload.itemUrl || null,
+      itemUrl: payload.itemUrl === undefined ? undefined : payload.itemUrl || null,
       assignedToMe: payload.assignedToMe,
       assignedSince: this.toDate(payload.assignedSince),
       startDate: this.toDate(payload.startDate),
@@ -118,10 +120,10 @@ export class ScheduledWorkService {
       labels: payload.labels ?? undefined,
       tags: payload.tags ?? undefined,
       difficulty: payload.difficulty,
-      context: payload.context || null,
-      plan: payload.plan || null,
-      blockers: payload.blockers || null,
-      closingNotes: payload.closingNotes || null
+      context: payload.context === undefined ? undefined : payload.context || null,
+      plan: payload.plan === undefined ? undefined : payload.plan || null,
+      blockers: payload.blockers === undefined ? undefined : payload.blockers || null,
+      closingNotes: payload.closingNotes === undefined ? undefined : payload.closingNotes || null
     };
   }
 

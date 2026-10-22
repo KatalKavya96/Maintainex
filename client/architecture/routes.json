@@ -1,0 +1,338 @@
+[
+  {
+    "route": "/activities/[id]/edit",
+    "entry": "app/activities/[id]/edit/page.tsx",
+    "screen": "features/activities/screens/ActivitiesIdEditScreen.tsx",
+    "feature": "activities",
+    "status": "retained"
+  },
+  {
+    "route": "/activities/[id]",
+    "entry": "app/activities/[id]/page.tsx",
+    "screen": "features/activities/screens/ActivitiesIdScreen.tsx",
+    "feature": "activities",
+    "status": "retained"
+  },
+  {
+    "route": "/activities/new",
+    "entry": "app/activities/new/page.tsx",
+    "screen": "features/activities/screens/ActivitiesNewScreen.tsx",
+    "feature": "activities",
+    "status": "retained"
+  },
+  {
+    "route": "/activities",
+    "entry": "app/activities/page.tsx",
+    "screen": "features/activities/screens/ActivitiesScreen.tsx",
+    "feature": "activities",
+    "status": "retained"
+  },
+  {
+    "route": "/analytics",
+    "entry": "app/analytics/page.tsx",
+    "screen": "features/overview/screens/AnalyticsScreen.tsx",
+    "feature": "overview",
+    "status": "retained"
+  },
+  {
+    "route": "/badges",
+    "entry": "app/badges/page.tsx",
+    "screen": "features/system/screens/BadgesScreen.tsx",
+    "feature": "system",
+    "status": "retained"
+  },
+  {
+    "route": "/calendar",
+    "entry": "app/calendar/page.tsx",
+    "screen": "features/work/screens/CalendarScreen.tsx",
+    "feature": "work",
+    "status": "retained"
+  },
+  {
+    "route": "/coming-soon",
+    "entry": "app/coming-soon/page.tsx",
+    "screen": "features/system/screens/ComingSoonScreen.tsx",
+    "feature": "system",
+    "status": "retained"
+  },
+  {
+    "route": "/dashboard",
+    "entry": "app/dashboard/page.tsx",
+    "screen": "features/overview/screens/DashboardScreen.tsx",
+    "feature": "overview",
+    "status": "retained"
+  },
+  {
+    "route": "/explore/organizations/[slug]",
+    "entry": "app/explore/organizations/[slug]/page.tsx",
+    "screen": "features/organizations/screens/ExploreOrganizationsSlugScreen.tsx",
+    "feature": "organizations",
+    "status": "retained"
+  },
+  {
+    "route": "/explore/organizations",
+    "entry": "app/explore/organizations/page.tsx",
+    "screen": "features/organizations/screens/ExploreOrganizationsScreen.tsx",
+    "feature": "organizations",
+    "status": "retained"
+  },
+  {
+    "route": "/explore",
+    "entry": "app/explore/page.tsx",
+    "screen": "features/organizations/screens/ExploreScreen.tsx",
+    "feature": "organizations",
+    "status": "retained"
+  },
+  {
+    "route": "/explore/quests/[id]",
+    "entry": "app/explore/quests/[id]/page.tsx",
+    "screen": "features/quests/screens/ExploreQuestsIdScreen.tsx",
+    "feature": "quests",
+    "status": "withdrawn"
+  },
+  {
+    "route": "/explore/quests/new",
+    "entry": "app/explore/quests/new/page.tsx",
+    "screen": "features/quests/screens/ExploreQuestsNewScreen.tsx",
+    "feature": "quests",
+    "status": "withdrawn"
+  },
+  {
+    "route": "/explore/quests",
+    "entry": "app/explore/quests/page.tsx",
+    "screen": "features/quests/screens/ExploreQuestsScreen.tsx",
+    "feature": "quests",
+    "status": "withdrawn"
+  },
+  {
+    "route": "/explore/recommended",
+    "entry": "app/explore/recommended/page.tsx",
+    "screen": "features/recommended/screens/ExploreRecommendedScreen.tsx",
+    "feature": "recommended",
+    "status": "withdrawn"
+  },
+  {
+    "route": "/explore/repositories",
+    "entry": "app/explore/repositories/page.tsx",
+    "screen": "features/repositories/screens/ExploreRepositoriesScreen.tsx",
+    "feature": "repositories",
+    "status": "withdrawn"
+  },
+  {
+    "route": "/explore/saved",
+    "entry": "app/explore/saved/page.tsx",
+    "screen": "features/saved/screens/ExploreSavedScreen.tsx",
+    "feature": "saved",
+    "status": "withdrawn"
+  },
+  {
+    "route": "/feed",
+    "entry": "app/feed/page.tsx",
+    "screen": "features/community/screens/FeedScreen.tsx",
+    "feature": "community",
+    "status": "retained"
+  },
+  {
+    "route": "/goals",
+    "entry": "app/goals/page.tsx",
+    "screen": "features/overview/screens/GoalsScreen.tsx",
+    "feature": "overview",
+    "status": "retained"
+  },
+  {
+    "route": "/leaderboard",
+    "entry": "app/leaderboard/page.tsx",
+    "screen": "features/leaderboards/screens/LeaderboardScreen.tsx",
+    "feature": "leaderboards",
+    "status": "withdrawn"
+  },
+  {
+    "route": "/login",
+    "entry": "app/login/page.tsx",
+    "screen": "features/auth/screens/LoginScreen.tsx",
+    "feature": "auth",
+    "status": "retained"
+  },
+  {
+    "route": "/notifications",
+    "entry": "app/notifications/page.tsx",
+    "screen": "features/notifications/screens/NotificationsScreen.tsx",
+    "feature": "notifications",
+    "status": "retained"
+  },
+  {
+    "route": "/organizations",
+    "entry": "app/organizations/page.tsx",
+    "screen": "features/organizations/screens/OrganizationsScreen.tsx",
+    "feature": "organizations",
+    "status": "retained"
+  },
+  {
+    "route": "/orgs/[orgName]",
+    "entry": "app/orgs/[orgName]/page.tsx",
+    "screen": "features/organizations/screens/OrgsOrgnameScreen.tsx",
+    "feature": "organizations",
+    "status": "retained"
+  },
+  {
+    "route": "/",
+    "entry": "app/page.tsx",
+    "screen": "features/community/screens/HomeScreen.tsx",
+    "feature": "community",
+    "status": "retained"
+  },
+  {
+    "route": "/pins/[id]/edit",
+    "entry": "app/pins/[id]/edit/page.tsx",
+    "screen": "features/pins/screens/PinsIdEditScreen.tsx",
+    "feature": "pins",
+    "status": "retained"
+  },
+  {
+    "route": "/pins/[id]",
+    "entry": "app/pins/[id]/page.tsx",
+    "screen": "features/pins/screens/PinsIdScreen.tsx",
+    "feature": "pins",
+    "status": "retained"
+  },
+  {
+    "route": "/pins/new",
+    "entry": "app/pins/new/page.tsx",
+    "screen": "features/pins/screens/PinsNewScreen.tsx",
+    "feature": "pins",
+    "status": "retained"
+  },
+  {
+    "route": "/pins",
+    "entry": "app/pins/page.tsx",
+    "screen": "features/pins/screens/PinsScreen.tsx",
+    "feature": "pins",
+    "status": "retained"
+  },
+  {
+    "route": "/profile/[username]/followers",
+    "entry": "app/profile/[username]/followers/page.tsx",
+    "screen": "features/profile/screens/ProfileUsernameFollowersScreen.tsx",
+    "feature": "profile",
+    "status": "retained"
+  },
+  {
+    "route": "/profile/[username]/following",
+    "entry": "app/profile/[username]/following/page.tsx",
+    "screen": "features/profile/screens/ProfileUsernameFollowingScreen.tsx",
+    "feature": "profile",
+    "status": "retained"
+  },
+  {
+    "route": "/profile/[username]",
+    "entry": "app/profile/[username]/page.tsx",
+    "screen": "features/profile/screens/ProfileUsernameScreen.tsx",
+    "feature": "profile",
+    "status": "retained"
+  },
+  {
+    "route": "/profile/change-password",
+    "entry": "app/profile/change-password/page.tsx",
+    "screen": "features/profile/screens/ProfileChangePasswordScreen.tsx",
+    "feature": "profile",
+    "status": "retained"
+  },
+  {
+    "route": "/profile/edit",
+    "entry": "app/profile/edit/page.tsx",
+    "screen": "features/profile/screens/ProfileEditScreen.tsx",
+    "feature": "profile",
+    "status": "retained"
+  },
+  {
+    "route": "/profile",
+    "entry": "app/profile/page.tsx",
+    "screen": "features/profile/screens/ProfileScreen.tsx",
+    "feature": "profile",
+    "status": "retained"
+  },
+  {
+    "route": "/profiles/[id]",
+    "entry": "app/profiles/[id]/page.tsx",
+    "screen": "features/profile/screens/ProfilesIdScreen.tsx",
+    "feature": "profile",
+    "status": "retained"
+  },
+  {
+    "route": "/profiles",
+    "entry": "app/profiles/page.tsx",
+    "screen": "features/profile/screens/ProfilesScreen.tsx",
+    "feature": "profile",
+    "status": "retained"
+  },
+  {
+    "route": "/reports",
+    "entry": "app/reports/page.tsx",
+    "screen": "features/reports/screens/ReportsScreen.tsx",
+    "feature": "reports",
+    "status": "withdrawn"
+  },
+  {
+    "route": "/repos/[org]/[repo]",
+    "entry": "app/repos/[org]/[repo]/page.tsx",
+    "screen": "features/repositories/screens/ReposOrgRepoScreen.tsx",
+    "feature": "repositories",
+    "status": "retained"
+  },
+  {
+    "route": "/repositories",
+    "entry": "app/repositories/page.tsx",
+    "screen": "features/repositories/screens/RepositoriesScreen.tsx",
+    "feature": "repositories",
+    "status": "retained"
+  },
+  {
+    "route": "/schedule/[id]/edit",
+    "entry": "app/schedule/[id]/edit/page.tsx",
+    "screen": "features/work/screens/ScheduleIdEditScreen.tsx",
+    "feature": "work",
+    "status": "retained"
+  },
+  {
+    "route": "/schedule/[id]",
+    "entry": "app/schedule/[id]/page.tsx",
+    "screen": "features/work/screens/ScheduleIdScreen.tsx",
+    "feature": "work",
+    "status": "retained"
+  },
+  {
+    "route": "/schedule/new",
+    "entry": "app/schedule/new/page.tsx",
+    "screen": "features/work/screens/ScheduleNewScreen.tsx",
+    "feature": "work",
+    "status": "retained"
+  },
+  {
+    "route": "/schedule",
+    "entry": "app/schedule/page.tsx",
+    "screen": "features/work/screens/ScheduleScreen.tsx",
+    "feature": "work",
+    "status": "retained"
+  },
+  {
+    "route": "/search",
+    "entry": "app/search/page.tsx",
+    "screen": "features/search/screens/SearchScreen.tsx",
+    "feature": "search",
+    "status": "retained"
+  },
+  {
+    "route": "/settings",
+    "entry": "app/settings/page.tsx",
+    "screen": "features/settings/screens/SettingsScreen.tsx",
+    "feature": "settings",
+    "status": "retained"
+  },
+  {
+    "route": "/signup",
+    "entry": "app/signup/page.tsx",
+    "screen": "features/auth/screens/SignupScreen.tsx",
+    "feature": "auth",
+    "status": "retained"
+  }
+]

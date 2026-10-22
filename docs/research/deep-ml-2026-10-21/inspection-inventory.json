@@ -1,0 +1,75 @@
+{
+  "investigatedOn": "2026-10-21",
+  "reference": "https://www.deep-ml.com/",
+  "scope": "Public rendered UI, selected interactions, public page text, official problem-bank documentation, and local Maintainex source review",
+  "authenticatedFlowsTested": false,
+  "applicationCodeChanged": false,
+  "coverageCount": 20,
+  "confidenceLabels": {
+    "observed": "Visible rendered page or accessible control inspected directly",
+    "tested": "An interaction was performed and its resulting state was read",
+    "advertised": "Page describes a capability; its outcome was not independently tested",
+    "proposed": "Suggested Maintainex adaptation; not an existing feature claim"
+  },
+  "surfaces": [
+    {"url":"https://www.deep-ml.com/","kind":"landing","evidence":"observed,tested","patterns":["Promise paired with exercise","Feature demonstrations","Selective accent","Sample labels"],"caveat":"Run returned compute unreachable in this session; cause unknown."},
+    {"url":"https://www.deep-ml.com/problems","kind":"catalogue","evidence":"observed,tested","patterns":["Compact table","URL-backed difficulty filter","Daily task","Focus/activity area"]},
+    {"url":"https://www.deep-ml.com/problems/23","kind":"workspace","evidence":"observed,tested","patterns":["Instructions and editor views","Notes","Supporting material","Persistent mobile actions"],"caveat":"Run entered local-startup state; no final outcome observed before leaving."},
+    {"url":"https://www.deep-ml.com/search?q=transformer","kind":"search","evidence":"observed,tested","patterns":["Typed results","Per-kind counts","Query in URL","Result previews"]},
+    {"url":"https://www.deep-ml.com/paths","kind":"guided-learning","evidence":"observed,tested","patterns":["Book preview","Progress and Start","Distinct visual identity"]},
+    {"url":"https://www.deep-ml.com/deep-path","kind":"curriculum","evidence":"observed","patterns":["Nested sections","Essentials/full choice","Next-step links","Expandable contents","Return context in links"]},
+    {"url":"https://www.deep-ml.com/collections","kind":"curated-content","evidence":"observed","patterns":["Format/topic filters","Source resources","Progress","Completion incentive"]},
+    {"url":"https://www.deep-ml.com/playlists","kind":"personal-and-public-lists","evidence":"observed,tested","patterns":["Public Explore view","Author attribution","Tags and ordering","Workload metadata"],"caveat":"Creation, copying, sharing mutations and persistence were not tested."},
+    {"url":"https://www.deep-ml.com/study","kind":"assistant","evidence":"observed,tested,advertised","patterns":["Concrete starter prompts","Conversation history affordance","Persistent composer"],"caveat":"Starter appeared as a message; a completed answer was not observed."},
+    {"url":"https://www.deep-ml.com/interview-prep","kind":"outcome-oriented-discovery","evidence":"observed","patterns":["Company/role targeting","Faceted discovery","Access labels"]},
+    {"url":"https://www.deep-ml.com/interview-prep/data-science-general","kind":"deadline-plan","evidence":"observed,tested","patterns":["Today task","Deadline/date input","Coverage choice","Daily workload","Grouped progress"]},
+    {"url":"https://www.deep-ml.com/buddies","kind":"accountability","evidence":"observed,advertised","patterns":["Sign-in boundary","Shared board and chat proposition"],"caveat":"Only logged-out entry inspected; collaboration not tested."},
+    {"url":"https://www.deep-ml.com/leaderboard","kind":"ranking","evidence":"observed,tested","patterns":["Separate scoring modes","Scoring explanation","Eligibility rule","Mode in URL"]},
+    {"url":"https://www.deep-ml.com/discuss","kind":"community","evidence":"observed","patterns":["Search","Category and ordering controls","Thread previews"],"caveat":"Posting, voting, reference composition and rich hover behavior not tested."},
+    {"url":"https://www.deep-ml.com/projects","kind":"project-catalogue","evidence":"observed","patterns":["Search and facets","Step counts","Progress","Access labels"]},
+    {"url":"https://www.deep-ml.com/projects/build-an-mlp-in-jax-from-scratch","kind":"project-detail","evidence":"observed","patterns":["Outcome overview","Grouped milestones","Start action","Scaffold affordance"],"caveat":"Scaffold assembly and graded step completion not tested."},
+    {"url":"https://www.deep-ml.com/labs","kind":"practical-catalogue","evidence":"observed","patterns":["Grouping by dataset","Measurable target","Jump links","Difficulty/library filters"]},
+    {"url":"https://www.deep-ml.com/contests","kind":"events","evidence":"observed","patterns":["Event state","Rules and time constraints","Participation metadata"],"caveat":"Actual listing showed an ended event; homepage contest preview is labeled a sample."},
+    {"url":"https://www.deep-ml.com/research","kind":"collaborative-work","evidence":"observed,advertised","patterns":["Explanatory first-use guide","Contribution-to-baseline narrative","Measured objective"],"caveat":"Submission, hidden evaluation and automated merge were not tested."},
+    {"url":"https://www.deep-ml.com/premium","kind":"pricing","evidence":"observed,advertised","patterns":["Explicit capability/limit comparison","Core free offering","Upgrade affordance"],"caveat":"No purchase attempted; quotas and entitlement enforcement not independently verified."}
+  ],
+  "interactionTests": [
+    {"name":"Catalogue difficulty","action":"Select Easy","observed":"URL changed to /problems?difficulty=easy and visible rows changed to easy tasks.","outcome":"verified"},
+    {"name":"Global search","action":"Enter transformer and submit","observed":"Opened /search?q=transformer with typed result tabs and matching previews.","outcome":"verified"},
+    {"name":"Book preview","action":"Open Math Foundations path","observed":"Book preview, progress and direct start action appeared.","outcome":"verified"},
+    {"name":"Deadline recalculation","action":"Change public track from one month to two weeks","observed":"Displayed plan changed from about 3 items/day to about 7; date became 2026-11-04 with 14 days remaining.","outcome":"verified"},
+    {"name":"Leaderboard mode","action":"Select Flame","observed":"Selected tab, explanation and URL changed to ?board=flame.","outcome":"verified"},
+    {"name":"Public playlists","action":"Select Explore while logged out","observed":"Public lists appeared with authors, tags, sorting controls and workload metadata.","outcome":"verified"},
+    {"name":"Problem execution","action":"Select Run on sample problem","observed":"Entered local Python startup/running state; no completed test outcome was observed before navigation.","outcome":"incomplete"},
+    {"name":"Homepage execution","action":"Attempt exercise entry and select Run","observed":"Entered running state and later displayed compute unreachable. Text-entry persistence was not verified.","outcome":"error-observed-cause-unknown"},
+    {"name":"Assistant starter","action":"Select a next-task starter prompt","observed":"Prompt appeared as a message; no completed response observed during the visit.","outcome":"incomplete"}
+  ],
+  "publicImplementationSource": {
+    "url":"https://github.com/Open-Deep-ML/DML-OpenProblem",
+    "observed":"README documents per-question content files, schema validation, bundling and CI.",
+    "limit":"Does not establish the complete website application stack or infrastructure."
+  },
+  "maintainexSourceFindings": [
+    {"path":"client/components/layout/UserSearch.tsx","finding":"Profile-backed search with broader placeholder; displayed shortcut has no listener in this component."},
+    {"path":"client/components/layout/AppShell.tsx","finding":"Unauthenticated non-auth pages redirect to login."},
+    {"path":"client/app/explore/organizations/page.tsx","finding":"URL-backed filters, repeated filter surfaces, card-based list/grid arrangement."},
+    {"path":"client/app/explore/quests/page.tsx","finding":"Coming Soon redirect."},
+    {"path":"client/app/explore/repositories/page.tsx","finding":"Coming Soon redirect."},
+    {"path":"client/app/explore/recommended/page.tsx","finding":"Coming Soon redirect."},
+    {"path":"client/components/explore/QuestCard.tsx","finding":"Start Quest links to Coming Soon."},
+    {"path":"server/prisma/schema.prisma","finding":"Quest and UserQuest exist; Collection is summary metadata; no ordered track membership or quest-to-work evidence relation."},
+    {"path":"server/src/modules/ai/ai.service.ts","finding":"Inspected coach and planning methods use deterministic rules and text output."},
+    {"path":"client/app/schedule/[id]/page.tsx","finding":"Existing work detail contains planning context but emphasizes extensive metadata first."},
+    {"path":"client/app/dashboard/page.tsx","finding":"Charts use selected range while metric-card inputs use all activities."},
+    {"path":"server/src/services/scoring.ts","finding":"Contribution award logic can prioritize title keywords; competitive expansion needs stronger evidence semantics."}
+  ],
+  "limits":[
+    "Curated route inventory rather than exhaustive crawl",
+    "No account creation or authenticated progress persistence tests",
+    "No premium entitlement or payment tests",
+    "No performance benchmark or comprehensive accessibility audit",
+    "No complete Deep-ML application source review",
+    "Maintainex comparison is code-based, without verifying production inventory",
+    "Robots and sitemap retrieval were unavailable through the web tool"
+  ]
+}

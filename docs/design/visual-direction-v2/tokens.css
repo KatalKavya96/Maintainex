@@ -1,0 +1,23 @@
+/* Reference design tokens. Not imported into the running app. */
+:root {
+  --mx-canvas: #101211;
+  --mx-surface: #181b19;
+  --mx-elevated: #202521;
+  --mx-border: #303632;
+  --mx-text: #f0f2ed;
+  --mx-muted: #a8b1aa;
+  --mx-accent: #c4e876;
+  --mx-on-accent: #101211;
+  --mx-space-1: 4px;
+  --mx-space-2: 8px;
+  --mx-space-3: 12px;
+  --mx-space-4: 16px;
+  --mx-space-6: 24px;
+  --mx-space-8: 32px;
+  --mx-radius-control: 8px;
+  --mx-radius-panel: 12px;
+  --mx-control-height: 40px;
+  --mx-row-height: 52px;
+  --mx-font-ui: Inter, ui-sans-serif, system-ui, sans-serif;
+  --mx-font-code: ui-monospace, SFMono-Regular, Consolas, monospace;
+}

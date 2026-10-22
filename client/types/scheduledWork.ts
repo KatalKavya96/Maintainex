@@ -30,9 +30,10 @@ export type ScheduledWork = {
   closingNotes?: string | null;
   createdAt: string;
   updatedAt: string;
+  userQuest?: { questId: string } | null;
 };
 
-export type ScheduledWorkInput = Omit<ScheduledWork, "id" | "userId" | "createdAt" | "updatedAt" | "labels" | "tags"> & {
+export type ScheduledWorkInput = Omit<ScheduledWork, "id" | "userId" | "createdAt" | "updatedAt" | "labels" | "tags" | "userQuest"> & {
   labels: string[];
   tags: string[];
 };

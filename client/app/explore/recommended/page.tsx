@@ -1,5 +1,2 @@
-import { redirect } from "next/navigation";
-
-export default function RecommendedPage() {
-  redirect("/coming-soon?feature=recommended-for-you");
-}
+// Route adapter: presentation and behavior belong to the owning feature.
+export { default } from "@/features/recommended/screens/ExploreRecommendedScreen";

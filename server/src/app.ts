@@ -17,6 +17,8 @@ import { scheduledWorkRoutes } from "./modules/scheduledWork/scheduledWork.route
 import { socialRoutes } from "./modules/social/social.routes";
 import { errorMiddleware } from "./middlewares/error.middleware";
 import { ApiError } from "./utils/ApiError";
+import { questRoutes } from "./modules/quest/quest.routes";
+import { searchRoutes } from "./modules/search/search.routes";
 
 export const app = express();
 
@@ -60,6 +62,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/goals", goalRoutes);
 app.use("/api/github", githubRoutes);
 app.use("/api/explore", exploreRoutes);
+app.use("/api/quests", questRoutes);
+app.use("/api/search", searchRoutes);
 app.use("/api/activities", activityRoutes);
 app.use("/api/organizations", organizationRoutes);
 app.use("/api/repositories", repositoryRoutes);

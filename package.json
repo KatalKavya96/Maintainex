@@ -8,7 +8,8 @@
   ],
   "scripts": {
     "build": "npm run build --workspace maintainex-client",
-    "vercel-build": "cd server && npx prisma generate && cd ../client && npm run build"
+    "vercel-build": "cd server && npx prisma generate && cd ../client && npm run build",
+    "check": "npm run check --workspace maintainex-client"
   },
   "dependencies": {
     "next": "^14.2.4",

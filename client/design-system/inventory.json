@@ -1,0 +1,3002 @@
+{
+  "schemaVersion": 2,
+  "foundations": [
+    {
+      "file": "design-system/tokens.css",
+      "sourceHash": "7a7e1bec0921bef991c71fe299238015555a2f5ac9b0bf6b23924dae64c7e827"
+    },
+    {
+      "file": "design-system/components.css",
+      "sourceHash": "0b90008bfd028543d10c5a39941fd17e17b6f060c15c943de5d87d7faf10c31b"
+    },
+    {
+      "file": "design-system/contracts.json",
+      "sourceHash": "8957f8a2ede8a1d9d80c0f14e1051d8a590327f1c69848e871948e140ad6d82e"
+    }
+  ],
+  "components": [
+    {
+      "id": "design-system.adapter.Button",
+      "name": "Button",
+      "owner": "design-system",
+      "file": "design-system/patterns/Button.tsx",
+      "revision": 1,
+      "kind": "adapter",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "design-system/patterns/ComingSoon.tsx",
+        "features/activities/components/ActivityForm.tsx",
+        "features/activities/screens/ActivitiesIdEditScreen.tsx",
+        "features/activities/screens/ActivitiesIdScreen.tsx",
+        "features/auth/screens/LoginScreen.tsx",
+        "features/auth/screens/SignupScreen.tsx",
+        "features/community/components/FeedCard.tsx",
+        "features/leaderboards/screens/LeaderboardScreen.tsx",
+        "features/organizations/screens/ExploreOrganizationsSlugScreen.tsx",
+        "features/overview/components/GoalPanel.tsx",
+        "features/overview/screens/DashboardScreen.tsx",
+        "features/pins/components/PinForm.tsx",
+        "features/pins/screens/PinsIdScreen.tsx",
+        "features/pins/screens/PinsScreen.tsx",
+        "features/profile/screens/ProfileChangePasswordScreen.tsx",
+        "features/profile/screens/ProfileEditScreen.tsx",
+        "features/profile/screens/ProfileUsernameScreen.tsx",
+        "features/reports/screens/ReportsScreen.tsx",
+        "features/saved/screens/ExploreSavedScreen.tsx",
+        "features/settings/components/GitHubAutomationPanel.tsx",
+        "features/work/components/ScheduledWorkForm.tsx",
+        "features/work/screens/ScheduleIdScreen.tsx",
+        "features/work/screens/ScheduleScreen.tsx"
+      ],
+      "sourceHash": "47c3f3b8385cb6af4b5cbddb9e1076d08fca372b02a9f2bdb0770fad746be3fe"
+    },
+    {
+      "id": "design-system.adapter.EmptyState",
+      "name": "EmptyState",
+      "owner": "design-system",
+      "file": "design-system/patterns/MetricCard.tsx",
+      "revision": 1,
+      "kind": "adapter",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/leaderboards/components/LeaderboardCard.tsx",
+        "features/leaderboards/screens/LeaderboardScreen.tsx",
+        "features/organizations/components/ContributorsTab.tsx",
+        "features/organizations/components/OverviewTab.tsx",
+        "features/organizations/components/RepositoriesTab.tsx",
+        "features/organizations/screens/ExploreOrganizationsScreen.tsx",
+        "features/organizations/screens/ExploreOrganizationsSlugScreen.tsx",
+        "features/quests/screens/ExploreQuestsScreen.tsx",
+        "features/saved/screens/ExploreSavedScreen.tsx",
+        "features/search/screens/SearchScreen.tsx"
+      ],
+      "sourceHash": "2577035af9070940f341ed26b3c336111402b075184e86c54647e69593b8cfab"
+    },
+    {
+      "id": "design-system.adapter.Field",
+      "name": "Field",
+      "owner": "design-system",
+      "file": "design-system/patterns/FormControls.tsx",
+      "revision": 1,
+      "kind": "adapter",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/activities/components/ActivityForm.tsx",
+        "features/auth/screens/LoginScreen.tsx",
+        "features/auth/screens/SignupScreen.tsx",
+        "features/overview/components/GoalPanel.tsx",
+        "features/pins/components/PinForm.tsx",
+        "features/profile/screens/ProfileChangePasswordScreen.tsx",
+        "features/profile/screens/ProfileEditScreen.tsx",
+        "features/profile/screens/ProfileUsernameScreen.tsx",
+        "features/reports/screens/ReportsScreen.tsx",
+        "features/work/components/ScheduledWorkForm.tsx"
+      ],
+      "sourceHash": "012c2b2d838e89673d7f457832b7f7f424e1fc3da2df5e1a808ad8fc0155be8d"
+    },
+    {
+      "id": "design-system.adapter.Input",
+      "name": "Input",
+      "owner": "design-system",
+      "file": "design-system/patterns/FormControls.tsx",
+      "revision": 1,
+      "kind": "adapter",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/activities/components/ActivityForm.tsx",
+        "features/auth/screens/LoginScreen.tsx",
+        "features/auth/screens/SignupScreen.tsx",
+        "features/overview/components/GoalPanel.tsx",
+        "features/pins/components/PinForm.tsx",
+        "features/profile/screens/ProfileChangePasswordScreen.tsx",
+        "features/profile/screens/ProfileEditScreen.tsx",
+        "features/profile/screens/ProfileUsernameScreen.tsx",
+        "features/reports/screens/ReportsScreen.tsx",
+        "features/work/components/ScheduledWorkForm.tsx"
+      ],
+      "sourceHash": "012c2b2d838e89673d7f457832b7f7f424e1fc3da2df5e1a808ad8fc0155be8d"
+    },
+    {
+      "id": "design-system.adapter.MetricCard",
+      "name": "MetricCard",
+      "owner": "design-system",
+      "file": "design-system/patterns/MetricCard.tsx",
+      "revision": 1,
+      "kind": "adapter",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/leaderboards/components/LeaderboardCard.tsx",
+        "features/leaderboards/screens/LeaderboardScreen.tsx",
+        "features/organizations/components/ContributorsTab.tsx",
+        "features/organizations/components/OverviewTab.tsx",
+        "features/organizations/components/RepositoriesTab.tsx",
+        "features/organizations/screens/ExploreOrganizationsScreen.tsx",
+        "features/organizations/screens/ExploreOrganizationsSlugScreen.tsx",
+        "features/quests/screens/ExploreQuestsScreen.tsx",
+        "features/saved/screens/ExploreSavedScreen.tsx",
+        "features/search/screens/SearchScreen.tsx"
+      ],
+      "sourceHash": "2577035af9070940f341ed26b3c336111402b075184e86c54647e69593b8cfab"
+    },
+    {
+      "id": "design-system.adapter.PageTitle",
+      "name": "PageTitle",
+      "owner": "design-system",
+      "file": "design-system/patterns/PageTitle.tsx",
+      "revision": 1,
+      "kind": "adapter",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/activities/screens/ActivitiesIdEditScreen.tsx",
+        "features/activities/screens/ActivitiesNewScreen.tsx",
+        "features/community/screens/HomeScreen.tsx",
+        "features/notifications/screens/NotificationsScreen.tsx",
+        "features/organizations/screens/OrgsOrgnameScreen.tsx",
+        "features/overview/screens/DashboardScreen.tsx",
+        "features/pins/screens/PinsIdEditScreen.tsx",
+        "features/pins/screens/PinsIdScreen.tsx",
+        "features/pins/screens/PinsNewScreen.tsx",
+        "features/pins/screens/PinsScreen.tsx",
+        "features/profile/screens/ProfileUsernameFollowersScreen.tsx",
+        "features/profile/screens/ProfileUsernameFollowingScreen.tsx",
+        "features/profile/screens/ProfilesIdScreen.tsx",
+        "features/profile/screens/ProfilesScreen.tsx",
+        "features/reports/screens/ReportsScreen.tsx",
+        "features/repositories/screens/ReposOrgRepoScreen.tsx",
+        "features/settings/screens/SettingsScreen.tsx",
+        "features/work/screens/ScheduleIdEditScreen.tsx",
+        "features/work/screens/ScheduleIdScreen.tsx",
+        "features/work/screens/ScheduleNewScreen.tsx",
+        "features/work/screens/ScheduleScreen.tsx"
+      ],
+      "sourceHash": "a94628e4ddb8d7169f6f76e91cde8d1725836b7e82e8f7a90c8f886d707b715d"
+    },
+    {
+      "id": "design-system.adapter.Select",
+      "name": "Select",
+      "owner": "design-system",
+      "file": "design-system/patterns/FormControls.tsx",
+      "revision": 1,
+      "kind": "adapter",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/activities/components/ActivityForm.tsx",
+        "features/auth/screens/LoginScreen.tsx",
+        "features/auth/screens/SignupScreen.tsx",
+        "features/overview/components/GoalPanel.tsx",
+        "features/pins/components/PinForm.tsx",
+        "features/profile/screens/ProfileChangePasswordScreen.tsx",
+        "features/profile/screens/ProfileEditScreen.tsx",
+        "features/profile/screens/ProfileUsernameScreen.tsx",
+        "features/reports/screens/ReportsScreen.tsx",
+        "features/work/components/ScheduledWorkForm.tsx"
+      ],
+      "sourceHash": "012c2b2d838e89673d7f457832b7f7f424e1fc3da2df5e1a808ad8fc0155be8d"
+    },
+    {
+      "id": "design-system.adapter.Textarea",
+      "name": "Textarea",
+      "owner": "design-system",
+      "file": "design-system/patterns/FormControls.tsx",
+      "revision": 1,
+      "kind": "adapter",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/activities/components/ActivityForm.tsx",
+        "features/auth/screens/LoginScreen.tsx",
+        "features/auth/screens/SignupScreen.tsx",
+        "features/overview/components/GoalPanel.tsx",
+        "features/pins/components/PinForm.tsx",
+        "features/profile/screens/ProfileChangePasswordScreen.tsx",
+        "features/profile/screens/ProfileEditScreen.tsx",
+        "features/profile/screens/ProfileUsernameScreen.tsx",
+        "features/reports/screens/ReportsScreen.tsx",
+        "features/work/components/ScheduledWorkForm.tsx"
+      ],
+      "sourceHash": "012c2b2d838e89673d7f457832b7f7f424e1fc3da2df5e1a808ad8fc0155be8d"
+    },
+    {
+      "id": "design-system.AsyncState",
+      "name": "AsyncState",
+      "owner": "design-system",
+      "file": "design-system/primitives/AsyncState.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "loading",
+        "error",
+        "empty",
+        "ready"
+      ],
+      "states": [
+        "loading",
+        "error",
+        "empty",
+        "ready"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "implemented and catalogued",
+      "usedBy": [
+        "design-system/index.ts",
+        "design-system/patterns/MetricCard.tsx"
+      ],
+      "sourceHash": "b45022b2a6dacaeca5df1541ee669db401d2e4920442040cfae8f5a3c7d6640a"
+    },
+    {
+      "id": "design-system.Badge",
+      "name": "Badge",
+      "owner": "design-system",
+      "file": "design-system/primitives/Badge.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "neutral",
+        "accent",
+        "danger"
+      ],
+      "states": [
+        "default"
+      ],
+      "description": "Text-first semantic badge; no arbitrary feature colors.",
+      "review": "implemented and catalogued",
+      "usedBy": [
+        "design-system/index.ts",
+        "design-system/patterns/TechTag.tsx"
+      ],
+      "sourceHash": "3f258602930071ca76747ada1ea81530f5c85fea5aad93a73c647ce3df019fbb"
+    },
+    {
+      "id": "design-system.Button",
+      "name": "Button",
+      "owner": "design-system",
+      "file": "design-system/primitives/Button.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "primary",
+        "secondary",
+        "ghost",
+        "danger",
+        "sm",
+        "md"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus-visible",
+        "disabled"
+      ],
+      "description": "Native button or navigational link. Explicit variants own the action styling.",
+      "review": "implemented and catalogued",
+      "usedBy": [
+        "design-system/index.ts",
+        "design-system/patterns/Button.tsx",
+        "design-system/primitives/AsyncState.tsx"
+      ],
+      "sourceHash": "da6fd41f57ddd3a20d8d23c07f22f8520f45ae3de8c960b76ba101a92a9285ea"
+    },
+    {
+      "id": "design-system.ComingSoon",
+      "name": "ComingSoon",
+      "owner": "design-system",
+      "file": "design-system/patterns/ComingSoon.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/system/screens/ComingSoonScreen.tsx"
+      ],
+      "sourceHash": "09f0b798beeedb0676b12ebfc40a20aad605fe4d2242c3b5e269dceeb5b057bb"
+    },
+    {
+      "id": "design-system.DataTable",
+      "name": "DataTable",
+      "owner": "design-system",
+      "file": "design-system/primitives/DataTable.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "typed columns",
+        "native table"
+      ],
+      "states": [
+        "populated",
+        "horizontal overflow"
+      ],
+      "description": "Callers own empty/loading states and row actions. No data fetching.",
+      "review": "implemented and catalogued",
+      "usedBy": [
+        "design-system/index.ts"
+      ],
+      "sourceHash": "ce3474b513cd6e8763539b8f541c72970ad905ddf9ed260e59551332763da165"
+    },
+    {
+      "id": "design-system.EmptyState",
+      "name": "EmptyState",
+      "owner": "design-system",
+      "file": "design-system/primitives/AsyncState.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "explanation",
+        "action"
+      ],
+      "states": [
+        "empty",
+        "filtered empty"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "implemented and catalogued",
+      "usedBy": [
+        "design-system/index.ts",
+        "design-system/patterns/MetricCard.tsx"
+      ],
+      "sourceHash": "b45022b2a6dacaeca5df1541ee669db401d2e4920442040cfae8f5a3c7d6640a"
+    },
+    {
+      "id": "design-system.Field",
+      "name": "Field",
+      "owner": "design-system",
+      "file": "design-system/primitives/FormControls.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "label",
+        "hint",
+        "error"
+      ],
+      "states": [
+        "default",
+        "invalid"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "implemented and catalogued",
+      "usedBy": [
+        "design-system/index.ts",
+        "design-system/patterns/FormControls.tsx"
+      ],
+      "sourceHash": "5cd8e025164fa11fc998c4278a3f900dd36b3dc5f3cb1702112a351931ce85dd"
+    },
+    {
+      "id": "design-system.Input",
+      "name": "Input",
+      "owner": "design-system",
+      "file": "design-system/primitives/FormControls.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "text",
+        "native input types"
+      ],
+      "states": [
+        "default",
+        "focus-visible",
+        "invalid",
+        "disabled"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "implemented and catalogued",
+      "usedBy": [
+        "design-system/index.ts",
+        "design-system/patterns/FormControls.tsx"
+      ],
+      "sourceHash": "5cd8e025164fa11fc998c4278a3f900dd36b3dc5f3cb1702112a351931ce85dd"
+    },
+    {
+      "id": "design-system.Metric",
+      "name": "Metric",
+      "owner": "design-system",
+      "file": "design-system/primitives/Metric.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "value",
+        "detail",
+        "icon"
+      ],
+      "states": [
+        "default",
+        "zero"
+      ],
+      "description": "Neutral value; no invented trends or context labels.",
+      "review": "implemented and catalogued",
+      "usedBy": [
+        "design-system/index.ts",
+        "design-system/patterns/MetricCard.tsx"
+      ],
+      "sourceHash": "0ea5161afd8fd0ed5a4fcddba27acc6b52492990d2a84db037a1950d88910881"
+    },
+    {
+      "id": "design-system.PageHeader",
+      "name": "PageHeader",
+      "owner": "design-system",
+      "file": "design-system/primitives/PageHeader.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "title",
+        "description",
+        "eyebrow",
+        "actions"
+      ],
+      "states": [
+        "default",
+        "narrow layout"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "implemented and catalogued",
+      "usedBy": [
+        "design-system/index.ts",
+        "design-system/patterns/PageTitle.tsx"
+      ],
+      "sourceHash": "88460f7181b78c7846fe2a64383feebd67982ceafb1ce4bb6d9838ed72da686d"
+    },
+    {
+      "id": "design-system.ProgramBadge",
+      "name": "ProgramBadge",
+      "owner": "design-system",
+      "file": "design-system/patterns/ProgramBadge.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/organizations/components/OrganizationCard.tsx",
+        "features/organizations/screens/ExploreOrganizationsSlugScreen.tsx"
+      ],
+      "sourceHash": "a92264f8ddafd16c6801f12826656eb1f1aff50cf75db17b9dc4bfb425f6cf7e"
+    },
+    {
+      "id": "design-system.ScoreBadge",
+      "name": "ScoreBadge",
+      "owner": "design-system",
+      "file": "design-system/patterns/ScoreBadge.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/organizations/components/OverviewTab.tsx",
+        "features/organizations/components/RepositoryCard.tsx"
+      ],
+      "sourceHash": "5ea70b346519731a0d8c762291e56a46831b013ccc2f1906f2296fb7c7044f2f"
+    },
+    {
+      "id": "design-system.Select",
+      "name": "Select",
+      "owner": "design-system",
+      "file": "design-system/primitives/FormControls.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "native select"
+      ],
+      "states": [
+        "default",
+        "focus-visible",
+        "disabled"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "implemented and catalogued",
+      "usedBy": [
+        "design-system/index.ts",
+        "design-system/patterns/FormControls.tsx"
+      ],
+      "sourceHash": "5cd8e025164fa11fc998c4278a3f900dd36b3dc5f3cb1702112a351931ce85dd"
+    },
+    {
+      "id": "design-system.Surface",
+      "name": "Surface",
+      "owner": "design-system",
+      "file": "design-system/primitives/Surface.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "section"
+      ],
+      "states": [
+        "default"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "implemented and catalogued",
+      "usedBy": [
+        "design-system/index.ts"
+      ],
+      "sourceHash": "691f58d2f6ea4827d6717e409b32fbca2f7d3e0f29111050f58fbd05167156db"
+    },
+    {
+      "id": "design-system.TechTag",
+      "name": "TechTag",
+      "owner": "design-system",
+      "file": "design-system/patterns/TechTag.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/organizations/components/OrganizationCard.tsx",
+        "features/organizations/components/RepositoryCard.tsx",
+        "features/organizations/screens/ExploreOrganizationsSlugScreen.tsx"
+      ],
+      "sourceHash": "ce57b36838c8fadfb258ca8a689e25ef98f20d04522a70a5c075a059b8c54197"
+    },
+    {
+      "id": "design-system.Textarea",
+      "name": "Textarea",
+      "owner": "design-system",
+      "file": "design-system/primitives/FormControls.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "resizable"
+      ],
+      "states": [
+        "default",
+        "focus-visible",
+        "invalid",
+        "disabled"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "implemented and catalogued",
+      "usedBy": [
+        "design-system/index.ts",
+        "design-system/patterns/FormControls.tsx"
+      ],
+      "sourceHash": "5cd8e025164fa11fc998c4278a3f900dd36b3dc5f3cb1702112a351931ce85dd"
+    },
+    {
+      "id": "design-system.Toolbar",
+      "name": "Toolbar",
+      "owner": "design-system",
+      "file": "design-system/primitives/Surface.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "wrapping group"
+      ],
+      "states": [
+        "default",
+        "narrow layout"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "implemented and catalogued",
+      "usedBy": [
+        "design-system/index.ts"
+      ],
+      "sourceHash": "691f58d2f6ea4827d6717e409b32fbca2f7d3e0f29111050f58fbd05167156db"
+    },
+    {
+      "id": "feature:activities.ActivitiesScreen",
+      "name": "ActivitiesScreen",
+      "owner": "feature:activities",
+      "file": "features/activities/screens/ActivitiesScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/activities/page.tsx"
+      ],
+      "sourceHash": "d6c9bf11d9a6a492b058795cd3bd7833c7762d5ed084745c44b38225f677ad0a"
+    },
+    {
+      "id": "feature:activities.ActivityBadge",
+      "name": "ActivityBadge",
+      "owner": "feature:activities",
+      "file": "features/activities/components/ActivityBadge.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/activities/components/ActivityTable.tsx",
+        "features/activities/index.ts",
+        "features/activities/screens/ActivitiesIdScreen.tsx"
+      ],
+      "sourceHash": "daf6d6ed4b09a0a16523e316ab87ea41e3b5fda673a2eb64bc946f4a3c8ceb5a"
+    },
+    {
+      "id": "feature:activities.ActivityDetailsPage",
+      "name": "ActivityDetailsPage",
+      "owner": "feature:activities",
+      "file": "features/activities/screens/ActivitiesIdScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/activities/[id]/page.tsx"
+      ],
+      "sourceHash": "716a2919786b09e428c9601e59a5e3d2a7fb6ef09c83123747c0af1b09c98d02"
+    },
+    {
+      "id": "feature:activities.ActivityFilters",
+      "name": "ActivityFilters",
+      "owner": "feature:activities",
+      "file": "features/activities/components/ActivityFilters.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/activities/screens/ActivitiesScreen.tsx"
+      ],
+      "sourceHash": "1fa4ab798c8e0a85cfcda4d2c1636daa42e6af0ce0eeef7e52b6a6538cd6907a"
+    },
+    {
+      "id": "feature:activities.ActivityForm",
+      "name": "ActivityForm",
+      "owner": "feature:activities",
+      "file": "features/activities/components/ActivityForm.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/activities/screens/ActivitiesIdEditScreen.tsx",
+        "features/activities/screens/ActivitiesNewScreen.tsx"
+      ],
+      "sourceHash": "151a4bba0079d11853d98540d480b0b0cdf514709af824cb4e35169a16c7eab8"
+    },
+    {
+      "id": "feature:activities.ActivityTable",
+      "name": "ActivityTable",
+      "owner": "feature:activities",
+      "file": "features/activities/components/ActivityTable.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/activities/screens/ActivitiesScreen.tsx"
+      ],
+      "sourceHash": "93e4bc67ad013dad088f6d3a1ce9bee28702bfda11f4361253077625cdc21313"
+    },
+    {
+      "id": "feature:activities.EditActivityPage",
+      "name": "EditActivityPage",
+      "owner": "feature:activities",
+      "file": "features/activities/screens/ActivitiesIdEditScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/activities/[id]/edit/page.tsx"
+      ],
+      "sourceHash": "97f3350c80b71eb367971accfed5b639ef85f76ddff8ea9cc0c6be1c0a7b2432"
+    },
+    {
+      "id": "feature:activities.NewActivityPage",
+      "name": "NewActivityPage",
+      "owner": "feature:activities",
+      "file": "features/activities/screens/ActivitiesNewScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/activities/new/page.tsx"
+      ],
+      "sourceHash": "bb4c9b2d66e3a4a488776a4522eb87b20f0727fc1fd6f5f970a912d33aa93dab"
+    },
+    {
+      "id": "feature:auth.LoginPage",
+      "name": "LoginPage",
+      "owner": "feature:auth",
+      "file": "features/auth/screens/LoginScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/login/page.tsx"
+      ],
+      "sourceHash": "730137869e72292ffce11da763fe65951f6043f4f6c38f19485842581ebf7c68"
+    },
+    {
+      "id": "feature:auth.SignupPage",
+      "name": "SignupPage",
+      "owner": "feature:auth",
+      "file": "features/auth/screens/SignupScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/signup/page.tsx"
+      ],
+      "sourceHash": "3efe400126f9e68cf5c46797d45869eb61f22335efb822c8e6c0e88c1511d939"
+    },
+    {
+      "id": "feature:community.FeedCard",
+      "name": "FeedCard",
+      "owner": "feature:community",
+      "file": "features/community/components/FeedCard.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/community/screens/HomeScreen.tsx"
+      ],
+      "sourceHash": "bc8285e0b6e795dd8c9701f4915628d7edd1cdc0cd710a8a69c9c7f113853a1b"
+    },
+    {
+      "id": "feature:community.FeedPage",
+      "name": "FeedPage",
+      "owner": "feature:community",
+      "file": "features/community/screens/FeedScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/feed/page.tsx"
+      ],
+      "sourceHash": "4a8cb541e4f4059b231871f96166084ba150cf9cb0094f09e8f0ba245d582720"
+    },
+    {
+      "id": "feature:community.HomePage",
+      "name": "HomePage",
+      "owner": "feature:community",
+      "file": "features/community/screens/HomeScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/page.tsx"
+      ],
+      "sourceHash": "9d2c4beaecc9a1aa62e05512e41048a2418881b52e3439239157c76c90ad5f59"
+    },
+    {
+      "id": "feature:design-system.DesignSystemScreen",
+      "name": "DesignSystemScreen",
+      "owner": "feature:design-system",
+      "file": "features/design-system/screens/DesignSystemScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/design-system/page.tsx"
+      ],
+      "sourceHash": "caa5eed324faacccdf31b663c4b4d2696a2c5db698eb0bda718ff28bc6dceb1f"
+    },
+    {
+      "id": "feature:leaderboards.LeaderboardCard",
+      "name": "LeaderboardCard",
+      "owner": "feature:leaderboards",
+      "file": "features/leaderboards/components/LeaderboardCard.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/leaderboards/screens/LeaderboardScreen.tsx"
+      ],
+      "sourceHash": "426fd6989b8bb9af2769146fb17497f73e00a0d5f56ed51f834ff25190359fbd"
+    },
+    {
+      "id": "feature:leaderboards.LeaderboardPage",
+      "name": "LeaderboardPage",
+      "owner": "feature:leaderboards",
+      "file": "features/leaderboards/screens/LeaderboardScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/leaderboard/page.tsx"
+      ],
+      "sourceHash": "e6279d3cd8196b08d24b6619934bdebdc3a4eda61bb282869efe18367e81f9ae"
+    },
+    {
+      "id": "feature:notifications.NotificationsPage",
+      "name": "NotificationsPage",
+      "owner": "feature:notifications",
+      "file": "features/notifications/screens/NotificationsScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/notifications/page.tsx"
+      ],
+      "sourceHash": "336a3f8fdd23b8531276b883acfb52eab7fe9e035ed37edd6ceb0db04198d9df"
+    },
+    {
+      "id": "feature:organizations.ContributorsTab",
+      "name": "ContributorsTab",
+      "owner": "feature:organizations",
+      "file": "features/organizations/components/ContributorsTab.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/organizations/screens/ExploreOrganizationsSlugScreen.tsx"
+      ],
+      "sourceHash": "9a2e05ebcaac0354c5f643ea80923ff090067609513693f913530c6ad7bbd81e"
+    },
+    {
+      "id": "feature:organizations.ContributorSummary",
+      "name": "ContributorSummary",
+      "owner": "feature:organizations",
+      "file": "features/organizations/components/ContributorSummary.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/organizations/components/ContributorsTab.tsx"
+      ],
+      "sourceHash": "531f06e946a0bff224660cc3797c6a518fa2869226102244406faa78df10e1fe"
+    },
+    {
+      "id": "feature:organizations.DetailSkeleton",
+      "name": "DetailSkeleton",
+      "owner": "feature:organizations",
+      "file": "features/organizations/components/DetailSkeleton.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/organizations/screens/ExploreOrganizationsSlugScreen.tsx"
+      ],
+      "sourceHash": "b4aacdc4b54bd266098d21d22973a088204870f37c944ca5d4038c310fbeb46c"
+    },
+    {
+      "id": "feature:organizations.DiscoveryHeader",
+      "name": "DiscoveryHeader",
+      "owner": "feature:organizations",
+      "file": "features/organizations/components/Discovery.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/organizations/index.ts",
+        "features/organizations/screens/ExploreOrganizationsScreen.tsx"
+      ],
+      "sourceHash": "70b956ca461d743b7f5bd344d339d897678c045d7d775e967bc8632385869248"
+    },
+    {
+      "id": "feature:organizations.DiscoveryLoading",
+      "name": "DiscoveryLoading",
+      "owner": "feature:organizations",
+      "file": "features/organizations/components/Discovery.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/organizations/index.ts",
+        "features/organizations/screens/ExploreOrganizationsScreen.tsx"
+      ],
+      "sourceHash": "70b956ca461d743b7f5bd344d339d897678c045d7d775e967bc8632385869248"
+    },
+    {
+      "id": "feature:organizations.DiscoveryPagination",
+      "name": "DiscoveryPagination",
+      "owner": "feature:organizations",
+      "file": "features/organizations/components/Discovery.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/organizations/index.ts",
+        "features/organizations/screens/ExploreOrganizationsScreen.tsx"
+      ],
+      "sourceHash": "70b956ca461d743b7f5bd344d339d897678c045d7d775e967bc8632385869248"
+    },
+    {
+      "id": "feature:organizations.ExploreOrganizationsPage",
+      "name": "ExploreOrganizationsPage",
+      "owner": "feature:organizations",
+      "file": "features/organizations/screens/ExploreOrganizationsScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/explore/organizations/page.tsx"
+      ],
+      "sourceHash": "274dca47ae0d1d32db57a147dc63c5702f5b1abeb7f6db710c4d14ff86a50dc2"
+    },
+    {
+      "id": "feature:organizations.ExplorePage",
+      "name": "ExplorePage",
+      "owner": "feature:organizations",
+      "file": "features/organizations/screens/ExploreScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/explore/page.tsx"
+      ],
+      "sourceHash": "12d6a8a568d2875a8921fb811d438b894ec17b16863cacd712ec89b8dc0e1faa"
+    },
+    {
+      "id": "feature:organizations.OrganizationCard",
+      "name": "OrganizationCard",
+      "owner": "feature:organizations",
+      "file": "features/organizations/components/OrganizationCard.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/organizations/index.ts",
+        "features/organizations/screens/ExploreOrganizationsScreen.tsx"
+      ],
+      "sourceHash": "c087c368fd530d37b85eb1f2e5f304ee8d516bdde2d1e215a1735eb5f58974dc"
+    },
+    {
+      "id": "feature:organizations.OrganizationDetailPage",
+      "name": "OrganizationDetailPage",
+      "owner": "feature:organizations",
+      "file": "features/organizations/screens/ExploreOrganizationsSlugScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/explore/organizations/[slug]/page.tsx"
+      ],
+      "sourceHash": "2346315ecaa28e287a275a8913040218eadfa87fc2c5fcf4d560c8895d5e8211"
+    },
+    {
+      "id": "feature:organizations.OrganizationFilters",
+      "name": "OrganizationFilters",
+      "owner": "feature:organizations",
+      "file": "features/organizations/components/OrganizationFilters.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/organizations/screens/ExploreOrganizationsScreen.tsx"
+      ],
+      "sourceHash": "45644c856bb06f91f72f3bad24f8ff9dde972612b57065ec6a610e627772a29d"
+    },
+    {
+      "id": "feature:organizations.OrganizationsPage",
+      "name": "OrganizationsPage",
+      "owner": "feature:organizations",
+      "file": "features/organizations/screens/OrganizationsScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/organizations/page.tsx"
+      ],
+      "sourceHash": "df18c9499f6e7288f18667c8f8079cbc70e62c3a0ca2876dd674346f40dc9389"
+    },
+    {
+      "id": "feature:organizations.OrgProfilePage",
+      "name": "OrgProfilePage",
+      "owner": "feature:organizations",
+      "file": "features/organizations/screens/OrgsOrgnameScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/orgs/[orgName]/page.tsx"
+      ],
+      "sourceHash": "ef419434395647fa0908ebed44df78100a9538b11946ce5fd3e3a3b4ce3d7161"
+    },
+    {
+      "id": "feature:organizations.OverviewTab",
+      "name": "OverviewTab",
+      "owner": "feature:organizations",
+      "file": "features/organizations/components/OverviewTab.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/organizations/screens/ExploreOrganizationsSlugScreen.tsx"
+      ],
+      "sourceHash": "680add4aa547623fcbd7a4c78a889c86b7ec5bc546d3f1b0eeb5ae6f26a0faad"
+    },
+    {
+      "id": "feature:organizations.RepositoriesTab",
+      "name": "RepositoriesTab",
+      "owner": "feature:organizations",
+      "file": "features/organizations/components/RepositoriesTab.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/organizations/screens/ExploreOrganizationsSlugScreen.tsx"
+      ],
+      "sourceHash": "987e040d583d42f91e77512f94554b16763914569872bf30317993f103841cf5"
+    },
+    {
+      "id": "feature:organizations.RepositoryCard",
+      "name": "RepositoryCard",
+      "owner": "feature:organizations",
+      "file": "features/organizations/components/RepositoryCard.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/organizations/components/RepositoriesTab.tsx",
+        "features/organizations/index.ts",
+        "features/organizations/screens/ExploreOrganizationsSlugScreen.tsx"
+      ],
+      "sourceHash": "4f664d44d598722d2c7b7c40b16134165456f52bd9525a4676aec318bb1d3de2"
+    },
+    {
+      "id": "feature:overview.AnalyticsPage",
+      "name": "AnalyticsPage",
+      "owner": "feature:overview",
+      "file": "features/overview/screens/AnalyticsScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/analytics/page.tsx"
+      ],
+      "sourceHash": "0d2b8f68ef2cdfd49e20454f2ab0c8619a885a4a553c96b1ea31d786351d019b"
+    },
+    {
+      "id": "feature:overview.DashboardPage",
+      "name": "DashboardPage",
+      "owner": "feature:overview",
+      "file": "features/overview/screens/DashboardScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/dashboard/page.tsx"
+      ],
+      "sourceHash": "54b04fc96825e0c3071e1bd153dfe0889b137d8d20db5f246933fcc14b544a35"
+    },
+    {
+      "id": "feature:overview.GoalPanel",
+      "name": "GoalPanel",
+      "owner": "feature:overview",
+      "file": "features/overview/components/GoalPanel.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/overview/screens/DashboardScreen.tsx"
+      ],
+      "sourceHash": "4c60d330e41791a619d377baa83f76a4ebb8a74bcff044c73a90f86d88549189"
+    },
+    {
+      "id": "feature:overview.GoalsPage",
+      "name": "GoalsPage",
+      "owner": "feature:overview",
+      "file": "features/overview/screens/GoalsScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/goals/page.tsx"
+      ],
+      "sourceHash": "f424fc6252903db47dbc0ebefd98e320bc1ad2c4c972186f5c98ea1e064878e1"
+    },
+    {
+      "id": "feature:overview.NextContribution",
+      "name": "NextContribution",
+      "owner": "feature:overview",
+      "file": "features/overview/components/NextContribution.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [],
+      "sourceHash": "4a51c4cdc3a9804b9981d82f443a098e7f57c7e8c92dcde9bcef05ec7ce0a427"
+    },
+    {
+      "id": "feature:overview.RecentActivities",
+      "name": "RecentActivities",
+      "owner": "feature:overview",
+      "file": "features/overview/components/RecentActivities.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/overview/screens/DashboardScreen.tsx"
+      ],
+      "sourceHash": "b92a18a438e00001fb822a5a6ef06b8de80c481b10f9d5046691c933adda4bbc"
+    },
+    {
+      "id": "feature:overview.StatCard",
+      "name": "StatCard",
+      "owner": "feature:overview",
+      "file": "features/overview/components/StatCard.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/overview/index.ts",
+        "features/overview/screens/DashboardScreen.tsx"
+      ],
+      "sourceHash": "fedbe1ffb430935912a6cbf721ceb74996314d7194ddd29c7eff5d483d8b74ed"
+    },
+    {
+      "id": "feature:overview.SummaryList",
+      "name": "SummaryList",
+      "owner": "feature:overview",
+      "file": "features/overview/components/SummaryList.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [],
+      "sourceHash": "27363f1e69b36e9db2822735aedb421a4f8ad8ad7b330fdb01735da64ff4323e"
+    },
+    {
+      "id": "feature:pins.EditPinPage",
+      "name": "EditPinPage",
+      "owner": "feature:pins",
+      "file": "features/pins/screens/PinsIdEditScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/pins/[id]/edit/page.tsx"
+      ],
+      "sourceHash": "0aadbf2fab55b493b5257e3b90b9da0378010fc8e0584d6bcecaee95a4cbd9a4"
+    },
+    {
+      "id": "feature:pins.FavoritePins",
+      "name": "FavoritePins",
+      "owner": "feature:pins",
+      "file": "features/pins/components/FavoritePins.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [],
+      "sourceHash": "151d13345510c610058278e4e403921f4856e238f7918597a6018ad56f71fbd1"
+    },
+    {
+      "id": "feature:pins.NewPinPage",
+      "name": "NewPinPage",
+      "owner": "feature:pins",
+      "file": "features/pins/screens/PinsNewScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/pins/new/page.tsx"
+      ],
+      "sourceHash": "52704f14f9f159a6e16e1d3322b877b9c8f535636e420a15801bdab2fa36fff3"
+    },
+    {
+      "id": "feature:pins.PinCard",
+      "name": "PinCard",
+      "owner": "feature:pins",
+      "file": "features/pins/components/PinCard.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/pins/components/PinGrid.tsx"
+      ],
+      "sourceHash": "3c23b874a20dbac18ab41e09a37050b5c2570bf8f7d52ca760f75cbc3587e0de"
+    },
+    {
+      "id": "feature:pins.PinDetailPage",
+      "name": "PinDetailPage",
+      "owner": "feature:pins",
+      "file": "features/pins/screens/PinsIdScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/pins/[id]/page.tsx"
+      ],
+      "sourceHash": "6a0cce870eb58001802fd2e3705991ca177114472799d9cbb9f4331896f0725c"
+    },
+    {
+      "id": "feature:pins.PinFilters",
+      "name": "PinFilters",
+      "owner": "feature:pins",
+      "file": "features/pins/components/PinFilters.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/pins/screens/PinsScreen.tsx"
+      ],
+      "sourceHash": "2652f24cd8dfabaae90196f5237f9fafa315e7e8731bcb97b1059ad6f37fcd34"
+    },
+    {
+      "id": "feature:pins.PinForm",
+      "name": "PinForm",
+      "owner": "feature:pins",
+      "file": "features/pins/components/PinForm.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/pins/screens/PinsIdEditScreen.tsx",
+        "features/pins/screens/PinsNewScreen.tsx"
+      ],
+      "sourceHash": "7a9ce9675c23c4c3be3cc30315070e93baf4b7830ef69ea0804979f576dbd3c3"
+    },
+    {
+      "id": "feature:pins.PinGrid",
+      "name": "PinGrid",
+      "owner": "feature:pins",
+      "file": "features/pins/components/PinGrid.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/pins/screens/PinsScreen.tsx"
+      ],
+      "sourceHash": "73c1352f192c30e1af464c8b0a97c593453bfbe660f61e438f49cee09a729852"
+    },
+    {
+      "id": "feature:pins.PinsPage",
+      "name": "PinsPage",
+      "owner": "feature:pins",
+      "file": "features/pins/screens/PinsScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/pins/page.tsx"
+      ],
+      "sourceHash": "d2779e36b27b07ef9cc4495cb43dbe7f4350af3c1c570bbe65f13cba427d1186"
+    },
+    {
+      "id": "feature:profile.ChangePasswordPage",
+      "name": "ChangePasswordPage",
+      "owner": "feature:profile",
+      "file": "features/profile/screens/ProfileChangePasswordScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/profile/change-password/page.tsx"
+      ],
+      "sourceHash": "ba7797ffdae40b90c9cf7b9d3f26c1f63b8da45e6d657e13c45ea8c91bb6a1cd"
+    },
+    {
+      "id": "feature:profile.EditProfilePage",
+      "name": "EditProfilePage",
+      "owner": "feature:profile",
+      "file": "features/profile/screens/ProfileEditScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/profile/edit/page.tsx"
+      ],
+      "sourceHash": "33eaf51d41925e02bcfe41d8438b94d01b5782c104a80c83da53d0063e05f75a"
+    },
+    {
+      "id": "feature:profile.FollowersPage",
+      "name": "FollowersPage",
+      "owner": "feature:profile",
+      "file": "features/profile/screens/ProfileUsernameFollowersScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/profile/[username]/followers/page.tsx"
+      ],
+      "sourceHash": "7aa53e20902a04c789ff94b97c6b12d4c6479ced4531ef2418066102c4292b16"
+    },
+    {
+      "id": "feature:profile.FollowingPage",
+      "name": "FollowingPage",
+      "owner": "feature:profile",
+      "file": "features/profile/screens/ProfileUsernameFollowingScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/profile/[username]/following/page.tsx"
+      ],
+      "sourceHash": "e85dcf5179d075e5a4e4cabb6d51f1e04a5a24e50108bc933cb4cf3f862680c2"
+    },
+    {
+      "id": "feature:profile.ProfileDashboardPage",
+      "name": "ProfileDashboardPage",
+      "owner": "feature:profile",
+      "file": "features/profile/screens/ProfilesIdScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/profiles/[id]/page.tsx"
+      ],
+      "sourceHash": "2da4cfe7ba7eabe4a5c403e5091f8296638515a183314ce8daa2e85e706957e5"
+    },
+    {
+      "id": "feature:profile.ProfileRedirectPage",
+      "name": "ProfileRedirectPage",
+      "owner": "feature:profile",
+      "file": "features/profile/screens/ProfileScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/profile/page.tsx"
+      ],
+      "sourceHash": "fa5c874a2f21575b306654a221e7a98583b3c9e078882ad4ec24d52735ab1ccd"
+    },
+    {
+      "id": "feature:profile.ProfilesPage",
+      "name": "ProfilesPage",
+      "owner": "feature:profile",
+      "file": "features/profile/screens/ProfilesScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/profiles/page.tsx"
+      ],
+      "sourceHash": "a20c8691ea744bc6681f3958d84d0977e88cdfb7174f99276353bb39be43235b"
+    },
+    {
+      "id": "feature:profile.PublicProfilePage",
+      "name": "PublicProfilePage",
+      "owner": "feature:profile",
+      "file": "features/profile/screens/ProfileUsernameScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/profile/[username]/page.tsx"
+      ],
+      "sourceHash": "303baabf66941d1a2057ce451c6260bc3e80bb01b1bc3c95171ccc4e209b72b3"
+    },
+    {
+      "id": "feature:quests.NewQuestPage",
+      "name": "NewQuestPage",
+      "owner": "feature:quests",
+      "file": "features/quests/screens/ExploreQuestsNewScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/explore/quests/new/page.tsx"
+      ],
+      "sourceHash": "42b9afd8eeae15135f499b678730414a0d7014268a8fce645dae120ac9024548"
+    },
+    {
+      "id": "feature:quests.QuestCard",
+      "name": "QuestCard",
+      "owner": "feature:quests",
+      "file": "features/quests/components/QuestCard.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/quests/index.ts",
+        "features/quests/screens/ExploreQuestsScreen.tsx"
+      ],
+      "sourceHash": "85cd6c65dbef3d3a16a3e6cba4e6367ec233e556a5265401cdcfd0da7d6c1324"
+    },
+    {
+      "id": "feature:quests.QuestDetailPage",
+      "name": "QuestDetailPage",
+      "owner": "feature:quests",
+      "file": "features/quests/screens/ExploreQuestsIdScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/explore/quests/[id]/page.tsx"
+      ],
+      "sourceHash": "31495f0f991e6374c172e61ef0e34cadd8fcd19f0d5dc54482b8da4f69f93bb8"
+    },
+    {
+      "id": "feature:quests.QuestsPage",
+      "name": "QuestsPage",
+      "owner": "feature:quests",
+      "file": "features/quests/screens/ExploreQuestsScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/explore/quests/page.tsx"
+      ],
+      "sourceHash": "3303e138a38b1b9df5fdcae5d1982f2d8a376685a6ff55d76fa31ddfdce7a973"
+    },
+    {
+      "id": "feature:recommended.RecommendedPage",
+      "name": "RecommendedPage",
+      "owner": "feature:recommended",
+      "file": "features/recommended/screens/ExploreRecommendedScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/explore/recommended/page.tsx"
+      ],
+      "sourceHash": "03e75503c83fba6d8ff18fa117cafa346a42f6ba3bfbaf276f47001f057b086f"
+    },
+    {
+      "id": "feature:reports.ReportsPage",
+      "name": "ReportsPage",
+      "owner": "feature:reports",
+      "file": "features/reports/screens/ReportsScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/reports/page.tsx"
+      ],
+      "sourceHash": "94e914a5d92237e7c41a5dbee4aafaeb785f91f172fbad2910df8e33afa5acfd"
+    },
+    {
+      "id": "feature:repositories.ExploreRepositoriesPage",
+      "name": "ExploreRepositoriesPage",
+      "owner": "feature:repositories",
+      "file": "features/repositories/screens/ExploreRepositoriesScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/explore/repositories/page.tsx"
+      ],
+      "sourceHash": "04cfe3c2c4dbbc3c2faaa89a96ce892eb745335f491331efe4d22484c1410ea8"
+    },
+    {
+      "id": "feature:repositories.RepoProfilePage",
+      "name": "RepoProfilePage",
+      "owner": "feature:repositories",
+      "file": "features/repositories/screens/ReposOrgRepoScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/repos/[org]/[repo]/page.tsx"
+      ],
+      "sourceHash": "aa011309f600f07cd9fa5697ca31982313d8710fb7f9550a6a78ca2bdf2373ab"
+    },
+    {
+      "id": "feature:repositories.RepositoriesPage",
+      "name": "RepositoriesPage",
+      "owner": "feature:repositories",
+      "file": "features/repositories/screens/RepositoriesScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/repositories/page.tsx"
+      ],
+      "sourceHash": "82e2597a60f815ad18a6ba0d97eeb78def9beaa70f281e483329bbe0d199a9ae"
+    },
+    {
+      "id": "feature:saved.SavedOpportunitiesPage",
+      "name": "SavedOpportunitiesPage",
+      "owner": "feature:saved",
+      "file": "features/saved/screens/ExploreSavedScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/explore/saved/page.tsx"
+      ],
+      "sourceHash": "bf050479bb0c21538f74e436ca7bb64c9ed01c78bc118cb52aaaf695d9be96da"
+    },
+    {
+      "id": "feature:search.SearchPage",
+      "name": "SearchPage",
+      "owner": "feature:search",
+      "file": "features/search/screens/SearchScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/search/page.tsx"
+      ],
+      "sourceHash": "d08559cf02f3c0990f31f7664f69bc5957a00b31c251b410b7374bee616555d4"
+    },
+    {
+      "id": "feature:settings.GitHubAutomationPanel",
+      "name": "GitHubAutomationPanel",
+      "owner": "feature:settings",
+      "file": "features/settings/components/GitHubAutomationPanel.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/settings/screens/SettingsScreen.tsx"
+      ],
+      "sourceHash": "ccbc1f8e3694a1700b0c7085d0261a2c0b6bbbf753d26eccdff557af6c30c904"
+    },
+    {
+      "id": "feature:settings.SettingsPage",
+      "name": "SettingsPage",
+      "owner": "feature:settings",
+      "file": "features/settings/screens/SettingsScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/settings/page.tsx"
+      ],
+      "sourceHash": "53437eb97cdf56c446e93c9bd6280e0044cb31d3ce09653b86acac439d24b890"
+    },
+    {
+      "id": "feature:system.BadgesPage",
+      "name": "BadgesPage",
+      "owner": "feature:system",
+      "file": "features/system/screens/BadgesScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/badges/page.tsx"
+      ],
+      "sourceHash": "0f2cb4b0d2452030af098595c2118cf03cb72bfb026f5001c3323b67be5c0478"
+    },
+    {
+      "id": "feature:system.ComingSoonPage",
+      "name": "ComingSoonPage",
+      "owner": "feature:system",
+      "file": "features/system/screens/ComingSoonScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/coming-soon/page.tsx"
+      ],
+      "sourceHash": "494a5fa56c1a669b291ae71e7224bd387b1a861dcbc579608af5ae230c19c106"
+    },
+    {
+      "id": "feature:work.CalendarPage",
+      "name": "CalendarPage",
+      "owner": "feature:work",
+      "file": "features/work/screens/CalendarScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/calendar/page.tsx"
+      ],
+      "sourceHash": "2236727d328a193167e054353f7b842c358d778454e33d32c48062f7cea31bd2"
+    },
+    {
+      "id": "feature:work.DueStatusBadge",
+      "name": "DueStatusBadge",
+      "owner": "feature:work",
+      "file": "features/work/components/DueStatusBadge.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/work/components/ScheduledWorkCard.tsx",
+        "features/work/components/ScheduledWorkTable.tsx",
+        "features/work/components/UpcomingWork.tsx",
+        "features/work/screens/ScheduleIdScreen.tsx"
+      ],
+      "sourceHash": "4b628651697fc5f007526972886a5ec54fb28bb9ef50c4172a429a09153934f3"
+    },
+    {
+      "id": "feature:work.EditScheduledWorkPage",
+      "name": "EditScheduledWorkPage",
+      "owner": "feature:work",
+      "file": "features/work/screens/ScheduleIdEditScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/schedule/[id]/edit/page.tsx"
+      ],
+      "sourceHash": "0d43e18bd63f3d9e2a127a1edce65cda77101f8039066173714b59890d4387a7"
+    },
+    {
+      "id": "feature:work.NewScheduledWorkPage",
+      "name": "NewScheduledWorkPage",
+      "owner": "feature:work",
+      "file": "features/work/screens/ScheduleNewScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/schedule/new/page.tsx"
+      ],
+      "sourceHash": "f5b08d3eef3d34c79b361f1d1010e42fd8ee8105b44e04696927baf5d5ceb959"
+    },
+    {
+      "id": "feature:work.PriorityBadge",
+      "name": "PriorityBadge",
+      "owner": "feature:work",
+      "file": "features/work/components/PriorityBadge.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/work/components/ScheduledWorkCard.tsx",
+        "features/work/components/ScheduledWorkTable.tsx",
+        "features/work/components/UpcomingWork.tsx",
+        "features/work/screens/ScheduleIdScreen.tsx"
+      ],
+      "sourceHash": "7a30181e235f9743ce01d947ecdbcea8c7454a03f4837d5327e24bbd341e131a"
+    },
+    {
+      "id": "feature:work.ScheduledWorkBoard",
+      "name": "ScheduledWorkBoard",
+      "owner": "feature:work",
+      "file": "features/work/components/ScheduledWorkBoard.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/work/screens/ScheduleScreen.tsx"
+      ],
+      "sourceHash": "256fff9e081f4a7559e8dff280ad096dd2a98bac0969023ec41b2c3f6a9c8f47"
+    },
+    {
+      "id": "feature:work.ScheduledWorkCard",
+      "name": "ScheduledWorkCard",
+      "owner": "feature:work",
+      "file": "features/work/components/ScheduledWorkCard.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/work/components/ScheduledWorkBoard.tsx"
+      ],
+      "sourceHash": "f4a4664562a17ea3e5aa5e8210c7a03ce12ab7ef55422b3e889dde1a5846d2bd"
+    },
+    {
+      "id": "feature:work.ScheduledWorkDetailPage",
+      "name": "ScheduledWorkDetailPage",
+      "owner": "feature:work",
+      "file": "features/work/screens/ScheduleIdScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/schedule/[id]/page.tsx"
+      ],
+      "sourceHash": "f8a837cdbd8f84f47ba551ca923ced2480a140659ac248b5b113650e4053710d"
+    },
+    {
+      "id": "feature:work.ScheduledWorkFilters",
+      "name": "ScheduledWorkFilters",
+      "owner": "feature:work",
+      "file": "features/work/components/ScheduledWorkFilters.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/work/screens/ScheduleScreen.tsx"
+      ],
+      "sourceHash": "9803ae65ba25b7add35a10306f25a2fd6edaebd29a6a8ca2204de9bc47e12913"
+    },
+    {
+      "id": "feature:work.ScheduledWorkForm",
+      "name": "ScheduledWorkForm",
+      "owner": "feature:work",
+      "file": "features/work/components/ScheduledWorkForm.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/work/screens/ScheduleIdEditScreen.tsx",
+        "features/work/screens/ScheduleNewScreen.tsx"
+      ],
+      "sourceHash": "8df6fd0e92730508bd0eb51696297e18113f09e9a44684f8472a06bed0dbcd1d"
+    },
+    {
+      "id": "feature:work.ScheduledWorkTable",
+      "name": "ScheduledWorkTable",
+      "owner": "feature:work",
+      "file": "features/work/components/ScheduledWorkTable.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/work/screens/ScheduleScreen.tsx"
+      ],
+      "sourceHash": "aaaca2be05900aa45d6bdab59fae806723ecf1c27bb1dca70c0a9936bea37eb9"
+    },
+    {
+      "id": "feature:work.SchedulePage",
+      "name": "SchedulePage",
+      "owner": "feature:work",
+      "file": "features/work/screens/ScheduleScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/schedule/page.tsx"
+      ],
+      "sourceHash": "76f9009c2269cd1cc6fead1707a26e67018af089b23133a8d5c509c23587fb15"
+    },
+    {
+      "id": "feature:work.UpcomingWork",
+      "name": "UpcomingWork",
+      "owner": "feature:work",
+      "file": "features/work/components/UpcomingWork.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [],
+      "sourceHash": "52dcf505cde5c874437ab643c981ce0dcbfc251161840bed9b5ea8ba132a9d06"
+    },
+    {
+      "id": "feature:work.WorkStatusBadge",
+      "name": "WorkStatusBadge",
+      "owner": "feature:work",
+      "file": "features/work/components/WorkStatusBadge.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/work/components/ScheduledWorkCard.tsx",
+        "features/work/components/ScheduledWorkTable.tsx",
+        "features/work/screens/ScheduleIdScreen.tsx"
+      ],
+      "sourceHash": "d4878882b0dc7ef11608276e1d406910cf8046c7c9bc6b10424a65dbc3fea2b3"
+    },
+    {
+      "id": "shared.ActivityCalendar",
+      "name": "ActivityCalendar",
+      "owner": "shared",
+      "file": "shared/calendar/ActivityCalendar.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [],
+      "sourceHash": "11e258b403107d5493425d34dd9567d0ab8be1d95542f025a829a0e88b38f115"
+    },
+    {
+      "id": "shared.ActivityHeatmap",
+      "name": "ActivityHeatmap",
+      "owner": "shared",
+      "file": "shared/calendar/ActivityHeatmap.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/profile/screens/ProfileUsernameScreen.tsx",
+        "features/profile/screens/ProfilesIdScreen.tsx"
+      ],
+      "sourceHash": "3e0ff8197baa2ddc5af767f4845228090065fe780b1a29c3464b3d76ec6b518e"
+    },
+    {
+      "id": "shared.ActivityLineChart",
+      "name": "ActivityLineChart",
+      "owner": "shared",
+      "file": "shared/analytics/Charts.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/organizations/screens/OrgsOrgnameScreen.tsx",
+        "features/overview/screens/DashboardScreen.tsx",
+        "features/profile/screens/ProfilesIdScreen.tsx",
+        "features/repositories/screens/ReposOrgRepoScreen.tsx"
+      ],
+      "sourceHash": "8f5571a164640cf5b069d2c25d3e2c590a1db0ba42dbbc6e317db68c6abb9341"
+    },
+    {
+      "id": "shared.ActivityTypeChart",
+      "name": "ActivityTypeChart",
+      "owner": "shared",
+      "file": "shared/analytics/Charts.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/organizations/screens/OrgsOrgnameScreen.tsx",
+        "features/overview/screens/DashboardScreen.tsx",
+        "features/profile/screens/ProfilesIdScreen.tsx",
+        "features/repositories/screens/ReposOrgRepoScreen.tsx"
+      ],
+      "sourceHash": "8f5571a164640cf5b069d2c25d3e2c590a1db0ba42dbbc6e317db68c6abb9341"
+    },
+    {
+      "id": "shared.OrgChart",
+      "name": "OrgChart",
+      "owner": "shared",
+      "file": "shared/analytics/Charts.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/organizations/screens/OrgsOrgnameScreen.tsx",
+        "features/overview/screens/DashboardScreen.tsx",
+        "features/profile/screens/ProfilesIdScreen.tsx",
+        "features/repositories/screens/ReposOrgRepoScreen.tsx"
+      ],
+      "sourceHash": "8f5571a164640cf5b069d2c25d3e2c590a1db0ba42dbbc6e317db68c6abb9341"
+    },
+    {
+      "id": "shared.RangeToggle",
+      "name": "RangeToggle",
+      "owner": "shared",
+      "file": "shared/analytics/RangeToggle.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/overview/screens/DashboardScreen.tsx"
+      ],
+      "sourceHash": "9c13e4a602e09f74d2cbe0c80e3c8ef78710b7d925dab2086a35ae7dcfd56678"
+    },
+    {
+      "id": "shared.RepoChart",
+      "name": "RepoChart",
+      "owner": "shared",
+      "file": "shared/analytics/Charts.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/organizations/screens/OrgsOrgnameScreen.tsx",
+        "features/overview/screens/DashboardScreen.tsx",
+        "features/profile/screens/ProfilesIdScreen.tsx",
+        "features/repositories/screens/ReposOrgRepoScreen.tsx"
+      ],
+      "sourceHash": "8f5571a164640cf5b069d2c25d3e2c590a1db0ba42dbbc6e317db68c6abb9341"
+    },
+    {
+      "id": "shell.AppShell",
+      "name": "AppShell",
+      "owner": "shell",
+      "file": "shell/AppShell.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/layout.tsx"
+      ],
+      "sourceHash": "c3064325c7430befe9ceb91f08e8901c4e61fca3cdd0ba128235a022c99c4500"
+    },
+    {
+      "id": "shell.Navigation",
+      "name": "Navigation",
+      "owner": "shell",
+      "file": "shell/NavigationList.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "shell/Sidebar.tsx"
+      ],
+      "sourceHash": "111d0c453ea9c262fe0932b36d81c2227eb05dafa7a303fd9aa8183a0695932e"
+    },
+    {
+      "id": "shell.NotificationMenu",
+      "name": "NotificationMenu",
+      "owner": "shell",
+      "file": "shell/NotificationMenu.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "shell/Topbar.tsx"
+      ],
+      "sourceHash": "c38a2964f3b6f6c040c9e899f421eff987e409ca5fd2d51bcce7481125b7d4fe"
+    },
+    {
+      "id": "shell.Sidebar",
+      "name": "Sidebar",
+      "owner": "shell",
+      "file": "shell/Sidebar.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "shell/AppShell.tsx"
+      ],
+      "sourceHash": "a096b04e9a97b5a348edf194da12779bf6c4c3418e26e19819f7f0a00687088b"
+    },
+    {
+      "id": "shell.Topbar",
+      "name": "Topbar",
+      "owner": "shell",
+      "file": "shell/Topbar.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "shell/AppShell.tsx"
+      ],
+      "sourceHash": "e346532f85b239856168fc1288576679d96dda3b092a97ace9479ee9ecf1cfe2"
+    },
+    {
+      "id": "shell.UserSearch",
+      "name": "UserSearch",
+      "owner": "shell",
+      "file": "shell/UserSearch.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "shell/Topbar.tsx"
+      ],
+      "sourceHash": "c129a00aa45d901e9d3e008f53703561461c101cc914b558b2c9869a3261589c"
+    },
+    {
+      "id": "state.ActivityProvider",
+      "name": "ActivityProvider",
+      "owner": "state",
+      "file": "state/activities.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/layout.tsx",
+        "features/activities/components/ActivityForm.tsx",
+        "features/activities/components/ActivityTable.tsx",
+        "features/activities/screens/ActivitiesIdEditScreen.tsx",
+        "features/activities/screens/ActivitiesIdScreen.tsx",
+        "features/activities/screens/ActivitiesScreen.tsx",
+        "features/organizations/screens/OrgsOrgnameScreen.tsx",
+        "features/overview/screens/DashboardScreen.tsx",
+        "features/repositories/screens/ReposOrgRepoScreen.tsx",
+        "shell/hooks/useRealtimeEvents.ts"
+      ],
+      "sourceHash": "a6b7b38242b57f843e020ee7597a93324b031ffb5aa421fcca98e0c5e531a324"
+    },
+    {
+      "id": "state.AuthProvider",
+      "name": "AuthProvider",
+      "owner": "state",
+      "file": "state/auth.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/layout.tsx",
+        "features/auth/screens/LoginScreen.tsx",
+        "features/auth/screens/SignupScreen.tsx",
+        "features/profile/screens/ProfileChangePasswordScreen.tsx",
+        "features/profile/screens/ProfileEditScreen.tsx",
+        "features/profile/screens/ProfileScreen.tsx",
+        "features/profile/screens/ProfileUsernameScreen.tsx",
+        "features/quests/screens/ExploreQuestsIdScreen.tsx",
+        "features/quests/screens/ExploreQuestsNewScreen.tsx",
+        "features/settings/components/GitHubAutomationPanel.tsx",
+        "shell/AppShell.tsx",
+        "shell/Topbar.tsx",
+        "state/activities.tsx"
+      ],
+      "sourceHash": "0fa30be77ec7ceed80d090d03f938ed8a5cbd5db7f36bd43b1c480720cea5245"
+    }
+  ],
+  "routes": [
+    {
+      "route": "/activities/[id]/edit",
+      "entry": "app/activities/[id]/edit/page.tsx",
+      "screen": "features/activities/screens/ActivitiesIdEditScreen.tsx"
+    },
+    {
+      "route": "/activities/[id]",
+      "entry": "app/activities/[id]/page.tsx",
+      "screen": "features/activities/screens/ActivitiesIdScreen.tsx"
+    },
+    {
+      "route": "/activities/new",
+      "entry": "app/activities/new/page.tsx",
+      "screen": "features/activities/screens/ActivitiesNewScreen.tsx"
+    },
+    {
+      "route": "/activities",
+      "entry": "app/activities/page.tsx",
+      "screen": "features/activities/screens/ActivitiesScreen.tsx"
+    },
+    {
+      "route": "/analytics",
+      "entry": "app/analytics/page.tsx",
+      "screen": "features/overview/screens/AnalyticsScreen.tsx"
+    },
+    {
+      "route": "/badges",
+      "entry": "app/badges/page.tsx",
+      "screen": "features/system/screens/BadgesScreen.tsx"
+    },
+    {
+      "route": "/calendar",
+      "entry": "app/calendar/page.tsx",
+      "screen": "features/work/screens/CalendarScreen.tsx"
+    },
+    {
+      "route": "/coming-soon",
+      "entry": "app/coming-soon/page.tsx",
+      "screen": "features/system/screens/ComingSoonScreen.tsx"
+    },
+    {
+      "route": "/dashboard",
+      "entry": "app/dashboard/page.tsx",
+      "screen": "features/overview/screens/DashboardScreen.tsx"
+    },
+    {
+      "route": "/design-system",
+      "entry": "app/design-system/page.tsx",
+      "screen": "features/design-system/screens/DesignSystemScreen.tsx"
+    },
+    {
+      "route": "/explore/organizations/[slug]",
+      "entry": "app/explore/organizations/[slug]/page.tsx",
+      "screen": "features/organizations/screens/ExploreOrganizationsSlugScreen.tsx"
+    },
+    {
+      "route": "/explore/organizations",
+      "entry": "app/explore/organizations/page.tsx",
+      "screen": "features/organizations/screens/ExploreOrganizationsScreen.tsx"
+    },
+    {
+      "route": "/explore",
+      "entry": "app/explore/page.tsx",
+      "screen": "features/organizations/screens/ExploreScreen.tsx"
+    },
+    {
+      "route": "/explore/quests/[id]",
+      "entry": "app/explore/quests/[id]/page.tsx",
+      "screen": "features/quests/screens/ExploreQuestsIdScreen.tsx"
+    },
+    {
+      "route": "/explore/quests/new",
+      "entry": "app/explore/quests/new/page.tsx",
+      "screen": "features/quests/screens/ExploreQuestsNewScreen.tsx"
+    },
+    {
+      "route": "/explore/quests",
+      "entry": "app/explore/quests/page.tsx",
+      "screen": "features/quests/screens/ExploreQuestsScreen.tsx"
+    },
+    {
+      "route": "/explore/recommended",
+      "entry": "app/explore/recommended/page.tsx",
+      "screen": "features/recommended/screens/ExploreRecommendedScreen.tsx"
+    },
+    {
+      "route": "/explore/repositories",
+      "entry": "app/explore/repositories/page.tsx",
+      "screen": "features/repositories/screens/ExploreRepositoriesScreen.tsx"
+    },
+    {
+      "route": "/explore/saved",
+      "entry": "app/explore/saved/page.tsx",
+      "screen": "features/saved/screens/ExploreSavedScreen.tsx"
+    },
+    {
+      "route": "/feed",
+      "entry": "app/feed/page.tsx",
+      "screen": "features/community/screens/FeedScreen.tsx"
+    },
+    {
+      "route": "/goals",
+      "entry": "app/goals/page.tsx",
+      "screen": "features/overview/screens/GoalsScreen.tsx"
+    },
+    {
+      "route": "/leaderboard",
+      "entry": "app/leaderboard/page.tsx",
+      "screen": "features/leaderboards/screens/LeaderboardScreen.tsx"
+    },
+    {
+      "route": "/login",
+      "entry": "app/login/page.tsx",
+      "screen": "features/auth/screens/LoginScreen.tsx"
+    },
+    {
+      "route": "/notifications",
+      "entry": "app/notifications/page.tsx",
+      "screen": "features/notifications/screens/NotificationsScreen.tsx"
+    },
+    {
+      "route": "/organizations",
+      "entry": "app/organizations/page.tsx",
+      "screen": "features/organizations/screens/OrganizationsScreen.tsx"
+    },
+    {
+      "route": "/orgs/[orgName]",
+      "entry": "app/orgs/[orgName]/page.tsx",
+      "screen": "features/organizations/screens/OrgsOrgnameScreen.tsx"
+    },
+    {
+      "route": "/",
+      "entry": "app/page.tsx",
+      "screen": "features/community/screens/HomeScreen.tsx"
+    },
+    {
+      "route": "/pins/[id]/edit",
+      "entry": "app/pins/[id]/edit/page.tsx",
+      "screen": "features/pins/screens/PinsIdEditScreen.tsx"
+    },
+    {
+      "route": "/pins/[id]",
+      "entry": "app/pins/[id]/page.tsx",
+      "screen": "features/pins/screens/PinsIdScreen.tsx"
+    },
+    {
+      "route": "/pins/new",
+      "entry": "app/pins/new/page.tsx",
+      "screen": "features/pins/screens/PinsNewScreen.tsx"
+    },
+    {
+      "route": "/pins",
+      "entry": "app/pins/page.tsx",
+      "screen": "features/pins/screens/PinsScreen.tsx"
+    },
+    {
+      "route": "/profile/[username]/followers",
+      "entry": "app/profile/[username]/followers/page.tsx",
+      "screen": "features/profile/screens/ProfileUsernameFollowersScreen.tsx"
+    },
+    {
+      "route": "/profile/[username]/following",
+      "entry": "app/profile/[username]/following/page.tsx",
+      "screen": "features/profile/screens/ProfileUsernameFollowingScreen.tsx"
+    },
+    {
+      "route": "/profile/[username]",
+      "entry": "app/profile/[username]/page.tsx",
+      "screen": "features/profile/screens/ProfileUsernameScreen.tsx"
+    },
+    {
+      "route": "/profile/change-password",
+      "entry": "app/profile/change-password/page.tsx",
+      "screen": "features/profile/screens/ProfileChangePasswordScreen.tsx"
+    },
+    {
+      "route": "/profile/edit",
+      "entry": "app/profile/edit/page.tsx",
+      "screen": "features/profile/screens/ProfileEditScreen.tsx"
+    },
+    {
+      "route": "/profile",
+      "entry": "app/profile/page.tsx",
+      "screen": "features/profile/screens/ProfileScreen.tsx"
+    },
+    {
+      "route": "/profiles/[id]",
+      "entry": "app/profiles/[id]/page.tsx",
+      "screen": "features/profile/screens/ProfilesIdScreen.tsx"
+    },
+    {
+      "route": "/profiles",
+      "entry": "app/profiles/page.tsx",
+      "screen": "features/profile/screens/ProfilesScreen.tsx"
+    },
+    {
+      "route": "/reports",
+      "entry": "app/reports/page.tsx",
+      "screen": "features/reports/screens/ReportsScreen.tsx"
+    },
+    {
+      "route": "/repos/[org]/[repo]",
+      "entry": "app/repos/[org]/[repo]/page.tsx",
+      "screen": "features/repositories/screens/ReposOrgRepoScreen.tsx"
+    },
+    {
+      "route": "/repositories",
+      "entry": "app/repositories/page.tsx",
+      "screen": "features/repositories/screens/RepositoriesScreen.tsx"
+    },
+    {
+      "route": "/schedule/[id]/edit",
+      "entry": "app/schedule/[id]/edit/page.tsx",
+      "screen": "features/work/screens/ScheduleIdEditScreen.tsx"
+    },
+    {
+      "route": "/schedule/[id]",
+      "entry": "app/schedule/[id]/page.tsx",
+      "screen": "features/work/screens/ScheduleIdScreen.tsx"
+    },
+    {
+      "route": "/schedule/new",
+      "entry": "app/schedule/new/page.tsx",
+      "screen": "features/work/screens/ScheduleNewScreen.tsx"
+    },
+    {
+      "route": "/schedule",
+      "entry": "app/schedule/page.tsx",
+      "screen": "features/work/screens/ScheduleScreen.tsx"
+    },
+    {
+      "route": "/search",
+      "entry": "app/search/page.tsx",
+      "screen": "features/search/screens/SearchScreen.tsx"
+    },
+    {
+      "route": "/settings",
+      "entry": "app/settings/page.tsx",
+      "screen": "features/settings/screens/SettingsScreen.tsx"
+    },
+    {
+      "route": "/signup",
+      "entry": "app/signup/page.tsx",
+      "screen": "features/auth/screens/SignupScreen.tsx"
+    }
+  ]
+}

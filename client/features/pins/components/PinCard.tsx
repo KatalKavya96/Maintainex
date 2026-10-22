@@ -1,0 +1,69 @@
+"use client";
+
+import Link from "next/link";
+import { BookOpen, ExternalLink, FileText, FolderGit2, Globe2, LayoutPanelTop, Pencil, Star, Trash2, Users } from "lucide-react";
+import clsx from "clsx";
+import { labelize } from "@/shared/lib/constants";
+import { markPinOpened, toggleFavoritePin } from "@/data/api/pins";
+import type { Pin } from "@/types/pin";
+
+const icons = {
+  REPOSITORY: FolderGit2,
+  ISSUE: FileText,
+  PULL_REQUEST: GitPullRequestIcon,
+  DOCUMENTATION: BookOpen,
+  PROJECT_BOARD: LayoutPanelTop,
+  ORGANIZATION: Users,
+  WEBSITE: Globe2,
+  OTHER: Globe2
+};
+
+function GitPullRequestIcon({ size = 22 }: { size?: number }) {
+  return <FolderGit2 size={size} />;
+}
+
+export function PinCard({ pin, onChanged, onDelete }: { pin: Pin; onChanged: () => void; onDelete: (pin: Pin) => void }) {
+  const Icon = icons[pin.category];
+  const domain = (() => {
+    try {
+      return new URL(pin.url).hostname.replace(/^www\./, "");
+    } catch {
+      return pin.url;
+    }
+  })();
+
+  async function openPin() {
+    await markPinOpened(pin.id).catch(() => undefined);
+    window.open(pin.url, "_blank", "noopener,noreferrer");
+  }
+
+  return (
+    <article className="group flex h-full flex-col rounded-xl border border-line bg-panel p-4 shadow-soft transition hover:-translate-y-0.5 hover:border-moss/25 hover:shadow-lg">
+      <button type="button" onClick={openPin} className="flex flex-1 text-left">
+        <div className="mr-3 grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-xl bg-skyglass text-moss">
+          {pin.imageUrl || pin.faviconUrl ? <img src={pin.imageUrl || pin.faviconUrl || ""} alt="" className="h-8 w-8 object-contain" /> : <Icon size={23} />}
+        </div>
+        <div className="min-w-0">
+          <h3 className="truncate text-base font-bold text-ink">{pin.title}</h3>
+          <p className="truncate text-sm text-muted">{domain}</p>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            <span className="rounded-md bg-skyglass px-2 py-1 text-xs font-bold text-muted">{pin.customCategory || labelize(pin.category)}</span>
+            {pin.tags.slice(0, 3).map((tag) => (
+              <span key={tag} className="rounded-md bg-moss/10 px-2 py-1 text-xs font-bold text-moss">{tag}</span>
+            ))}
+          </div>
+        </div>
+      </button>
+      <div className="mt-4 flex items-center justify-between border-t border-line pt-3">
+        <button title="Favorite" className={clsx("rounded-lg p-2 transition hover:bg-skyglass", pin.isFavorite ? "text-muted" : "text-muted")} onClick={async () => { await toggleFavoritePin(pin.id); onChanged(); }}>
+          <Star size={18} fill={pin.isFavorite ? "currentColor" : "none"} />
+        </button>
+        <div className="flex gap-1">
+          <button title="Open" className="rounded-lg p-2 text-muted transition hover:bg-skyglass" onClick={openPin}><ExternalLink size={18} /></button>
+          <Link title="Edit" className="rounded-lg p-2 text-muted transition hover:bg-skyglass" href={`/pins/${pin.id}/edit`}><Pencil size={18} /></Link>
+          <button title="Delete" className="rounded-lg p-2 text-muted transition hover:bg-skyglass hover:text-danger" onClick={() => onDelete(pin)}><Trash2 size={18} /></button>
+        </div>
+      </div>
+    </article>
+  );
+}

@@ -28,6 +28,18 @@ Database password changes are branch-scoped. Inspect other branches or deploymen
 
 Re-encryption protects subsequent storage. It does not revoke access tokens that someone may already have copied. Review and revoke affected provider grants/tokens as appropriate, then reconnect accounts.
 
+For an explicitly authorized incident, `node server/scripts/revoke-exposed-github-tokens.mjs` reports only record/token counts. Adding `--execute` revokes each known token through the owning GitHub OAuth application, removes the corresponding integration records and clears stored provider tokens. Provider identity mappings and contribution records remain intact. Accounts must reconnect afterward. Do not run this during ordinary maintenance or treat re-encryption as permission to revoke connections.
+
+## 2026-10-22 response record
+
+- Removed the tracked `server/.env` from the current repository revision and published secret checks, staged-content hook and regression tests in commit `7df818e90286625cd1e97d50c517dbbc8392bea3`.
+- Rotated the affected Neon role password; verified a fresh connection with the replacement and rejection of the retired password.
+- Re-encrypted three stored credential fields and rotated the local session-signing key.
+- With explicit account-holder approval, revoked or confirmed invalid two unique GitHub tokens, disconnected two integration records and cleared one provider account's stored credentials. Contribution records and provider identity mapping were preserved.
+- Updated Vercel database configuration for production/preview, token-encryption configuration for production, and session-signing configuration for production/preview. Production deployment `dpl_HeLK1rs8TVfiuShzrNqwTnYkwKLH` of the security commit reached READY and received the production alias. Verified `/api/health` returned 200 and a database-backed lookup for a random nonexistent account returned the expected 404 without creating records. Preview was not separately redeployed or verified.
+- GitHub OAuth client-secret replacement still requires the account holder's sensitive browser action; the existing app secret has not yet been retired.
+- Historical Git objects have not been rewritten. Other Neon branches have not been inspected. This response does not establish whether third parties accessed the exposed credentials.
+
 ## OAuth application secret
 
 In GitHub developer settings, generate a replacement OAuth client secret, update local and deployment secret stores, verify the connection flow, and delete the exposed client secret. Credential-reset interactions in the browser require the human account holder to complete the sensitive action. Keep secret values out of screenshots and messages.

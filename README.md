@@ -69,13 +69,13 @@ GET /health
 Backend env variables:
 
 ```txt
-DATABASE_URL=postgresql://USER:PASSWORD@HOST/DB?sslmode=require
+DATABASE_URL="postgresql://maintainex:replace-with-database-password@localhost:5432/maintainex?schema=public"
 PORT=5001
 CLIENT_URL=https://your-production-frontend.vercel.app
 CLIENT_URLS=http://localhost:3000,https://your-production-frontend.vercel.app
 ALLOW_VERCEL_ORIGINS=true
-JWT_SECRET=replace-with-a-long-random-secret
-SIGNUP_ADMIN_CODE=optional-admin-invite-code
+JWT_SECRET="replace-with-a-cryptographically-random-secret"
+SIGNUP_ADMIN_CODE="replace-with-a-private-invitation-code"
 GITHUB_CLIENT_ID=your-github-oauth-client-id
 GITHUB_CLIENT_SECRET=your-github-oauth-client-secret
 GITHUB_REDIRECT_URI=https://your-backend-api-domain.vercel.app/api/github/callback
@@ -159,12 +159,12 @@ NEXT_PUBLIC_API_URL=https://your-backend-api-domain.vercel.app/api
 The backend needs:
 
 ```txt
-DATABASE_URL=postgresql://USER:PASSWORD@HOST/DB?sslmode=require
+DATABASE_URL="postgresql://maintainex:replace-with-database-password@localhost:5432/maintainex?schema=public"
 CLIENT_URL=https://your-production-frontend.vercel.app
 CLIENT_URLS=https://your-production-frontend.vercel.app
 ALLOW_VERCEL_ORIGINS=true
-JWT_SECRET=replace-with-a-long-random-secret
-SIGNUP_ADMIN_CODE=optional-admin-invite-code
+JWT_SECRET="replace-with-a-cryptographically-random-secret"
+SIGNUP_ADMIN_CODE="replace-with-a-private-invitation-code"
 GITHUB_CLIENT_ID=your-github-oauth-client-id
 GITHUB_CLIENT_SECRET=your-github-oauth-client-secret
 GITHUB_REDIRECT_URI=https://your-backend-api-domain.vercel.app/api/github/callback

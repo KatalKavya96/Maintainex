@@ -9,7 +9,9 @@
   "scripts": {
     "build": "npm run build --workspace maintainex-client",
     "vercel-build": "cd server && npx prisma generate && cd ../client && npm run build",
-    "check": "npm run check --workspace maintainex-client"
+    "check": "npm run check:secrets && npm run test:secrets && npm run check --workspace maintainex-client",
+    "check:secrets": "node scripts/check-secrets.mjs",
+    "test:secrets": "node --test scripts/check-secrets.test.mjs"
   },
   "dependencies": {
     "next": "^14.2.4",

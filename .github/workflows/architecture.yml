@@ -17,6 +17,8 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - run: node scripts/check-secrets.mjs
+      - run: node --test scripts/check-secrets.test.mjs
       - run: npm ci
       - run: npm run check
       - run: npm run build

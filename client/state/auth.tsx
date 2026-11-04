@@ -1,7 +1,7 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { apiRequest } from "@/data/http";
+import { createContext, useContext, useEffect, useMemo, useState, useCallback, useRef } from "react";
+import { apiRequest, ApiRequestError } from "@/data/http";
 import { clearSessionToken, getSessionToken, setSessionToken } from "@/data/session";
 
 export type UserRole = "ADMIN" | "VIEWER";
@@ -24,6 +24,8 @@ interface AuthStore {
   user: AuthUser | null;
   token: string | null;
   isReady: boolean;
+  sessionError: string;
+  retrySession: () => void;
   isAdmin: boolean;
   isViewer: boolean;
   login: (email: string, password: string) => Promise<void>;
@@ -48,32 +50,45 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isReady, setIsReady] = useState(false);
 
-  useEffect(() => {
+  const [sessionError, setSessionError] = useState("");
+  const requestVersion = useRef(0);
+  const restoreSession = useCallback(() => {
+    const version = ++requestVersion.current;
     const storedToken = getSessionToken();
-    if (!storedToken) {
-      setIsReady(true);
-      return;
-    }
+    setSessionError("");
+    if (!storedToken) { setIsReady(true); return; }
+    setIsReady(false);
     setToken(storedToken);
-    apiRequest<AuthResponse>("/auth/me")
-      .then((data) => {
+    void apiRequest<AuthResponse>("/auth/me")
+      .then(data => {
+        if (version !== requestVersion.current) return;
+        setSessionError("");
         persistSession(data);
         setToken(data.token);
         setUser(data.user);
       })
-      .catch(() => {
-        clearSessionToken();
-        setToken(null);
-        setUser(null);
+      .catch(reason => {
+        if (version !== requestVersion.current) return;
+        if (reason instanceof ApiRequestError && [401, 403].includes(reason.status)) {
+          clearSessionToken(); setToken(null); setUser(null);
+        } else {
+          setSessionError("We could not verify your session. Check your connection and retry.");
+        }
       })
-      .finally(() => setIsReady(true));
+      .finally(() => { if (version === requestVersion.current) setIsReady(true); });
   }, []);
+  useEffect(() => {
+    restoreSession();
+    return () => { requestVersion.current++; };
+  }, [restoreSession]);
 
   const store = useMemo<AuthStore>(
     () => ({
       user,
       token,
       isReady,
+      sessionError,
+      retrySession: restoreSession,
       isAdmin: user?.role === "ADMIN",
       isViewer: user?.role === "VIEWER",
       login: async (email, password) => {
@@ -81,6 +96,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           method: "POST",
           body: JSON.stringify({ email, password })
         });
+        requestVersion.current++;
+        setIsReady(true);
+        setSessionError("");
         persistSession(data);
         setToken(data.token);
         setUser(data.user);
@@ -90,6 +108,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           method: "POST",
           body: JSON.stringify(payload)
         });
+        requestVersion.current++;
+        setIsReady(true);
+        setSessionError("");
         persistSession(data);
         setToken(data.token);
         setUser(data.user);
@@ -99,12 +120,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           method: "POST",
           body: JSON.stringify({ code })
         });
+        requestVersion.current++;
+        setIsReady(true);
+        setSessionError("");
         persistSession(data);
         setToken(data.token);
         setUser(data.user);
       },
       viewAsViewer: async () => {
         const data = await apiRequest<AuthResponse>("/auth/viewer", { method: "POST" });
+        requestVersion.current++;
+        setIsReady(true);
+        setSessionError("");
         persistSession(data);
         setToken(data.token);
         setUser(data.user);
@@ -118,13 +145,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
       },
       logout: () => {
+        requestVersion.current++;
+        setIsReady(true);
+        setSessionError("");
         clearSessionToken();
         window.dispatchEvent(new Event(AUTH_EVENT));
         setToken(null);
         setUser(null);
       }
     }),
-    [isReady, token, user]
+    [isReady, token, user, sessionError, restoreSession]
   );
 
   return <AuthContext.Provider value={store}>{children}</AuthContext.Provider>;

@@ -1,5 +1,12 @@
 import { getSessionToken } from "@/data/session";
 
+export class ApiRequestError extends Error {
+  constructor(message: string, public readonly status: number) {
+    super(message);
+    this.name = "ApiRequestError";
+  }
+}
+
 const getApiUrl = () => {
   if (process.env.NEXT_PUBLIC_API_URL) {
     return process.env.NEXT_PUBLIC_API_URL.replace(/\/$/, "");
@@ -36,7 +43,7 @@ export async function apiRequest<T>(path: string, options?: RequestInit): Promis
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({ message: `API request failed: ${response.status}` }));
-    throw new Error(error.message ?? `API request failed: ${response.status}`);
+    throw new ApiRequestError(error.message ?? `API request failed: ${response.status}`, response.status);
   }
 
   const json = await response.json();

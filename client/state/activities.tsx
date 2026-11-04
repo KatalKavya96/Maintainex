@@ -1,26 +1,20 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import type { Activity } from "@/types/activity";
+import { mapApiActivity, type ApiActivity } from "@/data/api/activities";
 import { apiRequest } from "@/data/http";
 import { authChangedEvent, useAuthStore } from "@/state/auth";
 
 export const realtimeDashboardEvent = "maintainex-realtime-dashboard";
 
 type ActivityInput = Omit<Activity, "id" | "createdAt" | "updatedAt">;
-type ApiActivity = Omit<Activity, "date" | "organizationName" | "repositoryName" | "tags" | "number" | "link" | "description" | "notes"> & {
-  date: string;
-  organizationNameSnapshot: string;
-  repositoryNameSnapshot: string;
-  number?: string | null;
-  link?: string | null;
-  description?: string | null;
-  notes?: string | null;
-  tags?: unknown;
-};
-
 interface ActivityStore {
   activities: Activity[];
+  loading: boolean;
+  error: string;
+  total: number;
+  reload: () => void;
   addActivity: (activity: ActivityInput) => Promise<Activity>;
   updateActivity: (id: string, activity: ActivityInput) => Promise<void>;
   deleteActivity: (id: string) => Promise<void>;
@@ -28,18 +22,6 @@ interface ActivityStore {
 }
 
 const ActivityContext = createContext<ActivityStore | undefined>(undefined);
-
-const mapApiActivity = (activity: ApiActivity): Activity => ({
-  ...activity,
-  date: activity.date.slice(0, 10),
-  organizationName: activity.organizationNameSnapshot,
-  repositoryName: activity.repositoryNameSnapshot,
-  number: activity.number ?? "",
-  link: activity.link ?? "",
-  description: activity.description ?? "",
-  notes: activity.notes ?? "",
-  tags: Array.isArray(activity.tags) ? activity.tags.filter((tag): tag is string => typeof tag === "string") : []
-});
 
 const toApiPayload = (activity: ActivityInput) => ({
   date: activity.date,
@@ -59,23 +41,33 @@ const toApiPayload = (activity: ActivityInput) => ({
 
 export function ActivityProvider({ children }: { children: React.ReactNode }) {
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [total, setTotal] = useState(0);
+  const request = useRef(0);
   const { isReady, token, user } = useAuthStore();
 
   const loadActivities = useCallback(() => {
+    const version = ++request.current;
     if (!isReady) return;
     if (!token || !user?.id) {
       setActivities([]);
+      setTotal(0);
+      setLoading(false);
       return;
     }
 
-    apiRequest<{ items: ApiActivity[] }>("/activities?limit=1000")
+    setLoading(true);
+    setError("");
+    apiRequest<{ items: ApiActivity[]; total: number }>("/activities?limit=1000")
       .then((data) => {
+        if (version !== request.current) return;
         setActivities(data.items.map(mapApiActivity));
+        setTotal(data.total);
       })
       .catch((error) => {
-        console.error("Failed to load activities", error);
-        setActivities([]);
-      });
+        if (version === request.current) setError(error instanceof Error ? error.message : "Unable to load activities.");
+      }).finally(() => { if (version === request.current) setLoading(false); });
   }, [isReady, token, user?.id]);
 
   useEffect(() => {
@@ -93,7 +85,7 @@ export function ActivityProvider({ children }: { children: React.ReactNode }) {
 
   const store = useMemo<ActivityStore>(
     () => ({
-      activities,
+      activities, loading, error, total, reload: loadActivities,
       addActivity: async (activity) => {
         const created = await apiRequest<ApiActivity>("/activities", {
           method: "POST",
@@ -101,6 +93,7 @@ export function ActivityProvider({ children }: { children: React.ReactNode }) {
         });
         const mapped = mapApiActivity(created);
         setActivities((current) => [mapped, ...current]);
+        setTotal(current => current + 1);
         return mapped;
       },
       updateActivity: async (id, activity) => {
@@ -114,13 +107,15 @@ export function ActivityProvider({ children }: { children: React.ReactNode }) {
       deleteActivity: async (id) => {
         await apiRequest<null>(`/activities/${id}`, { method: "DELETE" });
         setActivities((current) => current.filter((item) => item.id !== id));
+        setTotal(current => Math.max(0, current - 1));
       },
       resetAll: async () => {
         await apiRequest<null>("/activities", { method: "DELETE" });
         setActivities([]);
+        setTotal(0);
       }
     }),
-    [activities]
+    [activities, loading, error, total, loadActivities]
   );
 
   return <ActivityContext.Provider value={store}>{children}</ActivityContext.Provider>;

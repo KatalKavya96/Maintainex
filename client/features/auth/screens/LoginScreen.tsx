@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { workspaceDestination } from "@/shared/lib/routes";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Github, ShieldCheck } from "lucide-react";
 import { Button } from "@/design-system/patterns/Button";
 import { Field, Input } from "@/design-system/patterns/FormControls";
@@ -12,6 +13,9 @@ import { useAuthStore } from "@/state/auth";
 export default function LoginPage() {
   const router = useRouter();
   const { login, viewAsViewer, completeOAuthSession } = useAuthStore();
+  const oauthStarted = useRef(false);
+  const [pending, setPending] = useState(false);
+  const destination = () => workspaceDestination(new URLSearchParams(window.location.search).get("returnTo"));
   const [error, setError] = useState("");
   const [oauthLoading, setOauthLoading] = useState<"google" | "github" | "">("");
 
@@ -24,34 +28,40 @@ export default function LoginPage() {
       window.history.replaceState(null, "", "/login");
       return;
     }
-    if (oauthCode) {
+    if (oauthCode && !oauthStarted.current) {
+      oauthStarted.current = true;
+      window.history.replaceState(null, "", `/login?returnTo=${encodeURIComponent(destination())}`);
       completeOAuthSession(oauthCode)
-        .then(() => router.replace("/"))
+        .then(() => router.replace(destination()))
         .catch((err) => setError(err instanceof Error ? err.message : "OAuth login failed."))
-        .finally(() => window.history.replaceState(null, "", "/login"));
+        ;
     }
   }, [completeOAuthSession, router]);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (pending) return;
+    setPending(true);
     setError("");
     const form = new FormData(event.currentTarget);
     try {
       await login(String(form.get("email")), String(form.get("password")));
-      router.replace("/");
+      router.replace(destination());
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to login");
-    }
+    } finally { setPending(false); }
   }
 
   async function enterViewerMode() {
     setError("");
+    if (pending) return;
+    setPending(true);
     try {
       await viewAsViewer();
-      router.replace("/");
+      router.replace(destination());
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to start viewer mode");
-    }
+    } finally { setPending(false); }
   }
 
   async function continueWith(provider: "google" | "github") {
@@ -74,37 +84,38 @@ export default function LoginPage() {
             <ShieldCheck size={22} />
           </div>
           <div>
-            <h1 className="text-2xl font-bold">Login</h1>
-            <p className="text-sm text-muted">Manage Maintainex securely.</p>
+            <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
+            <p className="text-sm text-muted">Continue your contribution practice.</p>
           </div>
         </div>
         <div className="space-y-4">
           <Field label="Email">
-            <Input name="email" type="email" required placeholder="you@example.com" />
+            <Input name="email" autoComplete="email" type="email" required placeholder="you@example.com" />
           </Field>
           <Field label="Password">
-            <Input name="password" type="password" required placeholder="Password" />
+            <Input name="password" autoComplete="current-password" type="password" required placeholder="Password" />
           </Field>
         </div>
-        {error ? <p className="mt-4 rounded-lg bg-skyglass px-3 py-2 text-sm font-medium text-danger">{error}</p> : null}
+        {error ? <p role="alert" className="mt-4 rounded-lg bg-skyglass px-3 py-2 text-sm font-medium text-danger">{error}</p> : null}
         <div className="mt-6 space-y-3">
-          <Button type="submit" className="w-full">
-            Login
+          <Button type="submit" disabled={pending || Boolean(oauthLoading)} className="w-full">
+            {pending ? "Signing in…" : "Sign in"}
           </Button>
           <div className="grid gap-2 sm:grid-cols-2">
-            <Button type="button" variant="secondary" className="w-full" onClick={() => continueWith("google")} disabled={Boolean(oauthLoading)}>
+            <Button type="button" variant="secondary" className="w-full" onClick={() => continueWith("google")} disabled={pending || Boolean(oauthLoading)}>
               <span className="font-semibold">G</span>
               {oauthLoading === "google" ? "Opening..." : "Google"}
             </Button>
-            <Button type="button" variant="secondary" className="w-full" onClick={() => continueWith("github")} disabled={Boolean(oauthLoading)}>
+            <Button type="button" variant="secondary" className="w-full" onClick={() => continueWith("github")} disabled={pending || Boolean(oauthLoading)}>
               <Github size={16} />
               {oauthLoading === "github" ? "Opening..." : "GitHub"}
             </Button>
           </div>
-          <Button type="button" variant="secondary" className="w-full" onClick={enterViewerMode}>
+          <Button type="button" variant="secondary" className="w-full" onClick={enterViewerMode} disabled={pending || Boolean(oauthLoading)}>
             View as viewer
           </Button>
         </div>
+        <p className="mt-5 text-center text-sm text-muted"><Link href="/" className="text-moss">← Explore Maintainex</Link></p>
         <p className="mt-5 text-center text-sm text-muted">
           Need an account?{" "}
           <Link className="font-semibold text-moss" href="/signup">

@@ -7,7 +7,7 @@ export default function FeedPage() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace("/");
+    router.replace("/community");
   }, [router]);
 
   return <main className="grid min-h-[50vh] place-items-center text-sm font-semibold text-muted">Opening Home...</main>;

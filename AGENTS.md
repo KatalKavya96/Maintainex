@@ -6,7 +6,7 @@ Read `docs/architecture/README.md` and `docs/design/inventory/README.md` before 
 
 - Complete only the requested scope. Do not add dependencies, infrastructure, new product surfaces, destructive migrations, public exposure or restored features as incidental refactoring.
 - Keep reports, leaderboards, repository discovery, quests, recommendations and saved opportunities withdrawn unless the human explicitly authorizes reactivation.
-- Public entry must ultimately be account-free. Public/private routing is deferred; do not introduce new account walls or silently change existing workspace auth while doing unrelated work.
+- Public entry must ultimately be account-free. Public routes are `/`, `/login`, `/signup` and `/design-system`. Workspace routes stay session-gated. Do not expose personal records or add account walls to public content.
 - Production records/counts must come from real authorized data. Isolated design examples must be visibly labeled. Never turn a failed request into a fictional success or fake content.
 - Do not print or modify secrets/environment files incidentally. Preserve unrelated working-tree changes.
 

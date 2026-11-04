@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
+import { AsyncState } from "@/design-system";
 import { PageTitle } from "@/design-system/patterns/PageTitle";
 import { getFeed } from "@/data/api/social";
 
@@ -12,12 +13,14 @@ import { FeedCard } from "../components/FeedCard";
 export default function HomePage() {
   const [feed, setFeed] = useState<FeedItem[]>([]);
 
+  const [loading, setLoading] = useState(true);
+  const [failed, setFailed] = useState(false);
+  const load = useCallback(() => { setLoading(true); setFailed(false); return getFeed().then(setFeed).catch(() => setFailed(true)).finally(() => setLoading(false)); }, []);
   useEffect(() => {
-    const load = () => getFeed().then(setFeed).catch(() => setFeed([]));
     load();
     window.addEventListener("maintainex-feed-new", load);
     return () => window.removeEventListener("maintainex-feed-new", load);
-  }, []);
+  }, [load]);
 
   function updateEngagement(activityId: string, engagement: ActivityEngagement) {
     setFeed((current) => current.map((item) => (item.activity.id === activityId ? { ...item, engagement } : item)));
@@ -25,8 +28,8 @@ export default function HomePage() {
 
   return (
     <>
-      <PageTitle title="Home" description="Activity from people you follow." />
-      <section className="mx-auto max-w-3xl">
+      <PageTitle title="Community" description="Activity from people you follow." />
+      <AsyncState state={loading ? "loading" : failed ? "error" : "ready"} onRetry={load}><section className="mx-auto max-w-3xl">
         <div className="space-y-3">
           {feed.map((item) => (
             <FeedCard key={item.id} item={item} onEngagementChange={updateEngagement} />
@@ -40,7 +43,7 @@ export default function HomePage() {
             </div>
           ) : null}
         </div>
-      </section>
+      </section></AsyncState>
     </>
   );
 }

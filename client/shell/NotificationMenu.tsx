@@ -2,30 +2,15 @@
 
 import Link from "next/link";
 import { Bell, CheckCircle2 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { getNotifications, markNotificationRead } from "@/data/api/social";
+import { useMemo, useState } from "react";
+import { useNotifications, canReadNotification } from "@/features/notifications";
+import { AsyncState, Feedback } from "@/design-system";
 import { formatDate } from "@/shared/lib/dateUtils";
-import type { NotificationItem } from "@/types/social";
 
 export function NotificationMenu() {
   const [open, setOpen] = useState(false);
-  const [items, setItems] = useState<NotificationItem[]>([]);
-
-  const load = () => getNotifications().then(setItems).catch(() => setItems([]));
-
-  useEffect(() => {
-    load();
-    window.addEventListener("maintainex-notifications-changed", load);
-    return () => window.removeEventListener("maintainex-notifications-changed", load);
-  }, []);
-
-  const unread = useMemo(() => items.filter((item) => !item.readAt).length, [items]);
-
-  async function read(id: string) {
-    if (id.startsWith("scheduled-")) return;
-    await markNotificationRead(id);
-    load();
-  }
+  const { items, loading, error, pending, load, markRead } = useNotifications();
+  const unread = useMemo(() => items.filter(canReadNotification).length, [items]);
 
   return (
     <div className="relative">
@@ -43,12 +28,14 @@ export function NotificationMenu() {
           <div className="flex items-center justify-between border-b border-line px-4 py-3">
             <div>
               <p className="text-sm font-semibold text-ink">Notifications</p>
-              <p className="text-xs font-semibold text-muted">{unread ? `${unread} unread` : "You're all caught up"}</p>
+              <p className="text-xs font-semibold text-muted">{error ? "Connection unavailable" : loading ? "Checking updates…" : unread ? `${unread} unread` : "No unread notifications"}</p>
             </div>
             <Link href="/notifications" className="text-xs font-bold text-moss" onClick={() => setOpen(false)}>
               View inbox
             </Link>
           </div>
+          {error ? <Feedback message={error} /> : null}
+          <AsyncState state={loading ? "loading" : error && !items.length ? "error" : "ready"} onRetry={load}>
           <div className="max-h-[28rem] overflow-y-auto">
             {items.slice(0, 8).map((item) => (
               <article key={item.id} className="border-b border-line px-4 py-3 last:border-b-0">
@@ -59,8 +46,8 @@ export function NotificationMenu() {
                     <p className="mt-1 line-clamp-2 text-xs font-semibold leading-5 text-muted">{item.body}</p>
                     <p className="mt-1 text-[11px] font-bold text-muted">{formatDate(item.createdAt.slice(0, 10))}</p>
                   </div>
-                  {!item.readAt && !item.id.startsWith("scheduled-") ? (
-                    <button type="button" onClick={() => read(item.id)} className="grid h-7 w-7 place-items-center rounded-md text-muted hover:bg-skyglass hover:text-moss" title="Mark as read">
+                  {canReadNotification(item) ? (
+                    <button type="button" disabled={pending !== null} onClick={() => markRead(item.id)} className="grid h-7 w-7 place-items-center rounded-md text-muted hover:bg-skyglass hover:text-moss" title="Mark as read">
                       <CheckCircle2 size={15} />
                     </button>
                   ) : null}
@@ -69,6 +56,7 @@ export function NotificationMenu() {
             ))}
             {!items.length ? <p className="px-4 py-8 text-center text-sm font-semibold text-muted">No notifications yet.</p> : null}
           </div>
+          </AsyncState>
         </div>
       ) : null}
     </div>

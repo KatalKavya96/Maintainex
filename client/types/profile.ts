@@ -6,7 +6,7 @@ export type ProfileUser = {
   id: string;
   name: string;
   username: string;
-  email: string;
+  email?: string;
   emailVerifiedAt?: string | null;
   role: "ADMIN" | "VIEWER";
   bio?: string | null;
@@ -44,24 +44,20 @@ export type UsernameAvailability = {
 
 export type ProfileSummary = ProfileUser & {
   _count: {
-    activities: number;
-    organizations: number;
-    repositories: number;
-    pins: number;
-    scheduledWork: number;
     followers: number;
     following: number;
   };
 };
 
 export type ProfileDashboard = {
+  workspaceVisible: boolean;
   user: ProfileUser;
   stats: {
-    activities: number;
-    organizations: number;
-    repositories: number;
-    pins: number;
-    scheduledWork: number;
+    activities: number | null;
+    organizations: number | null;
+    repositories: number | null;
+    pins: number | null;
+    scheduledWork: number | null;
     followers: number;
     following: number;
     isFollowing: boolean;

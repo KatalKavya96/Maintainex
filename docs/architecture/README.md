@@ -83,14 +83,14 @@ The backend already uses modules. This frontend refactor does not rename working
 
 ## Current migration status and explicit debt
 
-- All 49 page entries are thin adapters, including retained routes, withdrawn implementations and the new design inventory page.
+- All 50 page entries are thin adapters, including retained routes, withdrawn implementations and the new design inventory page.
 - Existing domain components now live under their owning features. The shell and organization/feed sections have been split into smaller units.
 - Shared actions, fields, badges, headers, metrics, tables and states have reusable implementations. Existing compatibility adapters under `design-system/patterns` preserve call sites.
 - The source inventory covers existing feature components, screens and adapters. Entries marked `visual review pending` are not falsely presented as fully redesigned or accessibility-certified.
 - Some feature layouts still contain native controls and semantic Tailwind styling. Redesign them by composing shared primitives when touching them; the task does not claim pixel parity with every generated board.
 - New source modules have a 350-line ceiling. The withdrawn historical Reports screen has a fixed 490-line quarantine ceiling; it is not exposed in navigation and must not grow. Extract it before future activation. No generic exception mechanism is provided.
 - `lib/api.ts` remains a compatibility export for historical consumers, but imports from it are rejected in checked source. New operations live in the owning data module.
-- Public-first entry is an approved requirement. Detailed public/private routing remains deferred. Existing account gating is preserved for the current workspace; only `/design-system` is a new account-free, backend-independent component reference.
+- Public-first entry is implemented: `/` is a static homepage; `/design-system` is an isolated component reference. Login/signup are public. `/dashboard` is the signed-in landing and `/community` owns the feed (`/feed` redirects there). Private activity providers mount only inside the session-gated workspace. See ADR 0002.
 - Withdrawn reports, leaderboards, repository discovery, quests, recommendations and saved opportunities stay withdrawn.
 
 ## Validation and enforcement
@@ -127,6 +127,6 @@ Visual acceptance still requires browser review: dark/light, narrow widths, long
 6. Run checks and targeted behavior tests; build and inspect affected pages.
 7. Report changed behavior, validation and remaining limits accurately.
 
-Architecture decisions: [ADR 0001](./adr-0001-modular-frontend.md). Design lifecycle: [design inventory guide](../design/inventory/README.md).
+Architecture decisions: [ADR 0001](./adr-0001-modular-frontend.md), [ADR 0002 — public entry](./adr-0002-public-entry.md). Design lifecycle: [design inventory guide](../design/inventory/README.md).
 
-Implementation validation: [validation record](./validation.md).
+Implementation validation: [architecture migration](./validation.md), [daily workspace implementation](./validation-2026-10-22.md).

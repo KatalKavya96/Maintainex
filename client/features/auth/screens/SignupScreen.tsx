@@ -28,6 +28,7 @@ function passwordStrength(password: string) {
 export default function SignupPage() {
   const router = useRouter();
   const { signup } = useAuthStore();
+  const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [password, setPassword] = useState("");
   const [oauthLoading, setOauthLoading] = useState<"google" | "github" | "">("");
@@ -35,6 +36,8 @@ export default function SignupPage() {
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (pending) return;
+    setPending(true);
     setError("");
     const form = new FormData(event.currentTarget);
     try {
@@ -44,10 +47,10 @@ export default function SignupPage() {
         password: String(form.get("password")),
         adminCode: String(form.get("adminCode") ?? "") || undefined
       });
-      router.replace("/");
+      router.replace("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to sign up");
-    }
+    } finally { setPending(false); }
   }
 
   async function continueWith(provider: "google" | "github") {
@@ -71,7 +74,7 @@ export default function SignupPage() {
           </div>
           <div>
             <h1 className="text-2xl font-bold">Sign up</h1>
-            <p className="text-sm text-muted">First signup becomes admin.</p>
+            <p className="text-sm text-muted">Create your contribution workspace.</p>
           </div>
         </div>
         <div className="space-y-4">
@@ -79,24 +82,24 @@ export default function SignupPage() {
             <Input name="name" required placeholder="Your name" />
           </Field>
           <Field label="Email">
-            <Input name="email" type="email" required placeholder="you@example.com" />
+            <Input name="email" autoComplete="email" type="email" required placeholder="you@example.com" />
           </Field>
           <Field label="Password">
-            <Input name="password" type="password" required minLength={8} value={password} onChange={(event) => setPassword(event.target.value)} placeholder="At least 8 characters" />
+            <Input name="password" autoComplete="new-password" type="password" required minLength={8} value={password} onChange={(event) => setPassword(event.target.value)} placeholder="At least 8 characters" />
+          </Field>
             <div className="mt-2">
               <div className="h-1.5 overflow-hidden rounded-full bg-skyglass">
                 <div className={`h-full rounded-full transition-all ${strength.color}`} style={{ width: strength.width }} />
               </div>
               <p className="mt-1 text-xs font-bold text-muted">{strength.label}: use uppercase, lowercase, number, and symbol for a stronger password.</p>
             </div>
-          </Field>
-          <Field label="Admin code">
-            <Input name="adminCode" placeholder="Optional after first signup" />
+          <Field label="Admin invitation code" hint="Optional, if provided by your workspace administrator.">
+            <Input name="adminCode" placeholder="Optional" />
           </Field>
         </div>
-        {error ? <p className="mt-4 rounded-lg bg-skyglass px-3 py-2 text-sm font-medium text-danger">{error}</p> : null}
-        <Button type="submit" className="mt-6 w-full">
-          Create account
+        {error ? <p role="alert" className="mt-4 rounded-lg bg-skyglass px-3 py-2 text-sm font-medium text-danger">{error}</p> : null}
+        <Button type="submit" disabled={pending || Boolean(oauthLoading)} className="mt-6 w-full">
+          {pending ? "Creating account…" : "Create account"}
         </Button>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           <Button type="button" variant="secondary" className="w-full" onClick={() => continueWith("google")} disabled={Boolean(oauthLoading)}>

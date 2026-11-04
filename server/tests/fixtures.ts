@@ -1,5 +1,9 @@
 // Test-only records and adapter. Never imported by the production application.
 import type { PrismaClient } from "@prisma/client";
+import { sessionVersions } from "../src/modules/auth/session";
+
+// Authenticated routes check the session version; fixtures answer it in memory instead of a database.
+sessionVersions.lookup = async () => 0;
 
 export const fixtureUser = { id: "test-contributor", name: "Test Contributor", username: "test-contributor", email: "contributor@example.test", role: "VIEWER" };
 export const fixtureOrganization = { id: "org-test", userId: fixtureUser.id, name: "Fixture Collective", slug: "fixture-collective", githubUrl: "https://github.com/example", description: "An isolated project for checking the contribution workflow.", category: "Developer Tools", logoUrl: null, techStack: ["TypeScript"], maintianexScore: 0, beginnerFriendlyScore: 0, reviewSpeedScore: 0, reputationScore: 0, activityScore: 0, programParticipations: [], activities: [], repositories: [], quests: [], updatedAt: new Date(), createdAt: new Date() };

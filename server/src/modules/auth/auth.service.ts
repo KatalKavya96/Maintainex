@@ -1,5 +1,4 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import type { User, UserRole } from "@prisma/client";
 import { env } from "../../config/env";
 import { clientOriginFor } from "../../config/origins";
@@ -10,16 +9,26 @@ import type { AuthUser } from "./auth.types";
 import { OAuthAccounts } from "./oauth-accounts";
 import { nonceHashFor, readHandoff, signHandoff, signState, type OAuthProvider, type OAuthState } from "./oauth-handoff";
 import { exchangeProviderCode, providerConfigured, redirectUriFor, type ProviderExchange } from "./oauth-providers";
+import { issueSession, MAX_SESSION_AGE_SECONDS, type SessionClaims } from "./session";
+import { AuthThrottle, rules } from "./throttle";
 import { uniqueUsername } from "./username";
+
+const INVALID_LOGIN = "Email or password is incorrect. If you signed up with Google or GitHub, use that button instead.";
+let timingHash: Promise<string> | null = null;
+/** Comparing against a throwaway hash keeps unknown emails as slow as wrong passwords. */
+const comparableHash = () => (timingHash ??= bcrypt.hash("maintainex-timing-equaliser", 12));
 
 export class AuthService {
   constructor(
     private repository = new AuthRepository(),
     private accounts = new OAuthAccounts(repository),
-    private exchange: ProviderExchange = exchangeProviderCode
+    private exchange: ProviderExchange = exchangeProviderCode,
+    private throttle = new AuthThrottle()
   ) {}
 
-  async signup(payload: { name: string; email: string; password: string; adminCode?: string }) {
+  async signup(payload: { name: string; email: string; password: string; adminCode?: string }, ip = "unknown") {
+    await this.throttle.assertAllowed([rules.signupIp(ip)], "Too many sign-ups from this network");
+    await this.throttle.record([rules.signupIp(ip)]);
     const email = await ensureUsableEmail(payload.email);
     ensureStrongPassword(payload.password);
     const existing = await this.repository.findByEmail(email);
@@ -47,16 +56,27 @@ export class AuthService {
     return this.authResponse(user);
   }
 
-  async login(payload: { email: string; password: string }) {
-    const email = await ensureUsableEmail(payload.email);
+  async login(payload: { email: string; password: string }, ip = "unknown") {
+    const email = payload.email.trim().toLowerCase();
+    const limits = [rules.loginPair(email, ip), rules.loginEmail(email), rules.loginIp(ip)];
+    await this.throttle.assertAllowed(limits, "Too many sign-in attempts");
+
     const user = await this.repository.findByEmail(email);
-    if (!user) throw new ApiError(404, "No Maintainex account exists for this email. Sign up first, or continue with Google/GitHub.");
-    if (!user.passwordSetAt) throw new ApiError(401, "This account uses Google/GitHub login. Continue with the provider you used to create it.");
-
-    const isValid = await bcrypt.compare(payload.password, user.passwordHash);
-    if (!isValid) throw new ApiError(401, "Password is incorrect for this email.");
-
+    const hash = user?.passwordSetAt ? user.passwordHash : await comparableHash();
+    const valid = (await bcrypt.compare(payload.password, hash)) && Boolean(user?.passwordSetAt);
+    if (!user || !valid) {
+      await this.throttle.record(limits);
+      throw new ApiError(401, INVALID_LOGIN);
+    }
+    await this.throttle.clear(rules.loginPair(email, ip));
     return this.authResponse(user);
+  }
+
+  /** Signs out every device by retiring all tokens issued so far. */
+  async logoutEverywhere(userId: string) {
+    if (userId === "viewer") return { signedOut: true };
+    await this.repository.updateUser(userId, { sessionVersion: { increment: 1 } });
+    return { signedOut: true };
   }
 
   providers() {
@@ -90,16 +110,26 @@ export class AuthService {
     return this.authResponse(user);
   }
 
-  async me(currentUser: AuthUser) {
-    if (currentUser.id === "viewer") return this.viewer();
+  /** Renews the token but never past MAX_SESSION_AGE from the original sign-in. */
+  async me(currentUser: AuthUser, claims: SessionClaims = { sessionVersion: 0, authTime: null }) {
+    const now = Math.floor(Date.now() / 1000);
+    const authTime = claims.authTime ?? now;
+    if (now - authTime > MAX_SESSION_AGE_SECONDS) throw new ApiError(401, "Your session ended. Please sign in again.");
+    if (currentUser.id === "viewer") return this.viewer(authTime);
 
     const user = await this.repository.findById(currentUser.id);
     if (!user) throw new ApiError(401, "Session user not found");
 
-    return this.authResponse(user);
+    return this.authResponse(user, authTime);
   }
 
-  viewer() {
+  async startViewer(ip = "unknown") {
+    await this.throttle.assertAllowed([rules.viewerIp(ip)], "Too many viewer sessions from this network");
+    await this.throttle.record([rules.viewerIp(ip)]);
+    return this.viewer();
+  }
+
+  viewer(authTime?: number) {
     const user = {
       id: "viewer",
       name: "Viewer",
@@ -109,12 +139,12 @@ export class AuthService {
       emailVerifiedAt: null
     };
     return {
-      token: this.sign(user),
+      token: issueSession(user, authTime),
       user
     };
   }
 
-  private authResponse(user: User) {
+  private authResponse(user: User, authTime?: number) {
     const publicUser = {
       id: user.id,
       name: user.name,
@@ -125,12 +155,8 @@ export class AuthService {
     };
 
     return {
-      token: this.sign(publicUser),
+      token: issueSession({ ...publicUser, sessionVersion: user.sessionVersion }, authTime),
       user: publicUser
     };
-  }
-
-  private sign(user: { id: string; name: string; username: string; email: string; role: UserRole }) {
-    return jwt.sign(user, env.jwtSecret, { expiresIn: "7d" });
   }
 }

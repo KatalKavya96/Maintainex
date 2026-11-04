@@ -7,6 +7,7 @@ import { EmailService } from "../../utils/email.service";
 import { ensureUsableEmail } from "../../utils/emailValidation";
 import { publicProfile } from "./profile.visibility";
 import { ProfileRepository } from "./profile.repository";
+import { issueSession } from "../auth/session";
 
 type UpdateProfilePayload = {
   name?: string;
@@ -163,8 +164,9 @@ export class ProfileService {
     if (!valid) throw new ApiError(401, "Current password is incorrect");
 
     const passwordHash = await bcrypt.hash(newPassword, 12);
-    await prisma.user.update({ where: { id: userId }, data: { passwordHash, passwordSetAt: new Date() } });
-    return { changed: true };
+    // Other devices may hold a token issued with the old password; retire them all and re-issue this one.
+    const updated = await prisma.user.update({ where: { id: userId }, data: { passwordHash, passwordSetAt: new Date(), sessionVersion: { increment: 1 } } });
+    return { changed: true, token: issueSession(updated) };
   }
 
   async sendEmailVerificationOtp(userId: string) {

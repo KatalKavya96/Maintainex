@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { asyncHandler } from "../../middlewares/async.middleware";
-import { requireAuth } from "../../middlewares/auth.middleware";
+import { requireAuth, requireMember } from "../../middlewares/auth.middleware";
 import { validate } from "../../middlewares/validation.middleware";
 import { ProfileController } from "./profile.controller";
 import { changePasswordSchema, resetWorkspaceSchema, updateProfileSchema, usernameAvailabilitySchema, verifyEmailOtpSchema } from "./profile.validation";
@@ -8,7 +8,7 @@ import { changePasswordSchema, resetWorkspaceSchema, updateProfileSchema, userna
 const controller = new ProfileController();
 export const profileRoutes = Router();
 
-profileRoutes.use(requireAuth);
+profileRoutes.use(requireAuth, requireMember);
 profileRoutes.get("/", asyncHandler(controller.list));
 profileRoutes.get("/username-availability", validate(usernameAvailabilitySchema), asyncHandler(controller.usernameAvailability));
 profileRoutes.put("/me", validate(updateProfileSchema), asyncHandler(controller.updateMe));

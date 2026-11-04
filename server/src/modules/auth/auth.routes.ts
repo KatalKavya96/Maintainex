@@ -18,3 +18,4 @@ authRoutes.get("/oauth/github/callback", asyncHandler(oauthCallback("github")));
 authRoutes.post("/oauth/session", validate(oauthSessionSchema), asyncHandler(controller.oauthSession));
 authRoutes.get("/me", requireAuth, asyncHandler(controller.me));
 authRoutes.post("/viewer", asyncHandler(controller.viewer));
+authRoutes.post("/logout-everywhere", requireAuth, asyncHandler(controller.logoutEverywhere));

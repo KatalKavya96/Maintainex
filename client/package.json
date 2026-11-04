@@ -9,10 +9,11 @@
     "lint": "npm run check:architecture",
     "inventory:update": "node scripts/design-inventory.mjs --write",
     "check:architecture": "node scripts/check-architecture.mjs",
-    "test:architecture": "node --test scripts/architecture.test.mjs",
+    "test:architecture": "node --test scripts/architecture.test.mjs scripts/workspace.test.mjs",
     "typecheck": "tsc --noEmit",
-    "check": "npm run check:architecture && npm run test:architecture && npm run typecheck",
-    "prebuild": "npm run check:architecture"
+    "check": "npm run check:architecture && npm run test:architecture && npm run test:behavior && npm run typecheck",
+    "prebuild": "npm run check:architecture",
+    "test:behavior": "vitest run"
   },
   "dependencies": {
     "@types/node": "^20.14.10",
@@ -29,5 +30,12 @@
     "socket.io-client": "^4.8.3",
     "tailwindcss": "^3.4.4",
     "typescript": "^5.5.3"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.8",
+    "jsdom": "^29.1.1",
+    "vitest": "^4.1.12"
   }
 }

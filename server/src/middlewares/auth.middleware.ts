@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import type { AuthUser } from "../modules/auth/auth.types";
 import { sessionClaims, sessionVersions, verifySession, type SessionClaims } from "../modules/auth/session";
-import { ApiError } from "../utils/ApiError";
+import { ApiError, signInRequired } from "../utils/ApiError";
 
 declare global {
   namespace Express {
@@ -32,7 +32,7 @@ export function requireAuth(req: Request, _res: Response, next: NextFunction) {
   req.session = claims;
 
   if (isAnonymousViewer(user)) {
-    if (!READ_ONLY.has(req.method)) return next(new ApiError(403, "Viewer mode is read-only. Sign up or sign in to save changes."));
+    if (!READ_ONLY.has(req.method)) return next(signInRequired("Viewer mode is read-only. Sign up or sign in to save changes."));
     return next();
   }
   sessionVersions
@@ -47,7 +47,7 @@ export function requireAuth(req: Request, _res: Response, next: NextFunction) {
 /** For pages about other people: the anonymous viewer session must not browse the member directory. */
 export function requireMember(req: Request, _res: Response, next: NextFunction) {
   if (!req.user) return next(new ApiError(401, "Authentication required"));
-  if (isAnonymousViewer(req.user)) return next(new ApiError(403, "Sign in to see other contributors."));
+  if (isAnonymousViewer(req.user)) return next(signInRequired("Sign in to see other contributors."));
   next();
 }
 

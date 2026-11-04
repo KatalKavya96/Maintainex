@@ -3,7 +3,7 @@ import { prisma } from "../../config/database";
 import { env } from "../../config/env";
 import { clientOriginFor } from "../../config/origins";
 import { emitDashboardUpdate } from "../../realtime/socket";
-import { ApiError } from "../../utils/ApiError";
+import { ApiError, signInRequired } from "../../utils/ApiError";
 import { decryptToken, encryptToken } from "../../utils/tokenCrypto";
 import type { AuthUser } from "../auth/auth.types";
 import { OAuthAccounts } from "../auth/oauth-accounts";
@@ -233,6 +233,6 @@ export class GitHubService {
   }
 
   private ensurePersistedUser(userId: string) {
-    if (userId === "viewer") throw new ApiError(403, "Sign in with a real account to use GitHub sync.");
+    if (userId === "viewer") throw signInRequired("Sign in with a real account to use GitHub sync.");
   }
 }

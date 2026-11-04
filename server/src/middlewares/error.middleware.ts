@@ -3,7 +3,7 @@ import { ApiError } from "../utils/ApiError";
 
 export function errorMiddleware(error: Error, _req: Request, res: Response, _next: NextFunction) {
   if (error instanceof ApiError) {
-    return res.status(error.statusCode).json({ message: error.message });
+    return res.status(error.statusCode).json({ message: error.message, ...(error.code ? { code: error.code } : {}) });
   }
 
   // Unexpected errors can contain database URLs, query text or provider responses.

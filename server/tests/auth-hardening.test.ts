@@ -87,6 +87,10 @@ test("sessions can be revoked, viewer mode is read-only, and the directory is me
   assert.equal(await call("/private", viewer), 200);
   assert.equal(await call("/private", viewer, "POST"), 403);
   assert.equal(await call("/people", viewer), 403);
+  const blocked = await fetch(`${base}/private`, { method: "POST", headers: { Authorization: `Bearer ${viewer}` } }).then((r) => r.json());
+  assert.equal(blocked.code, "SIGN_IN_REQUIRED");
+  const revoked = await fetch(`${base}/private`, { headers: { Authorization: `Bearer ${token}` } }).then((r) => r.json());
+  assert.equal(revoked.code, undefined);
 });
 
 test("renewal keeps the original sign-in time and stops after the maximum session age", async () => {

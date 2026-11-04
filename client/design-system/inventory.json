@@ -7,11 +7,11 @@
     },
     {
       "file": "design-system/components.css",
-      "sourceHash": "0b90008bfd028543d10c5a39941fd17e17b6f060c15c943de5d87d7faf10c31b"
+      "sourceHash": "ba59e0f182a8385c860619464ab2254cdc096d70041ff2e83b8692d4f1c30858"
     },
     {
       "file": "design-system/contracts.json",
-      "sourceHash": "27510d11335b54cd8f943c48d81139c30d0c6ca0012e729a9c25e9200ab99a13"
+      "sourceHash": "cbf39e539b31a6a3a814a761a4792493264d1838acf9dc4eada349f49941f508"
     }
   ],
   "components": [
@@ -35,8 +35,6 @@
         "features/activities/components/ActivityForm.tsx",
         "features/activities/screens/ActivitiesIdEditScreen.tsx",
         "features/activities/screens/ActivitiesIdScreen.tsx",
-        "features/auth/screens/LoginScreen.tsx",
-        "features/auth/screens/SignupScreen.tsx",
         "features/community/components/FeedCard.tsx",
         "features/leaderboards/screens/LeaderboardScreen.tsx",
         "features/organizations/screens/ExploreOrganizationsSlugScreen.tsx",
@@ -97,8 +95,6 @@
       "review": "source inventory; visual review pending",
       "usedBy": [
         "features/activities/components/ActivityForm.tsx",
-        "features/auth/screens/LoginScreen.tsx",
-        "features/auth/screens/SignupScreen.tsx",
         "features/overview/components/GoalPanel.tsx",
         "features/pins/components/PinForm.tsx",
         "features/profile/screens/ProfileChangePasswordScreen.tsx",
@@ -126,8 +122,6 @@
       "review": "source inventory; visual review pending",
       "usedBy": [
         "features/activities/components/ActivityForm.tsx",
-        "features/auth/screens/LoginScreen.tsx",
-        "features/auth/screens/SignupScreen.tsx",
         "features/overview/components/GoalPanel.tsx",
         "features/pins/components/PinForm.tsx",
         "features/profile/screens/ProfileChangePasswordScreen.tsx",
@@ -216,8 +210,6 @@
       "review": "source inventory; visual review pending",
       "usedBy": [
         "features/activities/components/ActivityForm.tsx",
-        "features/auth/screens/LoginScreen.tsx",
-        "features/auth/screens/SignupScreen.tsx",
         "features/overview/components/GoalPanel.tsx",
         "features/pins/components/PinForm.tsx",
         "features/profile/screens/ProfileChangePasswordScreen.tsx",
@@ -245,8 +237,6 @@
       "review": "source inventory; visual review pending",
       "usedBy": [
         "features/activities/components/ActivityForm.tsx",
-        "features/auth/screens/LoginScreen.tsx",
-        "features/auth/screens/SignupScreen.tsx",
         "features/overview/components/GoalPanel.tsx",
         "features/pins/components/PinForm.tsx",
         "features/profile/screens/ProfileChangePasswordScreen.tsx",
@@ -379,6 +369,27 @@
         "design-system/index.ts"
       ],
       "sourceHash": "ce3474b513cd6e8763539b8f541c72970ad905ddf9ed260e59551332763da165"
+    },
+    {
+      "id": "design-system.Dialog",
+      "name": "Dialog",
+      "owner": "design-system",
+      "file": "design-system/primitives/Dialog.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "closed",
+        "open"
+      ],
+      "description": "Modal on native <dialog>: focus stays inside, Escape and backdrop click call onClose, title labels the dialog. Owns no data; children own their forms and errors.",
+      "review": "implemented and catalogued",
+      "usedBy": [
+        "design-system/index.ts"
+      ],
+      "sourceHash": "b0a7dd694ccbbadb8f2b0fd043e95dc71b1ba2e1466173bf3b60706dffb0b56d"
     },
     {
       "id": "design-system.EmptyState",
@@ -884,6 +895,27 @@
       "sourceHash": "bb4c9b2d66e3a4a488776a4522eb87b20f0727fc1fd6f5f970a912d33aa93dab"
     },
     {
+      "id": "feature:auth.LoginForm",
+      "name": "LoginForm",
+      "owner": "feature:auth",
+      "file": "features/auth/components/LoginForm.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/auth/components/SignInDialog.tsx",
+        "features/auth/screens/LoginScreen.tsx"
+      ],
+      "sourceHash": "b99f7807d413ad7597604422fb3704193974f3ffd3d9b327bff89156cb15211d"
+    },
+    {
       "id": "feature:auth.LoginPage",
       "name": "LoginPage",
       "owner": "feature:auth",
@@ -901,7 +933,7 @@
       "usedBy": [
         "app/login/page.tsx"
       ],
-      "sourceHash": "937452970adadd5da714fdca2d53431dc7172fdc13a943e22e0930afeabb1e61"
+      "sourceHash": "eccc327b71e0f353d63ef96039456ab7a74494295e2dbc36dee176ede113becb"
     },
     {
       "id": "feature:auth.OAuthButtons",
@@ -919,10 +951,51 @@
       "description": "Feature-owned composition; contract review required before redesign.",
       "review": "source inventory; visual review pending",
       "usedBy": [
-        "features/auth/screens/LoginScreen.tsx",
-        "features/auth/screens/SignupScreen.tsx"
+        "features/auth/components/LoginForm.tsx",
+        "features/auth/components/SignupForm.tsx"
       ],
       "sourceHash": "7b70112c229a80c1c4792b010d3d89919956c7667868553d61514de9ae00d74c"
+    },
+    {
+      "id": "feature:auth.SignInDialog",
+      "name": "SignInDialog",
+      "owner": "feature:auth",
+      "file": "features/auth/components/SignInDialog.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/auth/index.ts"
+      ],
+      "sourceHash": "c746041b953ace6830e4768cd294e40652b28837b2d63ad82a38b762b008ddc2"
+    },
+    {
+      "id": "feature:auth.SignupForm",
+      "name": "SignupForm",
+      "owner": "feature:auth",
+      "file": "features/auth/components/SignupForm.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/auth/components/SignInDialog.tsx",
+        "features/auth/screens/SignupScreen.tsx"
+      ],
+      "sourceHash": "4df0be945b89eea66e843e342e208ea5b95b8c7cadb883214a19776948b1df23"
     },
     {
       "id": "feature:auth.SignupPage",
@@ -942,7 +1015,7 @@
       "usedBy": [
         "app/signup/page.tsx"
       ],
-      "sourceHash": "fcaa77c726e4dd174c4719c645f3799cd00de02275fda988c838495852dccdb7"
+      "sourceHash": "2358a3e28e9179029ee496a0249c63c1c5a6047bb2b97e0472efdccac67a0893"
     },
     {
       "id": "feature:community.FeedCard",
@@ -1022,7 +1095,7 @@
       "usedBy": [
         "app/design-system/page.tsx"
       ],
-      "sourceHash": "a2e608b9e89aedc36b115db987d08e34b4bc520cd02dccb25496547f7ec7de94"
+      "sourceHash": "57775162c861eb397bf005dc996c42b395e4abe527e4b240cd77c3d438105a3b"
     },
     {
       "id": "feature:leaderboards.LeaderboardCard",
@@ -2287,7 +2360,7 @@
       "usedBy": [
         "features/settings/screens/SettingsScreen.tsx"
       ],
-      "sourceHash": "4ea4414c7d0fe2e9629ed6e81580b7f0f963aec528b453a01ddf68b3e7e24c84"
+      "sourceHash": "8aa809c1c5d2fd57a02675b279f227b2716d0dde809b89273d3ca4fd0d429144"
     },
     {
       "id": "feature:settings.SessionsPanel",
@@ -2823,7 +2896,7 @@
       "usedBy": [
         "app/layout.tsx"
       ],
-      "sourceHash": "41549d0999c046de08c2f81860c329785647301a1b2cace8ff92212b412ebfcd"
+      "sourceHash": "d96e7633f981a11e133a1cd71633ba9baf27731322733e8a5713a0b9c284f0d7"
     },
     {
       "id": "shell.Navigation",
@@ -2923,7 +2996,7 @@
       "usedBy": [
         "shell/AppShell.tsx"
       ],
-      "sourceHash": "e346532f85b239856168fc1288576679d96dda3b092a97ace9479ee9ecf1cfe2"
+      "sourceHash": "6e56373d0decaad4f1a07e24446a90e65eed7dd26d0e74cbfda4c965f629e397"
     },
     {
       "id": "shell.UserSearch",
@@ -2991,8 +3064,10 @@
       "review": "source inventory; visual review pending",
       "usedBy": [
         "app/layout.tsx",
+        "features/auth/components/LoginForm.tsx",
+        "features/auth/components/SignInDialog.tsx",
+        "features/auth/components/SignupForm.tsx",
         "features/auth/screens/LoginScreen.tsx",
-        "features/auth/screens/SignupScreen.tsx",
         "features/profile/screens/ProfileChangePasswordScreen.tsx",
         "features/profile/screens/ProfileEditScreen.tsx",
         "features/profile/screens/ProfileScreen.tsx",

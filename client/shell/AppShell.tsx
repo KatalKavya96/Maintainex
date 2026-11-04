@@ -10,6 +10,7 @@ import { Topbar } from "./Topbar";
 import { ActivityProvider } from "@/state/activities";
 import { isPublicRoute } from "@/shared/lib/routes";
 import { useGitHubAutoSync } from "@/features/settings";
+import { SignInDialog } from "@/features/auth";
 
 /** Public entry is independent; providers for private records mount inside the workspace. */
 export function AppShell({ children }: { children: ReactNode }) {
@@ -38,5 +39,6 @@ export function AppShell({ children }: { children: ReactNode }) {
       <Topbar user={user} theme={theme} onTheme={() => setTheme(v=>{ const next = v === "dark" ? "light" : "dark"; localStorage.setItem("maintainex-theme",next); return next; })} />
       <div className="mx-auto w-full max-w-[1540px] px-4 py-6 lg:px-7">{children}</div>
     </main>
+    {user.id === "viewer" ? <SignInDialog /> : null}
   </div></ActivityProvider>;
 }

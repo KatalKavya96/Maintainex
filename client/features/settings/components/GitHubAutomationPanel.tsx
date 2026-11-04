@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Github, RefreshCw, Unplug } from "lucide-react";
 import { AsyncState, Badge, Button, Surface } from "@/design-system";
+import { announceSignInRequired } from "@/data/http";
 import { useAuthStore } from "@/state/auth";
 import type { GitHubPreferences, GitHubStatus } from "@/types/github";
 import { useGitHubConnection, type Working } from "../hooks/useGitHubConnection";
@@ -87,7 +88,7 @@ export function GitHubAutomationPanel() {
   else if (status?.connected) badge = <Badge tone="accent">Connected as @{status.login}</Badge>;
 
   let actions = null;
-  if (isViewer) actions = <Button href="/login" variant="secondary">Sign in to connect</Button>;
+  if (isViewer) actions = <Button variant="secondary" onClick={() => announceSignInRequired({ message: "Sign in or create an account to connect GitHub.", reason: "view" })}>Sign in to connect</Button>;
   else if (status?.needsReconnect) {
     actions = <>
       <Button onClick={connect} disabled={working !== null}>{working === "connect" ? "Opening GitHub…" : "Reconnect GitHub"}</Button>

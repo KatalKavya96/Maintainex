@@ -1,10 +1,18 @@
 import { getSessionToken } from "@/data/session";
 
 export class ApiRequestError extends Error {
-  constructor(message: string, public readonly status: number) {
+  constructor(message: string, public readonly status: number, public readonly code?: string) {
     super(message);
     this.name = "ApiRequestError";
   }
+}
+
+/** Raised when an anonymous viewer reaches something that needs an account; the shell answers with a sign-in dialog. */
+export const signInRequiredEvent = "maintainex-sign-in-required";
+export type SignInRequiredDetail = { message: string; reason: "action" | "view" };
+
+export function announceSignInRequired(detail: SignInRequiredDetail) {
+  if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent<SignInRequiredDetail>(signInRequiredEvent, { detail }));
 }
 
 const getApiUrl = () => {
@@ -43,7 +51,12 @@ export async function apiRequest<T>(path: string, options?: RequestInit): Promis
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({ message: `API request failed: ${response.status}` }));
-    throw new ApiRequestError(error.message ?? `API request failed: ${response.status}`, response.status);
+    const message = error.message ?? `API request failed: ${response.status}`;
+    if (error.code === "SIGN_IN_REQUIRED") {
+      const method = (requestOptions.method ?? "GET").toUpperCase();
+      announceSignInRequired({ message, reason: method === "GET" || method === "HEAD" ? "view" : "action" });
+    }
+    throw new ApiRequestError(message, response.status, error.code);
   }
 
   const json = await response.json();

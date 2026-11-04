@@ -1,3 +1,9 @@
-import { apiRequest } from "../http";
+import { apiRequest, queryString } from "../http";
 
-export const getOAuthUrl = (provider: "google" | "github") => apiRequest<{ url: string }>(`/auth/oauth/${provider}/url`);
+export type OAuthProviderName = "google" | "github";
+export type OAuthProviders = Record<OAuthProviderName, boolean>;
+
+export const getOAuthProviders = () => apiRequest<OAuthProviders>("/auth/providers");
+
+export const getOAuthUrl = (provider: OAuthProviderName, nonce: string) =>
+  apiRequest<{ url: string }>(`/auth/oauth/${provider}/url${queryString({ nonce, origin: window.location.origin })}`);

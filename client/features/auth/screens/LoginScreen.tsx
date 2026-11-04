@@ -1,41 +1,52 @@
 "use client";
 
 import Link from "next/link";
-import { workspaceDestination } from "@/shared/lib/routes";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Github, ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import { Button } from "@/design-system/patterns/Button";
 import { Field, Input } from "@/design-system/patterns/FormControls";
-import { getOAuthUrl } from "@/data/api/auth";
+import { takeOAuthFlow } from "@/data/oauthFlow";
+import { workspaceDestination } from "@/shared/lib/routes";
 import { useAuthStore } from "@/state/auth";
+import { OAuthButtons } from "../components/OAuthButtons";
+
+const requestedDestination = () => workspaceDestination(new URLSearchParams(window.location.search).get("returnTo"));
 
 export default function LoginPage() {
   const router = useRouter();
   const { login, viewAsViewer, completeOAuthSession } = useAuthStore();
   const oauthStarted = useRef(false);
   const [pending, setPending] = useState(false);
-  const destination = () => workspaceDestination(new URLSearchParams(window.location.search).get("returnTo"));
+  const [oauthBusy, setOauthBusy] = useState(false);
+  const [completing, setCompleting] = useState(false);
   const [error, setError] = useState("");
-  const [oauthLoading, setOauthLoading] = useState<"google" | "github" | "">("");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const oauthError = params.get("oauthError");
     const oauthCode = params.get("oauthCode");
+    if (!oauthError && !oauthCode) return;
+    window.history.replaceState(null, "", "/login");
     if (oauthError) {
+      takeOAuthFlow("login");
       setError(oauthError);
-      window.history.replaceState(null, "", "/login");
       return;
     }
-    if (oauthCode && !oauthStarted.current) {
-      oauthStarted.current = true;
-      window.history.replaceState(null, "", `/login?returnTo=${encodeURIComponent(destination())}`);
-      completeOAuthSession(oauthCode)
-        .then(() => router.replace(destination()))
-        .catch((err) => setError(err instanceof Error ? err.message : "OAuth login failed."))
-        ;
+    if (!oauthCode || oauthStarted.current) return;
+    oauthStarted.current = true;
+    const pendingFlow = takeOAuthFlow("login");
+    if (!pendingFlow) {
+      setError("This sign-in was started in a different tab or browser. Please start again here.");
+      return;
     }
+    setCompleting(true);
+    completeOAuthSession(oauthCode, pendingFlow.nonce)
+      .then(() => router.replace(workspaceDestination(pendingFlow.returnTo ?? null)))
+      .catch((err) => {
+        setCompleting(false);
+        setError(err instanceof Error ? err.message : "Sign-in could not be completed. Please try again.");
+      });
   }, [completeOAuthSession, router]);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -46,36 +57,37 @@ export default function LoginPage() {
     const form = new FormData(event.currentTarget);
     try {
       await login(String(form.get("email")), String(form.get("password")));
-      router.replace(destination());
+      router.replace(requestedDestination());
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to login");
+      setError(err instanceof Error ? err.message : "Unable to sign in");
     } finally { setPending(false); }
   }
 
   async function enterViewerMode() {
-    setError("");
     if (pending) return;
+    setError("");
     setPending(true);
     try {
       await viewAsViewer();
-      router.replace(destination());
+      router.replace(requestedDestination());
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to start viewer mode");
     } finally { setPending(false); }
   }
 
-  async function continueWith(provider: "google" | "github") {
-    setOauthLoading(provider);
-    setError("");
-    try {
-      const data = await getOAuthUrl(provider);
-      window.location.href = data.url;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : `${provider} login is not available.`);
-      setOauthLoading("");
-    }
+  if (completing) {
+    return (
+      <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-md place-items-center">
+        <div role="status" className="w-full rounded-xl border border-line bg-panel p-8 text-center shadow-soft">
+          <ShieldCheck size={28} className="mx-auto text-moss" aria-hidden="true" />
+          <h1 className="mt-4 text-xl font-semibold">Finishing sign-in…</h1>
+          <p className="mt-2 text-sm text-muted">Opening your workspace.</p>
+        </div>
+      </div>
+    );
   }
 
+  const busy = pending || oauthBusy;
   return (
     <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-md place-items-center">
       <form onSubmit={onSubmit} className="w-full rounded-xl border border-line bg-panel p-6 shadow-soft">
@@ -98,20 +110,11 @@ export default function LoginPage() {
         </div>
         {error ? <p role="alert" className="mt-4 rounded-lg bg-skyglass px-3 py-2 text-sm font-medium text-danger">{error}</p> : null}
         <div className="mt-6 space-y-3">
-          <Button type="submit" disabled={pending || Boolean(oauthLoading)} className="w-full">
+          <Button type="submit" disabled={busy} className="w-full">
             {pending ? "Signing in…" : "Sign in"}
           </Button>
-          <div className="grid gap-2 sm:grid-cols-2">
-            <Button type="button" variant="secondary" className="w-full" onClick={() => continueWith("google")} disabled={pending || Boolean(oauthLoading)}>
-              <span className="font-semibold">G</span>
-              {oauthLoading === "google" ? "Opening..." : "Google"}
-            </Button>
-            <Button type="button" variant="secondary" className="w-full" onClick={() => continueWith("github")} disabled={pending || Boolean(oauthLoading)}>
-              <Github size={16} />
-              {oauthLoading === "github" ? "Opening..." : "GitHub"}
-            </Button>
-          </div>
-          <Button type="button" variant="secondary" className="w-full" onClick={enterViewerMode} disabled={pending || Boolean(oauthLoading)}>
+          <OAuthButtons disabled={busy} returnTo={new URLSearchParams(typeof window === "undefined" ? "" : window.location.search).get("returnTo") ?? undefined} onBusy={setOauthBusy} onError={setError} />
+          <Button type="button" variant="secondary" className="w-full" onClick={enterViewerMode} disabled={busy}>
             View as viewer
           </Button>
         </div>

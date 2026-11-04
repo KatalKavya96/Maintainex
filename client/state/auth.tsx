@@ -30,7 +30,7 @@ interface AuthStore {
   isViewer: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (payload: { name: string; email: string; password: string; adminCode?: string }) => Promise<void>;
-  completeOAuthSession: (code: string) => Promise<void>;
+  completeOAuthSession: (code: string, nonce: string) => Promise<void>;
   viewAsViewer: () => Promise<void>;
   updateUser: (user: Partial<AuthUser>) => void;
   logout: () => void;
@@ -90,7 +90,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       sessionError,
       retrySession: restoreSession,
       isAdmin: user?.role === "ADMIN",
-      isViewer: user?.role === "VIEWER",
+      // The anonymous "View as viewer" session, not the VIEWER role every non-admin account has.
+      isViewer: user?.id === "viewer",
       login: async (email, password) => {
         const data = await apiRequest<AuthResponse>("/auth/login", {
           method: "POST",
@@ -115,10 +116,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setToken(data.token);
         setUser(data.user);
       },
-      completeOAuthSession: async (code) => {
+      completeOAuthSession: async (code, nonce) => {
         const data = await apiRequest<AuthResponse>("/auth/oauth/session", {
           method: "POST",
-          body: JSON.stringify({ code })
+          body: JSON.stringify({ code, nonce })
         });
         requestVersion.current++;
         setIsReady(true);

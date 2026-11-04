@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Github, ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import { Button } from "@/design-system/patterns/Button";
 import { Field, Input } from "@/design-system/patterns/FormControls";
-import { getOAuthUrl } from "@/data/api/auth";
 import { useAuthStore } from "@/state/auth";
+import { OAuthButtons } from "../components/OAuthButtons";
 
 function passwordStrength(password: string) {
   const checks = [
@@ -31,7 +31,7 @@ export default function SignupPage() {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [password, setPassword] = useState("");
-  const [oauthLoading, setOauthLoading] = useState<"google" | "github" | "">("");
+  const [oauthBusy, setOauthBusy] = useState(false);
   const strength = passwordStrength(password);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -51,18 +51,6 @@ export default function SignupPage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to sign up");
     } finally { setPending(false); }
-  }
-
-  async function continueWith(provider: "google" | "github") {
-    setOauthLoading(provider);
-    setError("");
-    try {
-      const data = await getOAuthUrl(provider);
-      window.location.href = data.url;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : `${provider} signup is not available.`);
-      setOauthLoading("");
-    }
   }
 
   return (
@@ -98,18 +86,11 @@ export default function SignupPage() {
           </Field>
         </div>
         {error ? <p role="alert" className="mt-4 rounded-lg bg-skyglass px-3 py-2 text-sm font-medium text-danger">{error}</p> : null}
-        <Button type="submit" disabled={pending || Boolean(oauthLoading)} className="mt-6 w-full">
+        <Button type="submit" disabled={pending || oauthBusy} className="mt-6 w-full">
           {pending ? "Creating account…" : "Create account"}
         </Button>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2">
-          <Button type="button" variant="secondary" className="w-full" onClick={() => continueWith("google")} disabled={Boolean(oauthLoading)}>
-            <span className="font-semibold">G</span>
-            {oauthLoading === "google" ? "Opening..." : "Google"}
-          </Button>
-          <Button type="button" variant="secondary" className="w-full" onClick={() => continueWith("github")} disabled={Boolean(oauthLoading)}>
-            <Github size={16} />
-            {oauthLoading === "github" ? "Opening..." : "GitHub"}
-          </Button>
+        <div className="mt-3">
+          <OAuthButtons disabled={pending || oauthBusy} onBusy={setOauthBusy} onError={setError} />
         </div>
         <p className="mt-5 text-center text-sm text-muted">
           Already have an account?{" "}

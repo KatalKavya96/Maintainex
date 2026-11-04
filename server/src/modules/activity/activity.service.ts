@@ -77,16 +77,18 @@ export class ActivityService {
   }
 
   async update(userId: string, id: string, payload: ActivityPayload) {
-    await this.get(userId, id);
+    const current = await this.get(userId, id);
     await this.ensureRelationsBelongToUser(userId, payload);
-    const activity = await this.repository.update(id, this.toDatabasePayload(payload) as Prisma.ActivityUncheckedUpdateInput);
+    const data = this.toDatabasePayload(payload) as Prisma.ActivityUncheckedUpdateInput;
+    if (current.source === "GITHUB_SYNC") data.userEditedAt = new Date();
+    const activity = await this.repository.update(id, data);
     emitDashboardUpdate(userId);
     return activity;
   }
 
   async delete(userId: string, id: string) {
-    await this.get(userId, id);
-    const activity = await this.repository.delete(id);
+    const current = await this.get(userId, id);
+    const activity = await this.repository.delete(id, current.source !== "MANUAL" && current.externalId ? { userId, source: current.source, externalId: current.externalId } : undefined);
     emitDashboardUpdate(userId);
     return activity;
   }

@@ -79,12 +79,13 @@ export class ScheduledWorkService {
     const current = await this.get(userId, id);
     const data = this.toDatabasePayload(payload);
     if (payload.status !== undefined) data.completedAt = payload.status === "DONE" ? current.completedAt ?? new Date() : null;
+    if (current.source === "GITHUB_SYNC") (data as Prisma.ScheduledWorkUncheckedUpdateInput).userEditedAt = new Date();
     return this.repository.update(id, data as Prisma.ScheduledWorkUncheckedUpdateInput);
   }
 
   async delete(userId: string, id: string) {
-    await this.get(userId, id);
-    return this.repository.delete(id);
+    const current = await this.get(userId, id);
+    return this.repository.delete(id, current.source !== "MANUAL" && current.externalId ? { userId, source: current.source, externalId: current.externalId } : undefined);
   }
 
   async updateStatus(userId: string, id: string, status: ScheduledWorkStatus) {

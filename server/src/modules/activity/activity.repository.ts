@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client";
+import type { DataSource, Prisma } from "@prisma/client";
 import { prisma } from "../../config/database";
 
 export class ActivityRepository {
@@ -28,8 +28,14 @@ export class ActivityRepository {
     return prisma.activity.update({ where: { id }, data });
   }
 
-  delete(id: string) {
-    return prisma.activity.delete({ where: { id } });
+  /** Deleting an imported record remembers it so the next sync does not bring it back. */
+  async delete(id: string, imported?: { userId: string; source: DataSource; externalId: string }) {
+    if (!imported) return prisma.activity.delete({ where: { id } });
+    const [activity] = await prisma.$transaction([
+      prisma.activity.delete({ where: { id } }),
+      prisma.syncTombstone.upsert({ where: { userId_source_externalId: imported }, update: {}, create: imported })
+    ]);
+    return activity;
   }
 
   deleteAll(userId: string) {

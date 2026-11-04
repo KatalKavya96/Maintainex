@@ -16,24 +16,21 @@ export const loginSchema = z.object({
   })
 });
 
-export const oauthUrlSchema = z.object({
-  params: z.object({
-    provider: z.enum(["google", "github"])
-  })
-});
+const nonce = z.string().min(16, "Sign-in could not start. Refresh the page and try again.").max(200);
 
-export const oauthCallbackSchema = z.object({
+export const oauthUrlSchema = z.object({
   params: z.object({
     provider: z.enum(["google", "github"])
   }),
   query: z.object({
-    code: z.string().min(1),
-    state: z.string().min(1)
+    nonce,
+    origin: z.string().max(300).optional()
   })
 });
 
 export const oauthSessionSchema = z.object({
   body: z.object({
-    code: z.string().min(1)
+    code: z.string().min(1).max(4000),
+    nonce
   })
 });

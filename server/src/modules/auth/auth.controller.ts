@@ -1,7 +1,8 @@
 import type { Request, Response } from "express";
-import { env } from "../../config/env";
+import { apiBaseFor } from "../../config/origins";
 import { ApiResponse } from "../../utils/ApiResponse";
 import { AuthService } from "./auth.service";
+import type { OAuthProvider } from "./oauth-handoff";
 
 export class AuthController {
   constructor(private service = new AuthService()) {}
@@ -16,23 +17,17 @@ export class AuthController {
     res.json(new ApiResponse(data, "Login successful"));
   };
 
-  oauthUrl = async (req: Request, res: Response) => {
-    res.json(new ApiResponse(this.service.oauthUrl(req.params.provider as "google" | "github")));
+  providers = async (_req: Request, res: Response) => {
+    res.json(new ApiResponse(this.service.providers()));
   };
 
-  oauthCallback = async (req: Request, res: Response) => {
-    try {
-      const data = await this.service.oauthCallback(req.params.provider as "google" | "github", String(req.query.code), String(req.query.state));
-      const target = `${this.clientUrl()}/login?oauthCode=${encodeURIComponent(data.code)}`;
-      res.redirect(target);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "OAuth login failed.";
-      res.redirect(`${this.clientUrl()}/login?oauthError=${encodeURIComponent(message)}`);
-    }
+  oauthUrl = async (req: Request, res: Response) => {
+    const data = this.service.oauthStart(req.params.provider as OAuthProvider, { nonce: req.query.nonce, origin: req.query.origin, apiBase: apiBaseFor(req) });
+    res.json(new ApiResponse(data));
   };
 
   oauthSession = async (req: Request, res: Response) => {
-    const data = await this.service.oauthSession(req.body.code);
+    const data = await this.service.oauthSession(req.body.code, req.body.nonce);
     res.json(new ApiResponse(data, "OAuth login successful"));
   };
 
@@ -44,8 +39,4 @@ export class AuthController {
   viewer = async (_req: Request, res: Response) => {
     res.json(new ApiResponse(this.service.viewer(), "Viewer session created"));
   };
-
-  private clientUrl() {
-    return env.clientAppUrl;
-  }
 }

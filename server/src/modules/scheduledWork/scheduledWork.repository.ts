@@ -1,4 +1,4 @@
-import type { Prisma, PrismaClient } from "@prisma/client";
+import type { DataSource, Prisma, PrismaClient } from "@prisma/client";
 import { prisma } from "../../config/database";
 
 export class ScheduledWorkRepository {
@@ -33,7 +33,13 @@ export class ScheduledWorkRepository {
     });
   }
 
-  delete(id: string) {
-    return this.db.scheduledWork.delete({ where: { id } });
+  /** Deleting imported work remembers it so the next sync does not bring it back. */
+  async delete(id: string, imported?: { userId: string; source: DataSource; externalId: string }) {
+    if (!imported) return this.db.scheduledWork.delete({ where: { id } });
+    const [work] = await this.db.$transaction([
+      this.db.scheduledWork.delete({ where: { id } }),
+      this.db.syncTombstone.upsert({ where: { userId_source_externalId: imported }, update: {}, create: imported })
+    ]);
+    return work;
   }
 }

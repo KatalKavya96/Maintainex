@@ -1,6 +1,6 @@
 import cors from "cors";
 import express from "express";
-import { env } from "./config/env";
+import { isAllowedOrigin } from "./config/origins";
 import { aiRoutes } from "./modules/ai/ai.routes";
 import { analyticsRoutes } from "./modules/analytics/analytics.routes";
 import { activityRoutes } from "./modules/activity/activity.routes";
@@ -21,19 +21,6 @@ import { questRoutes } from "./modules/quest/quest.routes";
 import { searchRoutes } from "./modules/search/search.routes";
 
 export const app = express();
-
-const isAllowedOrigin = (origin?: string) => {
-  if (!origin) return true;
-  if (env.clientUrls.includes(origin)) return true;
-
-  try {
-    const url = new URL(origin);
-    if (url.protocol === "http:" && ["localhost", "127.0.0.1"].includes(url.hostname)) return true;
-    return env.allowVercelOrigins && url.protocol === "https:" && url.hostname.endsWith(".vercel.app");
-  } catch {
-    return false;
-  }
-};
 
 app.use(
   cors({

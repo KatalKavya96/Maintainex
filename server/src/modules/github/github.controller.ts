@@ -1,66 +1,37 @@
-import jwt from "jsonwebtoken";
 import type { Request, Response } from "express";
-import { env } from "../../config/env";
+import { apiBaseFor } from "../../config/origins";
 import { ApiResponse } from "../../utils/ApiResponse";
-import { AuthService } from "../auth/auth.service";
 import { GitHubService } from "./github.service";
 
 export class GitHubController {
-  constructor(
-    private service = new GitHubService(),
-    private authService = new AuthService()
-  ) {}
+  constructor(private service = new GitHubService()) {}
 
   status = async (req: Request, res: Response) => {
-    res.json(new ApiResponse(await this.service.status(req.user!.id)));
+    res.json(new ApiResponse(await this.service.status(req.user!)));
   };
 
   oauthUrl = async (req: Request, res: Response) => {
-    res.json(new ApiResponse(await this.service.oauthUrl(req.user!.id)));
+    res.json(new ApiResponse(this.service.connectStart(req.user!.id, { nonce: req.query.nonce, origin: req.query.origin, apiBase: apiBaseFor(req) })));
   };
 
-  callback = async (req: Request, res: Response) => {
-    const code = String(req.query.code ?? "");
-    const state = String(req.query.state ?? "");
-    const decoded = this.decodeState(state);
-    if (decoded?.purpose === "auth-oauth" && decoded.provider === "github") {
-      try {
-        const data = await this.authService.oauthCallback("github", code, state);
-        res.redirect(`${env.clientAppUrl}/login?oauthCode=${encodeURIComponent(data.code)}`);
-      } catch (error) {
-        const message = error instanceof Error ? error.message : "GitHub login failed.";
-        res.redirect(`${env.clientAppUrl}/login?oauthError=${encodeURIComponent(message)}`);
-      }
-      return;
-    }
+  connect = async (req: Request, res: Response) => {
+    res.json(new ApiResponse(await this.service.connectFinish(req.user!.id, req.body.code, req.body.nonce), "GitHub connected"));
+  };
 
-    try {
-      const data = await this.service.oauthCallback(code, state);
-      res.redirect(`${env.clientAppUrl}/settings?github=connected&login=${encodeURIComponent(data.login)}`);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "GitHub connection failed.";
-      res.redirect(`${env.clientAppUrl}/settings?github=error&message=${encodeURIComponent(message)}`);
-    }
+  preferences = async (req: Request, res: Response) => {
+    res.json(new ApiResponse(await this.service.updatePreferences(req.user!.id, req.body), "Sync settings saved"));
   };
 
   sync = async (req: Request, res: Response) => {
-    res.json(new ApiResponse(await this.service.sync(req.user!.id, req.body)));
+    res.json(new ApiResponse(await this.service.sync(req.user!.id, req.body ?? {})));
   };
 
   disconnect = async (req: Request, res: Response) => {
-    res.json(new ApiResponse(await this.service.disconnect(req.user!.id)));
+    res.json(new ApiResponse(await this.service.disconnect(req.user!.id, { removeImported: req.query.removeImported === "true" })));
   };
 
   webhook = async (req: Request, res: Response) => {
     const data = await this.service.handleWebhook(req.headers, (req as Request & { rawBody?: Buffer }).rawBody, req.body);
     res.json(new ApiResponse(data));
   };
-
-  private decodeState(state: string) {
-    try {
-      return jwt.verify(state, env.jwtSecret) as { purpose?: string; provider?: string };
-    } catch {
-      return null;
-    }
-  }
 }

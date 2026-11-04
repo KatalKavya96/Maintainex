@@ -8,6 +8,7 @@ import { formatDate } from "@/shared/lib/dateUtils";
 import { useActivityStore } from "@/state/activities";
 import type { Activity } from "@/types/activity";
 import { ActivityBadge } from "./ActivityBadge";
+import { webHref } from "@/shared/lib/webHref";
 
 export function ActivityTable({ items, hasFilters = false }: { items: Activity[]; hasFilters?: boolean }) {
   const { deleteActivity } = useActivityStore();
@@ -30,7 +31,7 @@ export function ActivityTable({ items, hasFilters = false }: { items: Activity[]
     { id:"source",label:"Source",render:row=><span className="text-muted">{row.source === "GITHUB_SYNC" ? "GitHub sync" : row.source === "IMPORTED" ? "Imported" : row.source === "MANUAL" ? "Manual entry" : "Not recorded"}</span> },
     { id:"actions",label:"Actions",render:row=><div className="flex items-center gap-1">
       <Link href={`/activities/${row.id}/edit`} aria-label={`Edit ${row.title}`} className="grid h-9 w-9 place-items-center rounded-lg hover:bg-skyglass"><Pencil size={15} /></Link>
-      {row.link ? <a href={row.link} target="_blank" rel="noreferrer" aria-label={`Open source for ${row.title}`} className="grid h-9 w-9 place-items-center rounded-lg hover:bg-skyglass"><ExternalLink size={15} /></a> : null}
+      {webHref(row.link) ? <a href={webHref(row.link)} target="_blank" rel="noreferrer" aria-label={`Open source for ${row.title}`} className="grid h-9 w-9 place-items-center rounded-lg hover:bg-skyglass"><ExternalLink size={15} /></a> : null}
       <button type="button" aria-label={`Delete ${row.title}`} className="grid h-9 w-9 place-items-center rounded-lg text-danger hover:bg-skyglass" disabled={pending !== null} onClick={() => remove(row)}><Trash2 size={15} /></button>
     </div> }
   ];

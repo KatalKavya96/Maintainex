@@ -1,11 +1,12 @@
 import { z } from "zod";
+import { optionalWebUrl } from "../../utils/webUrl";
 
 const type = z.enum(["PR_REVIEW", "ISSUE_WORK", "PR_TO_RAISE", "ISSUE_TO_RAISE", "BUG_FIX", "FEATURE_BUILD", "DOCUMENTATION", "TESTING", "OTHER"]);
 const status = z.enum(["PLANNED", "IN_PROGRESS", "BLOCKED", "DONE", "CANCELLED", "POSTPONED"]);
 const priority = z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]);
 const difficulty = z.enum(["EASY", "MEDIUM", "HARD"]);
 const optionalDate = z.string().optional().or(z.literal(""));
-const optionalUrl = z.string().trim().url().optional().or(z.literal(""));
+const optionalUrl = optionalWebUrl;
 
 export const createScheduledWorkSchema = z.object({
   body: z.object({

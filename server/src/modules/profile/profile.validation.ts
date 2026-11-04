@@ -1,6 +1,7 @@
 import { z } from "zod";
+import { nullableWebUrl } from "../../utils/webUrl";
 
-const optionalUrl = z.string().url().or(z.literal("")).optional().nullable();
+const optionalUrl = nullableWebUrl;
 const stringArray = z.array(z.string().trim().min(1)).max(24).optional();
 
 export const usernameAvailabilitySchema = z.object({

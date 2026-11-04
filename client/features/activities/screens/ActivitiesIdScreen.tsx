@@ -6,6 +6,7 @@ import { ActivityBadge } from "@/features/activities/components/ActivityBadge";
 import { Button } from "@/design-system/patterns/Button";
 import { labelize } from "@/shared/lib/constants";
 import { formatDate } from "@/shared/lib/dateUtils";
+import { webHref } from "@/shared/lib/webHref";
 import { AsyncState } from "@/design-system";
 import { useActivityRecord } from "../hooks/useActivityRecord";
 
@@ -74,15 +75,11 @@ export default function ActivityDetailsPage() {
               </span>
             ))}
           </div>
-          {activity.link ? (
-            <a
-              className="mt-5 inline-flex items-center gap-2 rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-ink"
-              href={activity.link}
-              target="_blank"
-            >
+          {webHref(activity.link) ? (
+            <Button href={webHref(activity.link)!} variant="secondary" className="mt-5" target="_blank" rel="noopener noreferrer">
               <ExternalLink size={16} />
-              Open GitHub link
-            </a>
+              Open source link
+            </Button>
           ) : null}
         </div>
       </section>

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { optionalWebUrl } from "../../utils/webUrl";
 
 const activityType = z.enum(["PR_REVIEWED", "PR_RAISED", "ISSUE_RAISED", "PR_CLOSED", "ISSUE_CLOSED", "COMMENTED", "MERGED", "OTHER"]);
 const status = z.enum(["OPEN", "CLOSED", "MERGED", "REVIEWED", "APPROVED", "CHANGES_REQUESTED", "COMMENTED", "DRAFT", "OTHER"]);
@@ -22,7 +23,7 @@ export const createActivitySchema = z.object({
     activityType,
     title: z.string().min(1),
     number: z.string().optional(),
-    link: z.string().url().optional().or(z.literal("")),
+    link: optionalWebUrl,
     status: status.default("OTHER"),
     reviewType: reviewType.default("NOT_APPLICABLE"),
     closingReason: closingReason.default("NOT_APPLICABLE"),

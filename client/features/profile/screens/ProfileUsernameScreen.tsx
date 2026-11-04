@@ -13,6 +13,7 @@ import { useAuthStore } from "@/state/auth";
 import type { ProfileDashboard } from "@/types/profile";
 import { ProfileWorkspace } from "../components/ProfileWorkspace";
 import type { Badge } from "@/types/social";
+import { webHref } from "@/shared/lib/webHref";
 
 export default function PublicProfilePage() {
   const params = useParams<{ username: string }>();
@@ -160,11 +161,11 @@ export default function PublicProfilePage() {
 
             <div className="mt-3 min-w-0 space-y-2 border-t border-line pt-3 text-sm font-semibold text-muted">
               {profile.user.email ? <p className="flex min-w-0 items-center gap-2"><Mail size={15} className="shrink-0" /> <span className="truncate">{profile.user.email}</span></p> : null}
-              {profile.user.githubUrl ? <a className="flex items-center gap-2 hover:text-moss" href={profile.user.githubUrl} target="_blank" rel="noreferrer"><Github size={15} /> GitHub</a> : null}
-              {profile.user.linkedinUrl ? <a className="flex items-center gap-2 hover:text-moss" href={profile.user.linkedinUrl} target="_blank" rel="noreferrer"><Linkedin size={15} /> LinkedIn</a> : null}
-              {profile.user.xUrl ? <a className="flex items-center gap-2 hover:text-moss" href={profile.user.xUrl} target="_blank" rel="noreferrer"><span className="text-sm font-semibold">X</span> X</a> : null}
-              {profile.user.leetcodeUrl ? <a className="flex items-center gap-2 hover:text-moss" href={profile.user.leetcodeUrl} target="_blank" rel="noreferrer"><Code2 size={15} /> LeetCode</a> : null}
-              {profile.user.portfolioUrl ? <a className="flex items-center gap-2 hover:text-moss" href={profile.user.portfolioUrl} target="_blank" rel="noreferrer"><ExternalLink size={15} /> Portfolio</a> : null}
+              {webHref(profile.user.githubUrl) ? <a className="flex items-center gap-2 hover:text-moss" href={webHref(profile.user.githubUrl)} target="_blank" rel="noreferrer"><Github size={15} /> GitHub</a> : null}
+              {webHref(profile.user.linkedinUrl) ? <a className="flex items-center gap-2 hover:text-moss" href={webHref(profile.user.linkedinUrl)} target="_blank" rel="noreferrer"><Linkedin size={15} /> LinkedIn</a> : null}
+              {webHref(profile.user.xUrl) ? <a className="flex items-center gap-2 hover:text-moss" href={webHref(profile.user.xUrl)} target="_blank" rel="noreferrer"><span className="text-sm font-semibold">X</span> X</a> : null}
+              {webHref(profile.user.leetcodeUrl) ? <a className="flex items-center gap-2 hover:text-moss" href={webHref(profile.user.leetcodeUrl)} target="_blank" rel="noreferrer"><Code2 size={15} /> LeetCode</a> : null}
+              {webHref(profile.user.portfolioUrl) ? <a className="flex items-center gap-2 hover:text-moss" href={webHref(profile.user.portfolioUrl)} target="_blank" rel="noreferrer"><ExternalLink size={15} /> Portfolio</a> : null}
               <p>Joined {formatDate(profile.user.createdAt.slice(0, 10))}</p>
             </div>
 

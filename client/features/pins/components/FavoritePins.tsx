@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getPins } from "@/data/api/pins";
 import type { Pin } from "@/types/pin";
+import { webHref } from "@/shared/lib/webHref";
 
 export function FavoritePins() {
   const [pins, setPins] = useState<Pin[]>([]);
@@ -19,7 +20,7 @@ export function FavoritePins() {
       {pins.length ? (
         <div className="grid gap-2 sm:grid-cols-2">
           {pins.map((pin) => (
-            <a key={pin.id} href={pin.url} target="_blank" rel="noreferrer" className="flex items-center gap-3 rounded-xl border border-line p-3 text-sm font-semibold transition hover:bg-skyglass">
+            <a key={pin.id} href={webHref(pin.url)} target="_blank" rel="noreferrer" className="flex items-center gap-3 rounded-xl border border-line p-3 text-sm font-semibold transition hover:bg-skyglass">
               <img src={pin.imageUrl || pin.faviconUrl || ""} alt="" className="h-6 w-6 rounded object-contain" />
               <span className="truncate">{pin.title}</span>
             </a>

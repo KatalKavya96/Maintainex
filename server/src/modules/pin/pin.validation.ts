@@ -1,12 +1,13 @@
 import { z } from "zod";
+import { lenientWebUrl, optionalWebUrl } from "../../utils/webUrl";
 
 const category = z.enum(["REPOSITORY", "ISSUE", "PULL_REQUEST", "DOCUMENTATION", "PROJECT_BOARD", "ORGANIZATION", "WEBSITE", "OTHER"]);
-const optionalUrl = z.string().trim().url().optional().or(z.literal(""));
+const optionalUrl = optionalWebUrl;
 
 export const createPinSchema = z.object({
   body: z.object({
     title: z.string().trim().min(1, "Title is required"),
-    url: z.string().trim().min(1, "URL is required"),
+    url: lenientWebUrl,
     description: z.string().optional(),
     category,
     customCategory: z.string().optional(),

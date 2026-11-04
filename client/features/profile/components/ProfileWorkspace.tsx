@@ -4,6 +4,7 @@ import { ActivityBadge } from "@/features/activities";
 import { ActivityHeatmap } from "@/shared/calendar/ActivityHeatmap";
 import { formatDate } from "@/shared/lib/dateUtils";
 import type { ProfileDashboard } from "@/types/profile";
+import { webHref } from "@/shared/lib/webHref";
 
 /** Owner-only workspace summary; public profiles never render personal records. */
 export function ProfileWorkspace({ profile, isOwnProfile }: { profile: ProfileDashboard; isOwnProfile: boolean }) {
@@ -20,7 +21,7 @@ export function ProfileWorkspace({ profile, isOwnProfile }: { profile: ProfileDa
             </div>
             <div className="grid min-w-0 gap-3 md:grid-cols-2">
               {profile.favoritePins.slice(0, 6).map((pin) => (
-                <a key={pin.id} href={pin.url} target="_blank" rel="noreferrer" className="rounded-lg border border-line bg-skyglass p-4 transition hover:border-moss">
+                <a key={pin.id} href={webHref(pin.url)} target="_blank" rel="noreferrer" className="rounded-lg border border-line bg-skyglass p-4 transition hover:border-moss">
                   <p className="text-sm font-semibold text-moss">{pin.title}</p>
                   <p className="mt-2 line-clamp-2 text-sm font-semibold leading-6 text-muted">{pin.description || pin.url}</p>
                   <p className="mt-3 text-xs font-bold uppercase tracking-wide text-muted">{pin.category.replaceAll("_", " ")}</p>

@@ -10,6 +10,7 @@ import { getScheduledWork } from "@/data/api/work";
 import { useActivityStore } from "@/state/activities";
 import type { PinListResponse } from "@/types/pin";
 import type { ScheduledWork } from "@/types/scheduledWork";
+import { webHref } from "@/shared/lib/webHref";
 
 const monthKey = (date: string) => date.slice(0, 7);
 
@@ -74,7 +75,7 @@ export default function RepoProfilePage() {
         <section className="rounded-2xl border border-line bg-panel p-6 shadow-soft">
           <h2 className="text-xl font-semibold">Important links</h2>
           <div className="mt-4 space-y-2">
-            {pins.slice(0, 5).map((pin) => <a key={pin.id} href={pin.url} target="_blank" rel="noreferrer" className="block rounded-xl bg-skyglass p-3 text-sm font-bold text-ink hover:text-moss">{pin.title}</a>)}
+            {pins.slice(0, 5).map((pin) => <a key={pin.id} href={webHref(pin.url)} target="_blank" rel="noreferrer" className="block rounded-xl bg-skyglass p-3 text-sm font-bold text-ink hover:text-moss">{pin.title}</a>)}
             {!pins.length ? <p className="text-sm font-semibold text-muted">No repo pins yet.</p> : null}
           </div>
         </section>

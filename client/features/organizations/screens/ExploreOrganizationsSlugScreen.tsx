@@ -17,6 +17,7 @@ import { OverviewTab } from "../components/OverviewTab";
 import { ContributorsTab } from "../components/ContributorsTab";
 import { RepositoriesTab } from "../components/RepositoriesTab";
 import { DetailSkeleton } from "../components/DetailSkeleton";
+import { webHref } from "@/shared/lib/webHref";
 
 const tabs = ["Overview", "Contributors", "Repositories"] as const;
 type Tab = (typeof tabs)[number];
@@ -101,8 +102,8 @@ export default function OrganizationDetailPage() {
       </section>
 
       <div className="flex flex-wrap justify-end gap-4">
-        {organization.githubUrl ? (
-          <Button href={organization.githubUrl} variant="secondary" target="_blank" rel="noreferrer" title="Open GitHub">
+        {webHref(organization.githubUrl) ? (
+          <Button href={webHref(organization.githubUrl)!} variant="secondary" target="_blank" rel="noreferrer" title="Open GitHub">
             <ExternalLink size={16} /> Open on GitHub
           </Button>
         ) : null}

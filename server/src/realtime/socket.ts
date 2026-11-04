@@ -1,5 +1,6 @@
 import type { Server as HttpServer } from "http";
 import { Server } from "socket.io";
+import { verifySession } from "../modules/auth/session";
 
 let io: Server | null = null;
 
@@ -11,9 +12,16 @@ export function initRealtime(server: HttpServer) {
     }
   });
 
+  io.use((socket, next) => {
+    try {
+      socket.data.user = verifySession(socket.handshake.auth.token);
+      next();
+    } catch {
+      next(new Error("Authentication required"));
+    }
+  });
   io.on("connection", (socket) => {
-    const userId = typeof socket.handshake.auth.userId === "string" ? socket.handshake.auth.userId : undefined;
-    if (userId) socket.join(`user:${userId}`);
+    socket.join(`user:${socket.data.user.id}`);
   });
 
   return io;

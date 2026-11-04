@@ -7,7 +7,6 @@ const publicUserSelect = {
   id: true,
   name: true,
   username: true,
-  email: true,
   bio: true,
   githubUrl: true,
   linkedinUrl: true,
@@ -142,6 +141,8 @@ export class SocialService {
       text: `${activity.user.name} ${this.activityVerb(activity.activityType)} ${activity.number ? `#${activity.number}` : activity.title} in ${activity.organizationNameSnapshot}/${activity.repositoryNameSnapshot}`,
       activity: {
         ...activity,
+        // Notes and freeform workspace context are never social feed content.
+        notes: "", description: "", tags: [],
         organizationName: activity.organizationNameSnapshot,
         repositoryName: activity.repositoryNameSnapshot
       },

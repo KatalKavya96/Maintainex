@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import path from "path";
+import { sessionSecret } from "./session-secret";
 
 dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 dotenv.config({ path: path.resolve(process.cwd(), "server/.env") });
@@ -30,7 +31,7 @@ export const env = {
   clientUrls,
   clientAppUrl,
   allowVercelOrigins,
-  jwtSecret: process.env.JWT_SECRET ?? "dev-only-maintainex-secret-change-me",
+  jwtSecret: sessionSecret(process.env.JWT_SECRET),
   signupAdminCode: process.env.SIGNUP_ADMIN_CODE,
   githubClientId: process.env.GITHUB_CLIENT_ID,
   githubClientSecret: process.env.GITHUB_CLIENT_SECRET,

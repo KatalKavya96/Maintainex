@@ -6,5 +6,6 @@ export function errorMiddleware(error: Error, _req: Request, res: Response, _nex
     return res.status(error.statusCode).json({ message: error.message });
   }
 
-  return res.status(500).json({ message: error.message || "Internal server error" });
+  // Unexpected errors can contain database URLs, query text or provider responses.
+  return res.status(500).json({ message: "Something went wrong. Please try again." });
 }

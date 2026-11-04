@@ -164,7 +164,7 @@ test("HTTP quest routes enforce authentication, input validation and the start-t
   t.after(() => new Promise<void>((resolve) => server.close(() => resolve())));
   const port = (server.address() as { port: number }).port;
   const url = `http://127.0.0.1:${port}/api/quests`;
-  const headers = { "Content-Type": "application/json", Authorization: `Bearer ${jwt.sign({ id: member, role: "VIEWER" }, env.jwtSecret)}` };
+  const headers = { "Content-Type": "application/json", Authorization: `Bearer ${jwt.sign(fixtureUser, env.jwtSecret, { expiresIn: "1h" })}` };
   assert.equal((await fetch(url)).status, 401);
   assert.equal((await fetch(`${url}?page=-1`, { headers })).status, 400);
   const started = await fetch(`${url}/${fixtureQuest.id}/start`, { method: "POST", headers }); assert.equal(started.status, 200);

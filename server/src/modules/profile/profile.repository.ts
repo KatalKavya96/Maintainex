@@ -7,8 +7,6 @@ export class ProfileRepository {
         id: true,
         name: true,
         username: true,
-        email: true,
-        emailVerifiedAt: true,
         role: true,
         bio: true,
         githubUrl: true,
@@ -16,17 +14,11 @@ export class ProfileRepository {
         xUrl: true,
         leetcodeUrl: true,
         portfolioUrl: true,
-        usernameUpdatedAt: true,
         skills: true,
         mainOrganizations: true,
         createdAt: true,
         _count: {
           select: {
-            activities: true,
-            organizations: true,
-            repositories: true,
-            pins: true,
-            scheduledWork: true,
             followers: true,
             following: true
           }

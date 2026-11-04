@@ -15,7 +15,7 @@ env.jwtSecret = "maintainex-local-fixture-only";
 const app = express();
 app.use(cors({ origin: "http://maintainex-preview.localhost:3107", credentials: true }));
 app.use(express.json());
-const token = jwt.sign(fixtureUser, env.jwtSecret);
+const token = jwt.sign(fixtureUser, env.jwtSecret, { expiresIn: "1h" });
 const ok = (res: express.Response, data: unknown) => res.json({ data });
 app.post("/api/auth/viewer", (_req, res) => ok(res, { user: fixtureUser, token }));
 app.get("/api/auth/me", (_req, res) => ok(res, { user: fixtureUser, token }));

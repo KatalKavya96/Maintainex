@@ -5,6 +5,7 @@ import { emitDashboardUpdate } from "../../realtime/socket";
 import { ApiError } from "../../utils/ApiError";
 import { EmailService } from "../../utils/email.service";
 import { ensureUsableEmail } from "../../utils/emailValidation";
+import { publicProfile } from "./profile.visibility";
 import { ProfileRepository } from "./profile.repository";
 
 type UpdateProfilePayload = {
@@ -263,6 +264,17 @@ export class ProfileService {
   }
 
   private async profileForUser(user: NonNullable<Awaited<ReturnType<ProfileRepository["findUser"]>>>, viewerId?: string) {
+    if (viewerId !== user.id) {
+      const [followers, following] = await this.repository.followCounts(user.id);
+      const follow = viewerId ? await this.repository.isFollowing(viewerId, user.id) : null;
+      return {
+        user: publicProfile(user),
+        workspaceVisible: false,
+        stats: { activities: null, organizations: null, repositories: null, pins: null,
+          scheduledWork: null, followers, following, isFollowing: Boolean(follow) },
+        activities: [], favoritePins: [], upcomingWork: []
+      };
+    }
     const [activities, favoritePins, upcomingWork, [activityCount, organizationCount, repositoryCount, pinCount, scheduledWorkCount], [followers, following], follow] = await Promise.all([
       this.repository.activities(user.id),
       this.repository.favoritePins(user.id),
@@ -274,6 +286,7 @@ export class ProfileService {
 
     return {
       user,
+      workspaceVisible: true,
       stats: {
         activities: activityCount,
         organizations: organizationCount,

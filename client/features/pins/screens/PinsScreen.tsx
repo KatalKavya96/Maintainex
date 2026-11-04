@@ -1,47 +1,27 @@
 "use client";
-
-import { useCallback, useEffect, useState } from "react";
-import { Button } from "@/design-system/patterns/Button";
-import { PageTitle } from "@/design-system/patterns/PageTitle";
-import { PinFilters } from "@/features/pins/components/PinFilters";
-import { PinGrid } from "@/features/pins/components/PinGrid";
+import { useState } from "react";
+import { AsyncState, Button, EmptyState, Feedback, PageHeader, Pagination, ViewSwitcher } from "@/design-system";
+import { PinFilters } from "../components/PinFilters";
+import { PinGrid } from "../components/PinGrid";
+import { PinTable } from "../components/PinTable";
 import { deletePin, getPins } from "@/data/api/pins";
+import { useCollection } from "@/shared/hooks/useCollection";
 import type { Pin } from "@/types/pin";
 
 export default function PinsPage() {
-  const [pins, setPins] = useState<Pin[]>([]);
-  const [filters, setFilters] = useState<Record<string, string>>({ sort: "recent" });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  const loadPins = useCallback(() => {
-    setLoading(true);
-    getPins({ ...filters, limit: 100 })
-      .then((data) => {
-        setPins(data.items);
-        setError("");
-      })
-      .catch((err) => setError(err.message ?? "Failed to load pins"))
-      .finally(() => setLoading(false));
-  }, [filters]);
-
-  useEffect(() => loadPins(), [loadPins]);
-
+  const collection = useCollection(getPins, { sort: "recent" });
+  const [view, setView] = useState<"list" | "grid">("list");
+  const [actionError, setActionError] = useState("");
   async function remove(pin: Pin) {
-    if (!window.confirm(`Delete "${pin.title}"?`)) return;
-    await deletePin(pin.id);
-    loadPins();
+    if (!window.confirm(`Permanently delete "${pin.title}"? This cannot be undone.`)) return;
+    try { await deletePin(pin.id); collection.reload(); }
+    catch (reason) { setActionError(reason instanceof Error ? reason.message : "Unable to delete pin."); }
   }
-
-  return (
-    <>
-      <PageTitle
-        title="Pinned Contribution Links"
-        description="Quick links for repositories, issues, PRs, docs, boards, and contribution websites."
-        action={<Button href="/pins/new">Add Pin</Button>}
-      />
-      <PinFilters filters={filters} onChange={setFilters} />
-      <PinGrid pins={pins} loading={loading} error={error} onChanged={loadPins} onDelete={remove} />
-    </>
-  );
+  return <><PageHeader title="Pins" description="Useful references, ready for your next contribution session." action={<Button href="/pins/new">Add pin</Button>} />
+    <PinFilters filters={collection.filters} onChange={collection.setFilters} />
+    <div className="mb-4 flex flex-wrap items-center justify-between gap-3"><p className="text-xs text-muted">{collection.total} matching references</p><ViewSwitcher label="Pin layout" value={view} onChange={setView} options={[{value:"list",label:"List"},{value:"grid",label:"Grid"}]} /></div>
+    {actionError && <Feedback message={actionError} />}
+    <AsyncState state={collection.loading ? "loading" : collection.error ? "error" : "ready"} onRetry={collection.reload}>{!collection.items.length ? <EmptyState title="No references in this view" description="Try another filter or pin a useful contribution link." action={<Button href="/pins/new">Add pin</Button>} /> : view === "list" ? <PinTable pins={collection.items} /> : <PinGrid pins={collection.items} loading={false} error="" onChanged={collection.reload} onDelete={remove} />}</AsyncState>
+    {!collection.error && <Pagination page={collection.page} total={collection.total} limit={collection.limit} onChange={collection.setPage} disabled={collection.loading} />}
+  </>;
 }

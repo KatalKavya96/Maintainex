@@ -23,7 +23,7 @@ export default function ProfilesPage() {
 
   return (
     <>
-      <PageTitle title="Profiles" description="View other Maintainex dashboards in read-only mode." />
+      <PageTitle title="Profiles" description="Find people and view their shared profile details." />
       {loading ? <div className="rounded-xl border border-line bg-panel p-8 text-sm text-muted shadow-soft">Loading profiles...</div> : null}
       {error ? <div className="rounded-xl border border-danger bg-skyglass p-8 text-sm font-semibold text-danger">{error}</div> : null}
       {!loading && !error ? (
@@ -37,11 +37,9 @@ export default function ProfilesPage() {
                 </div>
                 <span className="rounded-lg bg-skyglass px-2 py-1 text-xs font-bold text-moss">{profile.role}</span>
               </div>
-              <div className="mt-5 grid grid-cols-3 gap-2 text-center text-sm">
-                <span className="rounded-lg bg-skyglass p-3 font-semibold text-muted"><strong className="block text-lg text-moss">{profile._count.activities}</strong>activities</span>
-                <span className="rounded-lg bg-skyglass p-3 font-semibold text-muted"><strong className="block text-lg text-moss">{profile._count.repositories}</strong>repos</span>
-                <span className="rounded-lg bg-skyglass p-3 font-semibold text-muted"><strong className="block text-lg text-moss">{profile._count.organizations}</strong>orgs</span>
+              <div className="mt-5 grid grid-cols-2 gap-2 text-center text-sm">
                 <span className="rounded-lg bg-skyglass p-3 font-semibold text-muted"><strong className="block text-lg text-moss">{profile._count.followers}</strong>followers</span>
+                <span className="rounded-lg bg-skyglass p-3 font-semibold text-muted"><strong className="block text-lg text-moss">{profile._count.following}</strong>following</span>
               </div>
             </Link>
           ))}

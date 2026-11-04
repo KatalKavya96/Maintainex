@@ -47,7 +47,7 @@ export default function ProfileDashboardPage({ params }: { params: { id: string 
 
   return (
     <>
-      <PageTitle title={`${profile.user.name}'s Profile`} description="Read-only contribution profile with activity history and public progress." />
+      <PageTitle title={`${profile.user.name}'s Profile`} description="Profile details. Workspace records are visible only to their owner." />
 
       <section className="rounded-2xl border border-line bg-panel p-6 shadow-soft">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
@@ -66,7 +66,7 @@ export default function ProfileDashboardPage({ params }: { params: { id: string 
               <div className="mt-3 flex flex-wrap gap-4 text-sm font-semibold text-muted">
                 <span className="inline-flex items-center gap-2">
                   <Mail size={16} />
-                  {profile.user.email}
+                  {profile.user.email ?? "Private email"}
                 </span>
                 <span className="inline-flex items-center gap-2">
                   <CalendarDays size={16} />
@@ -75,17 +75,18 @@ export default function ProfileDashboardPage({ params }: { params: { id: string 
               </div>
             </div>
           </div>
-          <div className="grid min-w-[280px] grid-cols-3 gap-3">
+          {profile.workspaceVisible ? <div className="grid min-w-[280px] grid-cols-3 gap-3">
             {profileStats.map((stat) => (
               <div key={stat.label} className="rounded-xl border border-line bg-skyglass p-4 text-center">
                 <p className="text-2xl font-semibold text-moss">{stat.value}</p>
                 <p className="mt-1 text-xs font-bold uppercase tracking-wide text-muted">{stat.label}</p>
               </div>
             ))}
-          </div>
+          </div> : null}
         </div>
       </section>
 
+      {profile.workspaceVisible ? <>
       <div className="mt-6">
         <ActivityHeatmap activities={activities} ownerName={profile.user.name} />
       </div>
@@ -121,6 +122,7 @@ export default function ProfileDashboardPage({ params }: { params: { id: string 
         )}
       </section>
 
+      </> : <p className="mt-6 text-sm text-muted">Workspace activity is private.</p>}
       <div className="mt-6">
         <Link href="/profiles" className="text-sm font-semibold text-moss">Back to profiles</Link>
       </div>

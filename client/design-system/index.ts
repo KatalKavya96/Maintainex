@@ -1,4 +1,5 @@
 export { Button } from "./primitives/Button";
+export { ViewSwitcher, Pagination, Feedback } from "./primitives/CollectionControls";
 export { Badge } from "./primitives/Badge";
 export { Field, Input, Select, Textarea } from "./primitives/FormControls";
 export { Surface, Toolbar } from "./primitives/Surface";

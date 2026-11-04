@@ -4,8 +4,8 @@ import { ScoreBadge } from "@/design-system/patterns/ScoreBadge";
 import { TechTag } from "@/design-system/patterns/TechTag";
 import type { ExploreRepositorySummary } from "@/types/explore";
 
-export function RepositoryCard({ repository, orgSlug }: { repository: ExploreRepositorySummary; orgSlug?: string }) {
-  const href = orgSlug ? `/repos/${orgSlug}/${repository.slug}` : repository.githubUrl ?? "/coming-soon?feature=repository";
+export function RepositoryCard({ repository }: { repository: ExploreRepositorySummary; orgSlug?: string }) {
+  const href = repository.githubUrl || (repository.fullName ? `https://github.com/${repository.fullName}` : null);
   return (
     <article className="rounded-lg border border-line bg-panel p-4 shadow-soft">
       <div className="flex items-start justify-between gap-3">
@@ -14,9 +14,9 @@ export function RepositoryCard({ repository, orgSlug }: { repository: ExploreRep
             {repository.name.slice(0, 1).toUpperCase()}
           </div>
           <div className="min-w-0">
-            <Link href={href} className="block truncate text-base font-semibold text-ink hover:text-moss">
+            {href ? <Link href={href} target="_blank" rel="noreferrer" className="block truncate text-base font-semibold text-ink hover:text-moss">
               {repository.name}
-            </Link>
+            </Link> : <p className="text-base font-semibold text-ink">{repository.name}</p>}
             <p className="mt-1 line-clamp-2 text-xs font-medium leading-5 text-muted">{repository.description || "No repository description has been synced yet."}</p>
           </div>
         </div>

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
-import { ExternalLink, Info, Share2, Star, UserPlus } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import clsx from "clsx";
 import { Button } from "@/design-system/patterns/Button";
 import { EmptyState, MetricCard } from "@/design-system/patterns/MetricCard";
@@ -20,9 +20,6 @@ import { DetailSkeleton } from "../components/DetailSkeleton";
 
 const tabs = ["Overview", "Contributors", "Repositories"] as const;
 type Tab = (typeof tabs)[number];
-
-const ratingStars = (score: number) =>
-  Array.from({ length: 5 }, (_, index) => <Star key={index} size={18} className={index < Math.round(score || 0) ? "fill-moss text-moss" : "text-muted"} />);
 
 export default function OrganizationDetailPage() {
   const params = useParams<{ slug: string }>();
@@ -75,9 +72,9 @@ export default function OrganizationDetailPage() {
       <section className="flex flex-col gap-7 2xl:flex-row 2xl:items-center 2xl:justify-between">
         <div className="flex min-w-0 gap-6">
           {organization.logoUrl ? (
-            <img src={organization.logoUrl} alt="" className="h-28 w-28 rounded-full border border-line object-cover shadow-soft" />
+            <img src={organization.logoUrl} alt="" className="h-16 w-16 rounded-full border border-line object-cover shadow-soft" />
           ) : (
-            <div className="grid h-28 w-28 shrink-0 place-items-center rounded-full border border-moss/30 bg-moss/15 text-4xl font-semibold text-moss shadow-soft">
+            <div className="grid h-16 w-16 shrink-0 place-items-center rounded-full border border-moss/30 bg-moss/15 text-2xl font-semibold text-moss shadow-soft">
               {organization.name.slice(0, 1).toUpperCase()}
             </div>
           )}
@@ -97,31 +94,18 @@ export default function OrganizationDetailPage() {
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 min-[1800px]:grid-cols-5">
-          <MetricCard label="Maintainex Score" value={<span className="text-moss">{organization.maintianexScore || "--"}</span>} detail={organization.scoreLabel} icon={<Info size={15} />} />
-          <MetricCard label="Active Repos" value={organization.activeReposCount} detail="tracked repositories" />
-          <MetricCard label="Avg Review Time" value={organization.averageReviewTimeDays ? `${organization.averageReviewTimeDays}d` : "--"} detail="from synced review data" />
-          <MetricCard
-            label="Beginner Friendly"
-            value={<span className="flex gap-1">{ratingStars(organization.beginnerFriendlyScore)}</span>}
-            detail={`${organization.beginnerFriendlyScore ? organization.beginnerFriendlyScore.toFixed(1) : "--"}/5`}
-          />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <MetricCard label="Tracked repositories" value={organization.activeReposCount} detail="from synced organization data" />
+          <MetricCard label="Average review time" value={organization.averageReviewTimeDays ? `${organization.averageReviewTimeDays}d` : "—"} detail="when synced review data is available" />
         </div>
       </section>
 
       <div className="flex flex-wrap justify-end gap-4">
-        <Button href="/coming-soon?feature=follow-organization" variant="secondary">
-          <UserPlus size={16} />
-          Follow
-        </Button>
         {organization.githubUrl ? (
           <Button href={organization.githubUrl} variant="secondary" target="_blank" rel="noreferrer" title="Open GitHub">
-            <ExternalLink size={16} />
+            <ExternalLink size={16} /> Open on GitHub
           </Button>
         ) : null}
-        <Button href="/coming-soon?feature=share-organization" variant="secondary" title="Share">
-          <Share2 size={16} />
-        </Button>
       </div>
 
       <section className="overflow-hidden rounded-lg border border-line bg-panel shadow-soft">
@@ -131,6 +115,7 @@ export default function OrganizationDetailPage() {
               key={tab}
               type="button"
               onClick={() => setActiveTab(tab)}
+              aria-pressed={activeTab === tab}
               className={clsx("h-14 px-6 text-sm font-bold transition", activeTab === tab ? "border-b-2 border-moss bg-moss/10 text-moss" : "text-muted hover:text-ink")}
             >
               {tab}

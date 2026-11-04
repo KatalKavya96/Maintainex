@@ -1,7 +1,8 @@
 "use client";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { ExternalLink, Pencil, Trash2 } from "lucide-react";
-import { DataTable, EmptyState, Badge, type Column } from "@/design-system";
+import { DataTable, EmptyState, Badge, Feedback, type Column } from "@/design-system";
 import { labelize } from "@/shared/lib/constants";
 import { formatDate } from "@/shared/lib/dateUtils";
 import { useActivityStore } from "@/state/activities";
@@ -10,6 +11,16 @@ import { ActivityBadge } from "./ActivityBadge";
 
 export function ActivityTable({ items, hasFilters = false }: { items: Activity[]; hasFilters?: boolean }) {
   const { deleteActivity } = useActivityStore();
+  const [pending, setPending] = useState<string | null>(null);
+  const [error, setError] = useState("");
+  const deleting = useRef(false);
+  async function remove(row: Activity) {
+    if (deleting.current || !window.confirm(`Permanently delete "${row.title}"? This cannot be undone.`)) return;
+    deleting.current = true; setPending(row.id); setError("");
+    try { await deleteActivity(row.id); }
+    catch (reason) { setError(reason instanceof Error ? reason.message : "Unable to delete activity."); }
+    finally { deleting.current = false; setPending(null); }
+  }
   if (!items.length) return <EmptyState title={hasFilters ? "No matching activities" : "No activities yet"} description={hasFilters ? "Try another search or clear the filters." : "Record a contribution when you have work to track."} />;
   const columns: Column<Activity>[] = [
     { id:"contribution",label:"Contribution",render:row=><div className="min-w-48"><Link href={`/activities/${row.id}`} className="font-medium text-ink hover:text-moss">{row.title}</Link><p className="mt-1 text-xs text-muted">{row.organizationName}/{row.repositoryName}{row.number ? ` · #${row.number}` : ""}</p></div> },
@@ -20,8 +31,8 @@ export function ActivityTable({ items, hasFilters = false }: { items: Activity[]
     { id:"actions",label:"Actions",render:row=><div className="flex items-center gap-1">
       <Link href={`/activities/${row.id}/edit`} aria-label={`Edit ${row.title}`} className="grid h-9 w-9 place-items-center rounded-lg hover:bg-skyglass"><Pencil size={15} /></Link>
       {row.link ? <a href={row.link} target="_blank" rel="noreferrer" aria-label={`Open source for ${row.title}`} className="grid h-9 w-9 place-items-center rounded-lg hover:bg-skyglass"><ExternalLink size={15} /></a> : null}
-      <button type="button" aria-label={`Delete ${row.title}`} className="grid h-9 w-9 place-items-center rounded-lg text-danger hover:bg-skyglass" onClick={()=>{ if(window.confirm(`Permanently delete "${row.title}"? This cannot be undone.`)) void deleteActivity(row.id); }}><Trash2 size={15} /></button>
+      <button type="button" aria-label={`Delete ${row.title}`} className="grid h-9 w-9 place-items-center rounded-lg text-danger hover:bg-skyglass" disabled={pending !== null} onClick={() => remove(row)}><Trash2 size={15} /></button>
     </div> }
   ];
-  return <DataTable label="Contribution activities" rows={items} columns={columns} rowKey={row=>row.id} />;
+  return <>{error ? <Feedback message={error} /> : null}<DataTable label="Contribution activities" rows={items} columns={columns} rowKey={row=>row.id} /></>;
 }

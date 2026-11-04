@@ -1,14 +1,7 @@
 "use client";
-
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { PageTitle } from "@/design-system/patterns/PageTitle";
+import { GoalPanel } from "../components/GoalPanel";
 
 export default function GoalsPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.replace("/");
-  }, [router]);
-
-  return <main className="grid min-h-[50vh] place-items-center text-sm font-semibold text-muted">Opening Home...</main>;
+  return <><PageTitle title="Goals" description="Manage your contribution targets." /><GoalPanel limit={null} /></>;
 }

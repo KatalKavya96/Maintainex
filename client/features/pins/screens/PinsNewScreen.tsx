@@ -4,7 +4,7 @@ import { PinForm } from "@/features/pins/components/PinForm";
 export default function NewPinPage() {
   return (
     <>
-      <PageTitle title="Add Pin" description="Save a frequently used contribution link with category, tags, and favicon support." />
+      <PageTitle title="Add Pin" description="Save a useful reference with enough context to find it again." />
       <PinForm />
     </>
   );

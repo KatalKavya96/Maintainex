@@ -4,12 +4,13 @@ import { useParams } from "next/navigation";
 import { ActivityForm } from "@/features/activities/components/ActivityForm";
 import { Button } from "@/design-system/patterns/Button";
 import { PageTitle } from "@/design-system/patterns/PageTitle";
-import { useActivityStore } from "@/state/activities";
+import { AsyncState } from "@/design-system";
+import { useActivityRecord } from "../hooks/useActivityRecord";
 
 export default function EditActivityPage() {
   const params = useParams<{ id: string }>();
-  const { activities } = useActivityStore();
-  const activity = activities.find((item) => item.id === params.id);
+  const { activity, loading, error, retry } = useActivityRecord(params.id);
+  if (loading || error) return <AsyncState state={loading ? "loading" : "error"} onRetry={retry} />;
 
   if (!activity) {
     return (

@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
+import { Feedback } from "@/design-system";
 import { Pencil, Trash2 } from "lucide-react";
 import { labelize } from "@/shared/lib/constants";
 import { updateScheduledWorkStatus } from "@/data/api/work";
@@ -11,9 +13,14 @@ import { WorkStatusBadge } from "./WorkStatusBadge";
 import { assignedDuration } from "./scheduleUtils";
 
 export function ScheduledWorkCard({ item, onChanged, onDelete }: { item: ScheduledWork; onChanged: () => void; onDelete: (item: ScheduledWork) => void }) {
+  const [error, setError] = useState("");
+  const [pending, setPending] = useState(false);
   const statusButton = async (status: ScheduledWorkStatus) => {
-    await updateScheduledWorkStatus(item.id, status);
-    onChanged();
+    if(pending)return;
+    setPending(true);setError("");
+    try { await updateScheduledWorkStatus(item.id, status); onChanged(); }
+    catch(reason) {setError(reason instanceof Error ? reason.message : "Unable to update status.");}
+    finally {setPending(false);}
   };
   return (
     <article className="rounded-xl border border-line bg-panel p-4 shadow-soft transition hover:border-moss/25">
@@ -31,15 +38,16 @@ export function ScheduledWorkCard({ item, onChanged, onDelete }: { item: Schedul
         {item.assignedToMe ? <p className="mt-3 text-xs font-semibold text-muted">{assignedDuration(item.assignedSince)}</p> : null}
         {item.tags.length ? <div className="mt-3 flex flex-wrap gap-1">{item.tags.slice(0, 3).map((tag) => <span key={tag} className="rounded-md bg-skyglass px-2 py-1 text-xs font-semibold text-muted">{tag}</span>)}</div> : null}
       </Link>
+      {error && <Feedback message={error} />}
       <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-line pt-3">
         <div className="flex flex-wrap gap-1">
-          {item.status !== "IN_PROGRESS" ? <button className="rounded-lg bg-skyglass px-2 py-1 text-xs font-bold text-muted" onClick={() => statusButton("IN_PROGRESS")}>Start</button> : null}
-          {item.status !== "DONE" ? <button className="rounded-lg bg-skyglass px-2 py-1 text-xs font-bold text-muted" onClick={() => statusButton("DONE")}>Done</button> : null}
-          {item.status !== "BLOCKED" ? <button className="rounded-lg bg-skyglass px-2 py-1 text-xs font-bold text-danger" onClick={() => statusButton("BLOCKED")}>Block</button> : null}
+          {item.status !== "IN_PROGRESS" ? <button type="button" disabled={pending} className="rounded-lg bg-skyglass px-2 py-1 text-xs font-bold text-muted" onClick={() => statusButton("IN_PROGRESS")}>Start</button> : null}
+          {item.status !== "DONE" ? <button type="button" disabled={pending} className="rounded-lg bg-skyglass px-2 py-1 text-xs font-bold text-muted" onClick={() => statusButton("DONE")}>Done</button> : null}
+          {item.status !== "BLOCKED" ? <button type="button" disabled={pending} className="rounded-lg bg-skyglass px-2 py-1 text-xs font-bold text-danger" onClick={() => statusButton("BLOCKED")}>Block</button> : null}
         </div>
         <div className="flex gap-1">
-          <Link href={`/schedule/${item.id}/edit`} className="rounded-lg p-2 text-muted hover:bg-skyglass"><Pencil size={16} /></Link>
-          <button className="rounded-lg p-2 text-muted hover:bg-skyglass hover:text-danger" onClick={() => onDelete(item)}><Trash2 size={16} /></button>
+          <Link aria-label={`Edit ${item.title}`} href={`/schedule/${item.id}/edit`} className="rounded-lg p-2 text-muted hover:bg-skyglass"><Pencil size={16} /></Link>
+          <button type="button" disabled={pending} className="rounded-lg p-2 text-muted hover:bg-skyglass hover:text-danger" aria-label={`Delete ${item.title}`} onClick={() => onDelete(item)}><Trash2 size={16} /></button>
         </div>
       </div>
     </article>

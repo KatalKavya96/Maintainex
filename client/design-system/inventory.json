@@ -11,7 +11,7 @@
     },
     {
       "file": "design-system/contracts.json",
-      "sourceHash": "8957f8a2ede8a1d9d80c0f14e1051d8a590327f1c69848e871948e140ad6d82e"
+      "sourceHash": "27510d11335b54cd8f943c48d81139c30d0c6ca0012e729a9c25e9200ab99a13"
     }
   ],
   "components": [
@@ -43,17 +43,12 @@
         "features/overview/components/GoalPanel.tsx",
         "features/overview/screens/DashboardScreen.tsx",
         "features/pins/components/PinForm.tsx",
-        "features/pins/screens/PinsIdScreen.tsx",
-        "features/pins/screens/PinsScreen.tsx",
         "features/profile/screens/ProfileChangePasswordScreen.tsx",
         "features/profile/screens/ProfileEditScreen.tsx",
         "features/profile/screens/ProfileUsernameScreen.tsx",
         "features/reports/screens/ReportsScreen.tsx",
         "features/saved/screens/ExploreSavedScreen.tsx",
-        "features/settings/components/GitHubAutomationPanel.tsx",
-        "features/work/components/ScheduledWorkForm.tsx",
-        "features/work/screens/ScheduleIdScreen.tsx",
-        "features/work/screens/ScheduleScreen.tsx"
+        "features/work/components/ScheduledWorkForm.tsx"
       ],
       "sourceHash": "47c3f3b8385cb6af4b5cbddb9e1076d08fca372b02a9f2bdb0770fad746be3fe"
     },
@@ -76,7 +71,6 @@
         "features/leaderboards/components/LeaderboardCard.tsx",
         "features/leaderboards/screens/LeaderboardScreen.tsx",
         "features/organizations/components/ContributorsTab.tsx",
-        "features/organizations/components/OverviewTab.tsx",
         "features/organizations/components/RepositoriesTab.tsx",
         "features/organizations/screens/ExploreOrganizationsScreen.tsx",
         "features/organizations/screens/ExploreOrganizationsSlugScreen.tsx",
@@ -163,7 +157,6 @@
         "features/leaderboards/components/LeaderboardCard.tsx",
         "features/leaderboards/screens/LeaderboardScreen.tsx",
         "features/organizations/components/ContributorsTab.tsx",
-        "features/organizations/components/OverviewTab.tsx",
         "features/organizations/components/RepositoriesTab.tsx",
         "features/organizations/screens/ExploreOrganizationsScreen.tsx",
         "features/organizations/screens/ExploreOrganizationsSlugScreen.tsx",
@@ -195,21 +188,14 @@
         "features/notifications/screens/NotificationsScreen.tsx",
         "features/organizations/screens/OrgsOrgnameScreen.tsx",
         "features/overview/screens/DashboardScreen.tsx",
+        "features/overview/screens/GoalsScreen.tsx",
         "features/pins/screens/PinsIdEditScreen.tsx",
-        "features/pins/screens/PinsIdScreen.tsx",
         "features/pins/screens/PinsNewScreen.tsx",
-        "features/pins/screens/PinsScreen.tsx",
-        "features/profile/screens/ProfileUsernameFollowersScreen.tsx",
-        "features/profile/screens/ProfileUsernameFollowingScreen.tsx",
         "features/profile/screens/ProfilesIdScreen.tsx",
         "features/profile/screens/ProfilesScreen.tsx",
         "features/reports/screens/ReportsScreen.tsx",
         "features/repositories/screens/ReposOrgRepoScreen.tsx",
-        "features/settings/screens/SettingsScreen.tsx",
-        "features/work/screens/ScheduleIdEditScreen.tsx",
-        "features/work/screens/ScheduleIdScreen.tsx",
-        "features/work/screens/ScheduleNewScreen.tsx",
-        "features/work/screens/ScheduleScreen.tsx"
+        "features/work/screens/ScheduleIdEditScreen.tsx"
       ],
       "sourceHash": "a94628e4ddb8d7169f6f76e91cde8d1725836b7e82e8f7a90c8f886d707b715d"
     },
@@ -347,7 +333,8 @@
       "usedBy": [
         "design-system/index.ts",
         "design-system/patterns/Button.tsx",
-        "design-system/primitives/AsyncState.tsx"
+        "design-system/primitives/AsyncState.tsx",
+        "design-system/primitives/CollectionControls.tsx"
       ],
       "sourceHash": "da6fd41f57ddd3a20d8d23c07f22f8520f45ae3de8c960b76ba101a92a9285ea"
     },
@@ -415,6 +402,27 @@
         "design-system/patterns/MetricCard.tsx"
       ],
       "sourceHash": "b45022b2a6dacaeca5df1541ee669db401d2e4920442040cfae8f5a3c7d6640a"
+    },
+    {
+      "id": "design-system.Feedback",
+      "name": "Feedback",
+      "owner": "design-system",
+      "file": "design-system/primitives/CollectionControls.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "error",
+        "success"
+      ],
+      "description": "Text feedback; errors use alert and success uses status. Does not own persistence.",
+      "review": "implemented and catalogued",
+      "usedBy": [
+        "design-system/index.ts"
+      ],
+      "sourceHash": "211afca059627f39b326189306ebcf5a8dbd52883cbc11acc6e5fa9db74b9fc7"
     },
     {
       "id": "design-system.Field",
@@ -515,6 +523,30 @@
       "sourceHash": "88460f7181b78c7846fe2a64383feebd67982ceafb1ce4bb6d9838ed72da686d"
     },
     {
+      "id": "design-system.Pagination",
+      "name": "Pagination",
+      "owner": "design-system",
+      "file": "design-system/primitives/CollectionControls.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "first page",
+        "middle page",
+        "last page",
+        "empty",
+        "loading"
+      ],
+      "description": "Controlled one-based pagination. Caller owns requests and total scope. Native Previous/Next controls disable at boundaries and during requests.",
+      "review": "implemented and catalogued",
+      "usedBy": [
+        "design-system/index.ts"
+      ],
+      "sourceHash": "211afca059627f39b326189306ebcf5a8dbd52883cbc11acc6e5fa9db74b9fc7"
+    },
+    {
       "id": "design-system.ProgramBadge",
       "name": "ProgramBadge",
       "owner": "design-system",
@@ -551,7 +583,6 @@
       "description": "Feature-owned composition; contract review required before redesign.",
       "review": "source inventory; visual review pending",
       "usedBy": [
-        "features/organizations/components/OverviewTab.tsx",
         "features/organizations/components/RepositoryCard.tsx"
       ],
       "sourceHash": "5ea70b346519731a0d8c762291e56a46831b013ccc2f1906f2296fb7c7044f2f"
@@ -667,6 +698,29 @@
       "sourceHash": "691f58d2f6ea4827d6717e409b32fbca2f7d3e0f29111050f58fbd05167156db"
     },
     {
+      "id": "design-system.ViewSwitcher",
+      "name": "ViewSwitcher",
+      "owner": "design-system",
+      "file": "design-system/primitives/CollectionControls.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "selected",
+        "unselected",
+        "focus-visible",
+        "narrow layout"
+      ],
+      "description": "Native button group with aria-pressed. Wraps at narrow widths; no tab-panel keyboard contract.",
+      "review": "implemented and catalogued",
+      "usedBy": [
+        "design-system/index.ts"
+      ],
+      "sourceHash": "211afca059627f39b326189306ebcf5a8dbd52883cbc11acc6e5fa9db74b9fc7"
+    },
+    {
       "id": "feature:activities.ActivitiesScreen",
       "name": "ActivitiesScreen",
       "owner": "feature:activities",
@@ -684,7 +738,7 @@
       "usedBy": [
         "app/activities/page.tsx"
       ],
-      "sourceHash": "d6c9bf11d9a6a492b058795cd3bd7833c7762d5ed084745c44b38225f677ad0a"
+      "sourceHash": "e872d05ef1e099eb9b1fc26820e8199b953348a0f1de54d533042af21a877484"
     },
     {
       "id": "feature:activities.ActivityBadge",
@@ -726,7 +780,7 @@
       "usedBy": [
         "app/activities/[id]/page.tsx"
       ],
-      "sourceHash": "716a2919786b09e428c9601e59a5e3d2a7fb6ef09c83123747c0af1b09c98d02"
+      "sourceHash": "a1913e196d2299d28039bd95a6699c239823a7530376d580606e8ea2dc5bc58a"
     },
     {
       "id": "feature:activities.ActivityFilters",
@@ -767,7 +821,7 @@
         "features/activities/screens/ActivitiesIdEditScreen.tsx",
         "features/activities/screens/ActivitiesNewScreen.tsx"
       ],
-      "sourceHash": "151a4bba0079d11853d98540d480b0b0cdf514709af824cb4e35169a16c7eab8"
+      "sourceHash": "4b80e3e15e2a40bef66aee207472dd11065c1cd027e169d9d3e77d69a59520c6"
     },
     {
       "id": "feature:activities.ActivityTable",
@@ -787,7 +841,7 @@
       "usedBy": [
         "features/activities/screens/ActivitiesScreen.tsx"
       ],
-      "sourceHash": "93e4bc67ad013dad088f6d3a1ce9bee28702bfda11f4361253077625cdc21313"
+      "sourceHash": "a8c1525d6e6444679294607482d85d5eb2bc8501665731c5b3b17cbbeb4f6f03"
     },
     {
       "id": "feature:activities.EditActivityPage",
@@ -807,7 +861,7 @@
       "usedBy": [
         "app/activities/[id]/edit/page.tsx"
       ],
-      "sourceHash": "97f3350c80b71eb367971accfed5b639ef85f76ddff8ea9cc0c6be1c0a7b2432"
+      "sourceHash": "7f1485d79daf61702e2dfcc0933751afaa94b43b4746fd772f22dedfc36578de"
     },
     {
       "id": "feature:activities.NewActivityPage",
@@ -847,7 +901,7 @@
       "usedBy": [
         "app/login/page.tsx"
       ],
-      "sourceHash": "730137869e72292ffce11da763fe65951f6043f4f6c38f19485842581ebf7c68"
+      "sourceHash": "21f16069167474f6fdd199fc992e4071122b71d1e58896156be7968222d800da"
     },
     {
       "id": "feature:auth.SignupPage",
@@ -867,7 +921,7 @@
       "usedBy": [
         "app/signup/page.tsx"
       ],
-      "sourceHash": "3efe400126f9e68cf5c46797d45869eb61f22335efb822c8e6c0e88c1511d939"
+      "sourceHash": "36bac387cc28574032ae5fa5af75b93c5a8fd7aa04fc6494178063ce87dc5210"
     },
     {
       "id": "feature:community.FeedCard",
@@ -907,7 +961,7 @@
       "usedBy": [
         "app/feed/page.tsx"
       ],
-      "sourceHash": "4a8cb541e4f4059b231871f96166084ba150cf9cb0094f09e8f0ba245d582720"
+      "sourceHash": "948af288a31a58be83ad6e81f54a84065aff20efa8a65abc1a9438f52bbfddeb"
     },
     {
       "id": "feature:community.HomePage",
@@ -925,9 +979,9 @@
       "description": "Feature-owned composition; contract review required before redesign.",
       "review": "source inventory; visual review pending",
       "usedBy": [
-        "app/page.tsx"
+        "app/community/page.tsx"
       ],
-      "sourceHash": "9d2c4beaecc9a1aa62e05512e41048a2418881b52e3439239157c76c90ad5f59"
+      "sourceHash": "edcd5828db98d718dd7a649b7a0a84197939e4865ddfb749c3fb511cc54d3512"
     },
     {
       "id": "feature:design-system.DesignSystemScreen",
@@ -947,7 +1001,7 @@
       "usedBy": [
         "app/design-system/page.tsx"
       ],
-      "sourceHash": "caa5eed324faacccdf31b663c4b4d2696a2c5db698eb0bda718ff28bc6dceb1f"
+      "sourceHash": "a2e608b9e89aedc36b115db987d08e34b4bc520cd02dccb25496547f7ec7de94"
     },
     {
       "id": "feature:leaderboards.LeaderboardCard",
@@ -990,6 +1044,66 @@
       "sourceHash": "e6279d3cd8196b08d24b6619934bdebdc3a4eda61bb282869efe18367e81f9ae"
     },
     {
+      "id": "feature:marketing.ContributionLandscape",
+      "name": "ContributionLandscape",
+      "owner": "feature:marketing",
+      "file": "features/marketing/components/ContributionLandscape.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/marketing/screens/PublicHomeScreen.tsx"
+      ],
+      "sourceHash": "57f9497656edd107a9d320d867b7b5d5c698cf848626e7882ea13627d769695b"
+    },
+    {
+      "id": "feature:marketing.PublicHomeScreen",
+      "name": "PublicHomeScreen",
+      "owner": "feature:marketing",
+      "file": "features/marketing/screens/PublicHomeScreen.tsx",
+      "revision": 1,
+      "kind": "screen",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "app/page.tsx"
+      ],
+      "sourceHash": "a2aff74d568679426ce694b21cd0354f2b6ca08b1bfc20f2a974bca97d1205bd"
+    },
+    {
+      "id": "feature:marketing.WorkspacePreview",
+      "name": "WorkspacePreview",
+      "owner": "feature:marketing",
+      "file": "features/marketing/components/WorkspacePreview.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/marketing/screens/PublicHomeScreen.tsx"
+      ],
+      "sourceHash": "9cad3f48019fd38c956d95112e7c6afa86c4b8447ab8ecfaf812bc60b5457e69"
+    },
+    {
       "id": "feature:notifications.NotificationsPage",
       "name": "NotificationsPage",
       "owner": "feature:notifications",
@@ -1007,7 +1121,7 @@
       "usedBy": [
         "app/notifications/page.tsx"
       ],
-      "sourceHash": "336a3f8fdd23b8531276b883acfb52eab7fe9e035ed37edd6ceb0db04198d9df"
+      "sourceHash": "a8df7574bf34eb918b0a91e9000116d72d6c2124c9d91b1d57ea27c787cc2580"
     },
     {
       "id": "feature:organizations.ContributorsTab",
@@ -1150,7 +1264,7 @@
       "usedBy": [
         "app/explore/organizations/page.tsx"
       ],
-      "sourceHash": "274dca47ae0d1d32db57a147dc63c5702f5b1abeb7f6db710c4d14ff86a50dc2"
+      "sourceHash": "22adf5d31349f8e5d0d70dcee99469f401016a891055688a44c09f5ecc30315a"
     },
     {
       "id": "feature:organizations.ExplorePage",
@@ -1211,7 +1325,7 @@
       "usedBy": [
         "app/explore/organizations/[slug]/page.tsx"
       ],
-      "sourceHash": "2346315ecaa28e287a275a8913040218eadfa87fc2c5fcf4d560c8895d5e8211"
+      "sourceHash": "907758dc7f5eb39eb487504cd76b5451b237b412564c8fb3b09d40d68cbdb925"
     },
     {
       "id": "feature:organizations.OrganizationFilters",
@@ -1231,7 +1345,7 @@
       "usedBy": [
         "features/organizations/screens/ExploreOrganizationsScreen.tsx"
       ],
-      "sourceHash": "45644c856bb06f91f72f3bad24f8ff9dde972612b57065ec6a610e627772a29d"
+      "sourceHash": "7423cde2291319317213cca4edc0d49c12acb6b660a47737d1d32d8a7ea72f73"
     },
     {
       "id": "feature:organizations.OrganizationsPage",
@@ -1291,7 +1405,7 @@
       "usedBy": [
         "features/organizations/screens/ExploreOrganizationsSlugScreen.tsx"
       ],
-      "sourceHash": "680add4aa547623fcbd7a4c78a889c86b7ec5bc546d3f1b0eeb5ae6f26a0faad"
+      "sourceHash": "98b3144ee45c80872e673198e9aa374a800d9399fdad6ba6a22282c57a5eb647"
     },
     {
       "id": "feature:organizations.RepositoriesTab",
@@ -1333,7 +1447,7 @@
         "features/organizations/index.ts",
         "features/organizations/screens/ExploreOrganizationsSlugScreen.tsx"
       ],
-      "sourceHash": "4f664d44d598722d2c7b7c40b16134165456f52bd9525a4676aec318bb1d3de2"
+      "sourceHash": "24262566fda576847d52dd22d248f8cf21ae5000c14611aacbbedb0aaf7125fa"
     },
     {
       "id": "feature:overview.AnalyticsPage",
@@ -1356,6 +1470,26 @@
       "sourceHash": "0d2b8f68ef2cdfd49e20454f2ab0c8619a885a4a553c96b1ea31d786351d019b"
     },
     {
+      "id": "feature:overview.AttentionQueue",
+      "name": "AttentionQueue",
+      "owner": "feature:overview",
+      "file": "features/overview/components/AttentionQueue.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/overview/screens/DashboardScreen.tsx"
+      ],
+      "sourceHash": "886fea703243f66a57a26ed6778d313567c40b2fccec00c1210a741b088b2c5b"
+    },
+    {
       "id": "feature:overview.DashboardPage",
       "name": "DashboardPage",
       "owner": "feature:overview",
@@ -1373,7 +1507,7 @@
       "usedBy": [
         "app/dashboard/page.tsx"
       ],
-      "sourceHash": "54b04fc96825e0c3071e1bd153dfe0889b137d8d20db5f246933fcc14b544a35"
+      "sourceHash": "d7dff9a4c47333f6aa3a743b789eb0efb863da9855aaaadf75ffea0fb78c531c"
     },
     {
       "id": "feature:overview.GoalPanel",
@@ -1391,9 +1525,10 @@
       "description": "Feature-owned composition; contract review required before redesign.",
       "review": "source inventory; visual review pending",
       "usedBy": [
-        "features/overview/screens/DashboardScreen.tsx"
+        "features/overview/screens/DashboardScreen.tsx",
+        "features/overview/screens/GoalsScreen.tsx"
       ],
-      "sourceHash": "4c60d330e41791a619d377baa83f76a4ebb8a74bcff044c73a90f86d88549189"
+      "sourceHash": "14450dfb3dbca6d61a4bacefd118f6d0f9caa035555d0cdc3eef1fa7821cb17a"
     },
     {
       "id": "feature:overview.GoalsPage",
@@ -1413,7 +1548,7 @@
       "usedBy": [
         "app/goals/page.tsx"
       ],
-      "sourceHash": "f424fc6252903db47dbc0ebefd98e320bc1ad2c4c972186f5c98ea1e064878e1"
+      "sourceHash": "36bbc8ecc034341154c4800922831a5b605c4d2ed66cde886a205fd90d00d827"
     },
     {
       "id": "feature:overview.NextContribution",
@@ -1548,7 +1683,7 @@
       "usedBy": [
         "app/pins/new/page.tsx"
       ],
-      "sourceHash": "52704f14f9f159a6e16e1d3322b877b9c8f535636e420a15801bdab2fa36fff3"
+      "sourceHash": "e6e96581d4ca9e900368b83a13488f093511e700072529686577fb390fac326d"
     },
     {
       "id": "feature:pins.PinCard",
@@ -1588,7 +1723,7 @@
       "usedBy": [
         "app/pins/[id]/page.tsx"
       ],
-      "sourceHash": "6a0cce870eb58001802fd2e3705991ca177114472799d9cbb9f4331896f0725c"
+      "sourceHash": "08c5b6a6532308c5d2e25784b4680e8247aa83a20c271b4b614d29876bc3101a"
     },
     {
       "id": "feature:pins.PinFilters",
@@ -1608,7 +1743,7 @@
       "usedBy": [
         "features/pins/screens/PinsScreen.tsx"
       ],
-      "sourceHash": "2652f24cd8dfabaae90196f5237f9fafa315e7e8731bcb97b1059ad6f37fcd34"
+      "sourceHash": "5270ba63e84ef984983fa71e735eb8b275a2ef0abd5d08d4469eb6e591dd818e"
     },
     {
       "id": "feature:pins.PinForm",
@@ -1629,7 +1764,7 @@
         "features/pins/screens/PinsIdEditScreen.tsx",
         "features/pins/screens/PinsNewScreen.tsx"
       ],
-      "sourceHash": "7a9ce9675c23c4c3be3cc30315070e93baf4b7830ef69ea0804979f576dbd3c3"
+      "sourceHash": "2b8a2eb8b1cfaff3309e18cc233af38f960ed1c56f11897a4b2918dc646cfd6e"
     },
     {
       "id": "feature:pins.PinGrid",
@@ -1669,7 +1804,27 @@
       "usedBy": [
         "app/pins/page.tsx"
       ],
-      "sourceHash": "d2779e36b27b07ef9cc4495cb43dbe7f4350af3c1c570bbe65f13cba427d1186"
+      "sourceHash": "c04012966cfbc1019da6f96dcf9aa9f5258d5e835f57a8a4ab4ae9397e98a028"
+    },
+    {
+      "id": "feature:pins.PinTable",
+      "name": "PinTable",
+      "owner": "feature:pins",
+      "file": "features/pins/components/PinTable.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/pins/screens/PinsScreen.tsx"
+      ],
+      "sourceHash": "c0cdf9f9b444874cf12fae166f375f433cbb4fb72f847a63d8fb93064d667b17"
     },
     {
       "id": "feature:profile.ChangePasswordPage",
@@ -1689,7 +1844,7 @@
       "usedBy": [
         "app/profile/change-password/page.tsx"
       ],
-      "sourceHash": "ba7797ffdae40b90c9cf7b9d3f26c1f63b8da45e6d657e13c45ea8c91bb6a1cd"
+      "sourceHash": "5310e538046745314dcf87e43ed6274307505fea5de143317543b43a14824840"
     },
     {
       "id": "feature:profile.EditProfilePage",
@@ -1709,7 +1864,7 @@
       "usedBy": [
         "app/profile/edit/page.tsx"
       ],
-      "sourceHash": "33eaf51d41925e02bcfe41d8438b94d01b5782c104a80c83da53d0063e05f75a"
+      "sourceHash": "d0423423469a8827c019eef22b557b18a47815835075f0b6c74e3178448df5f6"
     },
     {
       "id": "feature:profile.FollowersPage",
@@ -1729,7 +1884,7 @@
       "usedBy": [
         "app/profile/[username]/followers/page.tsx"
       ],
-      "sourceHash": "7aa53e20902a04c789ff94b97c6b12d4c6479ced4531ef2418066102c4292b16"
+      "sourceHash": "73293c593af6a9ecf0f33a2f8dfc87c997215d492ee162545c4e5bea8129329a"
     },
     {
       "id": "feature:profile.FollowingPage",
@@ -1749,7 +1904,28 @@
       "usedBy": [
         "app/profile/[username]/following/page.tsx"
       ],
-      "sourceHash": "e85dcf5179d075e5a4e4cabb6d51f1e04a5a24e50108bc933cb4cf3f862680c2"
+      "sourceHash": "321bc6189099083c89534764d7d42efa400b0eb620ebbb5a986cfa414823fe2d"
+    },
+    {
+      "id": "feature:profile.FollowList",
+      "name": "FollowList",
+      "owner": "feature:profile",
+      "file": "features/profile/components/FollowList.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/profile/screens/ProfileUsernameFollowersScreen.tsx",
+        "features/profile/screens/ProfileUsernameFollowingScreen.tsx"
+      ],
+      "sourceHash": "bf50fb05e959a66160faf40869dfa9486280918a837af93f78eb7cf53a3c1176"
     },
     {
       "id": "feature:profile.ProfileDashboardPage",
@@ -1769,7 +1945,7 @@
       "usedBy": [
         "app/profiles/[id]/page.tsx"
       ],
-      "sourceHash": "2da4cfe7ba7eabe4a5c403e5091f8296638515a183314ce8daa2e85e706957e5"
+      "sourceHash": "ac287a066606de5bdb86def520c34b81c9298a5e782e34fc84665fc76f26e8a6"
     },
     {
       "id": "feature:profile.ProfileRedirectPage",
@@ -1809,7 +1985,27 @@
       "usedBy": [
         "app/profiles/page.tsx"
       ],
-      "sourceHash": "a20c8691ea744bc6681f3958d84d0977e88cdfb7174f99276353bb39be43235b"
+      "sourceHash": "e89285178cd8871971a4c9a1536ba803b7c9a6985036e135af617984abb25f83"
+    },
+    {
+      "id": "feature:profile.ProfileWorkspace",
+      "name": "ProfileWorkspace",
+      "owner": "feature:profile",
+      "file": "features/profile/components/ProfileWorkspace.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/profile/screens/ProfileUsernameScreen.tsx"
+      ],
+      "sourceHash": "ed6f7600655561aae3f628defba8a67051753d544951e859ade489c52767c869"
     },
     {
       "id": "feature:profile.PublicProfilePage",
@@ -1829,7 +2025,7 @@
       "usedBy": [
         "app/profile/[username]/page.tsx"
       ],
-      "sourceHash": "303baabf66941d1a2057ce451c6260bc3e80bb01b1bc3c95171ccc4e209b72b3"
+      "sourceHash": "b4791de7ba7c6abddfcfc68206dcdaa9f37380b511d5a9789db26faaf4d741de"
     },
     {
       "id": "feature:quests.NewQuestPage",
@@ -2070,7 +2266,7 @@
       "usedBy": [
         "features/settings/screens/SettingsScreen.tsx"
       ],
-      "sourceHash": "ccbc1f8e3694a1700b0c7085d0261a2c0b6bbbf753d26eccdff557af6c30c904"
+      "sourceHash": "0ba48ae9a57adc6ba1538225762099a51b3ac3824dd98ec550ce3c451f32c585"
     },
     {
       "id": "feature:settings.SettingsPage",
@@ -2090,7 +2286,7 @@
       "usedBy": [
         "app/settings/page.tsx"
       ],
-      "sourceHash": "53437eb97cdf56c446e93c9bd6280e0044cb31d3ce09653b86acac439d24b890"
+      "sourceHash": "f69f354fca125ccced1590233fb2a802a086a15649b2a8e4bb876882eb2766b4"
     },
     {
       "id": "feature:system.BadgesPage",
@@ -2213,7 +2409,7 @@
       "usedBy": [
         "app/schedule/new/page.tsx"
       ],
-      "sourceHash": "f5b08d3eef3d34c79b361f1d1010e42fd8ee8105b44e04696927baf5d5ceb959"
+      "sourceHash": "fdf38516689b168727d97ca38b16e2f6ed32232a3f46871a43d49c272bdc4191"
     },
     {
       "id": "feature:work.PriorityBadge",
@@ -2232,9 +2428,7 @@
       "review": "source inventory; visual review pending",
       "usedBy": [
         "features/work/components/ScheduledWorkCard.tsx",
-        "features/work/components/ScheduledWorkTable.tsx",
-        "features/work/components/UpcomingWork.tsx",
-        "features/work/screens/ScheduleIdScreen.tsx"
+        "features/work/components/UpcomingWork.tsx"
       ],
       "sourceHash": "7a30181e235f9743ce01d947ecdbcea8c7454a03f4837d5327e24bbd341e131a"
     },
@@ -2256,7 +2450,7 @@
       "usedBy": [
         "features/work/screens/ScheduleScreen.tsx"
       ],
-      "sourceHash": "256fff9e081f4a7559e8dff280ad096dd2a98bac0969023ec41b2c3f6a9c8f47"
+      "sourceHash": "94301fba3363677d410f88270dedda011191a09320416276695415addc0470d3"
     },
     {
       "id": "feature:work.ScheduledWorkCard",
@@ -2276,7 +2470,7 @@
       "usedBy": [
         "features/work/components/ScheduledWorkBoard.tsx"
       ],
-      "sourceHash": "f4a4664562a17ea3e5aa5e8210c7a03ce12ab7ef55422b3e889dde1a5846d2bd"
+      "sourceHash": "8b8e98d48de2f40975a9e31d4f6d2d219e9dbe969c16c993fec74f271dfacf05"
     },
     {
       "id": "feature:work.ScheduledWorkDetailPage",
@@ -2296,7 +2490,7 @@
       "usedBy": [
         "app/schedule/[id]/page.tsx"
       ],
-      "sourceHash": "f8a837cdbd8f84f47ba551ca923ced2480a140659ac248b5b113650e4053710d"
+      "sourceHash": "d36c1a70962bc709fa54bbca6324d28f5a7c0a1a737e719479fadfa0121767ce"
     },
     {
       "id": "feature:work.ScheduledWorkFilters",
@@ -2316,7 +2510,7 @@
       "usedBy": [
         "features/work/screens/ScheduleScreen.tsx"
       ],
-      "sourceHash": "9803ae65ba25b7add35a10306f25a2fd6edaebd29a6a8ca2204de9bc47e12913"
+      "sourceHash": "4c5e5dc2a7cd8cb6023d4a197a77a35a54a5b0396423bfe64ed7b247fa1ba93f"
     },
     {
       "id": "feature:work.ScheduledWorkForm",
@@ -2337,7 +2531,7 @@
         "features/work/screens/ScheduleIdEditScreen.tsx",
         "features/work/screens/ScheduleNewScreen.tsx"
       ],
-      "sourceHash": "8df6fd0e92730508bd0eb51696297e18113f09e9a44684f8472a06bed0dbcd1d"
+      "sourceHash": "b087863e415ad21e75dd7179238db5daa9d4f770bd8920c84636033d4f4d8cd9"
     },
     {
       "id": "feature:work.ScheduledWorkTable",
@@ -2357,7 +2551,7 @@
       "usedBy": [
         "features/work/screens/ScheduleScreen.tsx"
       ],
-      "sourceHash": "aaaca2be05900aa45d6bdab59fae806723ecf1c27bb1dca70c0a9936bea37eb9"
+      "sourceHash": "1f182ed733dd4dd477b054b004627a8a80d7ff3aa4b5c7aeffc5191c9438a251"
     },
     {
       "id": "feature:work.SchedulePage",
@@ -2377,7 +2571,7 @@
       "usedBy": [
         "app/schedule/page.tsx"
       ],
-      "sourceHash": "76f9009c2269cd1cc6fead1707a26e67018af089b23133a8d5c509c23587fb15"
+      "sourceHash": "ae010eb0c4392ee3a20e9f73b3476b35f81962a8dcb59fbf75ce96d0b8b097eb"
     },
     {
       "id": "feature:work.UpcomingWork",
@@ -2453,7 +2647,7 @@
       "description": "Feature-owned composition; contract review required before redesign.",
       "review": "source inventory; visual review pending",
       "usedBy": [
-        "features/profile/screens/ProfileUsernameScreen.tsx",
+        "features/profile/components/ProfileWorkspace.tsx",
         "features/profile/screens/ProfilesIdScreen.tsx"
       ],
       "sourceHash": "3e0ff8197baa2ddc5af767f4845228090065fe780b1a29c3464b3d76ec6b518e"
@@ -2588,7 +2782,7 @@
       "usedBy": [
         "app/layout.tsx"
       ],
-      "sourceHash": "c3064325c7430befe9ceb91f08e8901c4e61fca3cdd0ba128235a022c99c4500"
+      "sourceHash": "47a5ef1fd019cb4c6bdca81cf6f8a8c8f8759f5d2a5d13c9ccd9779e1c456009"
     },
     {
       "id": "shell.Navigation",
@@ -2628,7 +2822,27 @@
       "usedBy": [
         "shell/Topbar.tsx"
       ],
-      "sourceHash": "c38a2964f3b6f6c040c9e899f421eff987e409ca5fd2d51bcce7481125b7d4fe"
+      "sourceHash": "a8a39eef997522c8ca2d4648cdc4ccab0eecc6474c8688065261517b92379ae6"
+    },
+    {
+      "id": "shell.SessionRecovery",
+      "name": "SessionRecovery",
+      "owner": "shell",
+      "file": "shell/SessionRecovery.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "shell/AppShell.tsx"
+      ],
+      "sourceHash": "f35baa59165efbade68073bf5b26dd135664838362ad3bb4477b9822ec0d64f0"
     },
     {
       "id": "shell.Sidebar",
@@ -2706,18 +2920,16 @@
       "description": "Feature-owned composition; contract review required before redesign.",
       "review": "source inventory; visual review pending",
       "usedBy": [
-        "app/layout.tsx",
         "features/activities/components/ActivityForm.tsx",
         "features/activities/components/ActivityTable.tsx",
-        "features/activities/screens/ActivitiesIdEditScreen.tsx",
-        "features/activities/screens/ActivitiesIdScreen.tsx",
         "features/activities/screens/ActivitiesScreen.tsx",
         "features/organizations/screens/OrgsOrgnameScreen.tsx",
         "features/overview/screens/DashboardScreen.tsx",
         "features/repositories/screens/ReposOrgRepoScreen.tsx",
+        "shell/AppShell.tsx",
         "shell/hooks/useRealtimeEvents.ts"
       ],
-      "sourceHash": "a6b7b38242b57f843e020ee7597a93324b031ffb5aa421fcca98e0c5e531a324"
+      "sourceHash": "686a8e5031cf9b790d5ec865c0874102663ed05782dc59980917cef2d41b24a3"
     },
     {
       "id": "state.AuthProvider",
@@ -2749,7 +2961,7 @@
         "shell/Topbar.tsx",
         "state/activities.tsx"
       ],
-      "sourceHash": "0fa30be77ec7ceed80d090d03f938ed8a5cbd5db7f36bd43b1c480720cea5245"
+      "sourceHash": "9fac7429c9c66a0ee72fbc27ea37ef032cc9293d2107bb955b8af6717ac14c64"
     }
   ],
   "routes": [
@@ -2792,6 +3004,11 @@
       "route": "/coming-soon",
       "entry": "app/coming-soon/page.tsx",
       "screen": "features/system/screens/ComingSoonScreen.tsx"
+    },
+    {
+      "route": "/community",
+      "entry": "app/community/page.tsx",
+      "screen": "features/community/screens/HomeScreen.tsx"
     },
     {
       "route": "/dashboard",
@@ -2886,7 +3103,7 @@
     {
       "route": "/",
       "entry": "app/page.tsx",
-      "screen": "features/community/screens/HomeScreen.tsx"
+      "screen": "features/marketing/screens/PublicHomeScreen.tsx"
     },
     {
       "route": "/pins/[id]/edit",

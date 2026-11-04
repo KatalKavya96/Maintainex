@@ -27,7 +27,7 @@ function OrganizationCatalogue() {
   const [data, setData] = useState<ExploreOrganizationsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [view, setView] = useState<"grid" | "list">("grid");
+  const [view, setView] = useState<"grid" | "list">("list");
   const [revision, setRevision] = useState(0);
   const filterLabels = { program: "Program", year: "Year", techStack: "Technology", category: "Category", beginnerFriendly: "Beginner rating" };
   const selected = Object.entries(filterLabels).filter(([key]) => filters[key as keyof OrganizationFilterState]);

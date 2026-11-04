@@ -9,8 +9,8 @@ export function ScheduledWorkBoard({ items, loading, error, onChanged, onDelete 
   if (error) return <div className="rounded-xl border border-danger bg-skyglass p-8 text-sm font-semibold text-danger">{error}</div>;
   if (!items.length) return <div className="rounded-xl border border-line bg-panel p-8 text-center text-sm text-muted shadow-soft">No scheduled work yet.</div>;
   return (
-    <div className="grid gap-4 xl:grid-cols-3 2xl:grid-cols-6">
-      {scheduledWorkStatuses.map((status) => {
+    <div className="grid gap-4 xl:grid-cols-3">
+      {scheduledWorkStatuses.filter(status => ["PLANNED", "IN_PROGRESS", "BLOCKED"].includes(status) || items.some(item => item.status === status)).map((status) => {
         const columnItems = items.filter((item) => item.status === status);
         return (
           <section key={status} className="rounded-xl border border-line bg-skyglass p-3">

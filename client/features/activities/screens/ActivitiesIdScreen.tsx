@@ -6,12 +6,13 @@ import { ActivityBadge } from "@/features/activities/components/ActivityBadge";
 import { Button } from "@/design-system/patterns/Button";
 import { labelize } from "@/shared/lib/constants";
 import { formatDate } from "@/shared/lib/dateUtils";
-import { useActivityStore } from "@/state/activities";
+import { AsyncState } from "@/design-system";
+import { useActivityRecord } from "../hooks/useActivityRecord";
 
 export default function ActivityDetailsPage() {
   const params = useParams<{ id: string }>();
-  const { activities } = useActivityStore();
-  const activity = activities.find((item) => item.id === params.id);
+  const { activity, loading, error, retry } = useActivityRecord(params.id);
+  if (loading || error) return <AsyncState state={loading ? "loading" : "error"} onRetry={retry} />;
 
   if (!activity) {
     return (

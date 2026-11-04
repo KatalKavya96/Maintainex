@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { activityTypes, closingReasons, labelize, reviewTypes, statuses } from "@/shared/lib/constants";
 import { Button } from "@/design-system/patterns/Button";
@@ -15,6 +15,9 @@ export function ActivityForm({ activity }: { activity?: Activity }) {
   const router = useRouter();
   const { addActivity, updateActivity } = useActivityStore();
   const formRef = useRef<HTMLFormElement>(null);
+  const savingRef = useRef(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
   async function save(formElement: HTMLFormElement) {
     const form = new FormData(formElement);
@@ -51,11 +54,18 @@ export function ActivityForm({ activity }: { activity?: Activity }) {
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    void save(event.currentTarget);
+    if (savingRef.current) return;
+    savingRef.current = true;
+    setSaving(true);
+    setError("");
+    void save(event.currentTarget)
+      .catch(reason => setError(reason instanceof Error ? reason.message : "Unable to save activity. Your draft is still here."))
+      .finally(() => { savingRef.current = false; setSaving(false); });
   }
 
   return (
     <form ref={formRef} onSubmit={onSubmit} className="space-y-6 rounded-xl border border-line bg-panel p-5 shadow-soft">
+      {error ? <p role="alert" className="text-sm text-danger">{error}</p> : null}
       <section>
         <h3 className="mb-4 text-base font-bold">Basic Info</h3>
         <div className="grid gap-4 md:grid-cols-2">
@@ -147,8 +157,8 @@ export function ActivityForm({ activity }: { activity?: Activity }) {
         <Button href="/activities" variant="secondary">
           Cancel
         </Button>
-        <Button type="button" onClick={() => formRef.current?.requestSubmit()}>
-          {activity ? "Update activity" : "Create activity"}
+        <Button type="submit" disabled={saving}>
+          {saving ? "Saving…" : activity ? "Update activity" : "Create activity"}
         </Button>
       </div>
     </form>

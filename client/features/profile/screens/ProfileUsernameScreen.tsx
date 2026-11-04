@@ -2,10 +2,8 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Award, BadgeCheck, Code2, ExternalLink, Github, Linkedin, Loader2, Mail, Send, ShieldAlert, Trash2, Users } from "lucide-react";
-import { ActivityBadge } from "@/features/activities";
-import { ActivityHeatmap } from "@/shared/calendar/ActivityHeatmap";
 import { Button } from "@/design-system/patterns/Button";
 import { Input } from "@/design-system/patterns/FormControls";
 import { getBadges, followUser, unfollowUser } from "@/data/api/social";
@@ -13,6 +11,7 @@ import { getProfileByUsername, resetWorkspaceData, sendEmailVerificationOtp, ver
 import { formatDate } from "@/shared/lib/dateUtils";
 import { useAuthStore } from "@/state/auth";
 import type { ProfileDashboard } from "@/types/profile";
+import { ProfileWorkspace } from "../components/ProfileWorkspace";
 import type { Badge } from "@/types/social";
 
 export default function PublicProfilePage() {
@@ -47,7 +46,6 @@ export default function PublicProfilePage() {
     loadProfile();
   }, [params.username]);
 
-  const activities = useMemo(() => profile?.activities ?? [], [profile]);
   const mainOrganizations = Array.isArray(profile?.user.mainOrganizations) ? profile.user.mainOrganizations : [];
   const earnedBadges = badges.filter((badge) => badge.earned);
   const visibleBadges = showAllBadges ? badges : (earnedBadges.length ? earnedBadges : badges).slice(0, 5);
@@ -105,7 +103,7 @@ export default function PublicProfilePage() {
       updateUser({ emailVerifiedAt: data.user.emailVerifiedAt });
       setOtpCode("");
       setVerifyOpen(false);
-      setVerifyMessage("Email verified. Your profile tick is live.");
+      setVerifyMessage("Email address verified.");
     } catch (err) {
       setVerifyMessage(err instanceof Error ? err.message : "Verification failed.");
     } finally {
@@ -117,22 +115,9 @@ export default function PublicProfilePage() {
   if (error || !profile) return <div className="rounded-xl border border-danger bg-skyglass p-8 text-sm font-semibold text-danger">{error || "Profile not found"}</div>;
 
   const isOwnProfile = user?.id === profile.user.id;
-  const repositories = new Set(activities.map((activity) => `${activity.organizationName}/${activity.repositoryName}`));
-  const totalContributions = activities.length;
 
   return (
     <div className="max-w-full space-y-4 overflow-hidden">
-      <div className="border-b border-line">
-        <div className="flex gap-5 overflow-x-auto text-sm font-semibold text-muted">
-          <span className="shrink-0 border-b-2 border-moss px-1 pb-3 text-ink">Overview</span>
-          {["Activity", "Pins", "Schedule"].map((item) => (
-            <Link key={item} href={`/coming-soon?feature=${encodeURIComponent(`Profile ${item}`)}`} className="shrink-0 border-b-2 border-transparent px-1 pb-3 transition hover:border-line hover:text-ink">
-              {item}
-            </Link>
-          ))}
-        </div>
-      </div>
-
       <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(220px,260px)_minmax(0,1fr)]">
         <aside className="min-w-0 space-y-3">
           <section className="rounded-xl border border-line bg-panel p-3 shadow-soft sm:p-4">
@@ -144,11 +129,11 @@ export default function PublicProfilePage() {
             <div className="mt-3 min-w-0 text-center xl:text-left">
               <h1 className="flex min-w-0 items-center justify-center gap-1.5 truncate text-xl font-semibold text-ink xl:justify-start">
                 <span className="truncate">{profile.user.name}</span>
-                {profile.user.emailVerifiedAt ? <BadgeCheck size={19} className="shrink-0 text-moss" aria-label="Verified profile" /> : null}
+                {profile.user.emailVerifiedAt ? <BadgeCheck size={19} className="shrink-0 text-moss" aria-label="Email address verified" /> : null}
               </h1>
               <p className="flex min-w-0 items-center justify-center gap-1.5 truncate text-sm font-semibold text-muted xl:justify-start">
                 <span className="truncate">@{profile.user.username}</span>
-                {profile.user.emailVerifiedAt ? <span className="rounded-full bg-moss/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-moss">Verified</span> : null}
+                {profile.user.emailVerifiedAt ? <span className="rounded-full bg-moss/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-moss">Email verified</span> : null}
               </p>
               <p className="mt-2 text-sm font-semibold leading-5 text-muted">{profile.user.bio || "No bio added yet."}</p>
             </div>
@@ -174,7 +159,7 @@ export default function PublicProfilePage() {
             </div>
 
             <div className="mt-3 min-w-0 space-y-2 border-t border-line pt-3 text-sm font-semibold text-muted">
-              <p className="flex min-w-0 items-center gap-2"><Mail size={15} className="shrink-0" /> <span className="truncate">{profile.user.email}</span></p>
+              {profile.user.email ? <p className="flex min-w-0 items-center gap-2"><Mail size={15} className="shrink-0" /> <span className="truncate">{profile.user.email}</span></p> : null}
               {profile.user.githubUrl ? <a className="flex items-center gap-2 hover:text-moss" href={profile.user.githubUrl} target="_blank" rel="noreferrer"><Github size={15} /> GitHub</a> : null}
               {profile.user.linkedinUrl ? <a className="flex items-center gap-2 hover:text-moss" href={profile.user.linkedinUrl} target="_blank" rel="noreferrer"><Linkedin size={15} /> LinkedIn</a> : null}
               {profile.user.xUrl ? <a className="flex items-center gap-2 hover:text-moss" href={profile.user.xUrl} target="_blank" rel="noreferrer"><span className="text-sm font-semibold">X</span> X</a> : null}
@@ -185,8 +170,8 @@ export default function PublicProfilePage() {
 
             {isOwnProfile && !profile.user.emailVerifiedAt ? (
               <div className="mt-3 rounded-lg border border-line bg-skyglass p-3">
-                <p className="text-sm font-semibold text-ink">Verify profile</p>
-                <p className="mt-1 text-xs font-semibold leading-5 text-muted">Get the green tick by verifying the email on your profile.</p>
+                <p className="text-sm font-semibold text-ink">Verify email</p>
+                <p className="mt-1 text-xs font-semibold leading-5 text-muted">Confirm that you can receive mail at your account address.</p>
                 <Button type="button" variant="secondary" className="mt-3 w-full" onClick={sendVerificationCode} disabled={Boolean(verifyWorking)}>
                   {verifyWorking === "send" ? <Loader2 className="animate-spin" size={15} /> : <Mail size={15} />}
                   Send OTP
@@ -258,64 +243,7 @@ export default function PublicProfilePage() {
           ) : null}
         </aside>
 
-        <main className="min-w-0 space-y-4">
-          <section className="min-w-0 rounded-xl border border-line bg-panel p-3 shadow-soft sm:p-4">
-            <div className="mb-3 flex items-center justify-between">
-              <h2 className="font-semibold text-ink">Pinned</h2>
-              {isOwnProfile ? <Link href="/pins" className="text-xs font-bold text-moss">Customize pins</Link> : null}
-            </div>
-            <div className="grid min-w-0 gap-3 md:grid-cols-2">
-              {profile.favoritePins.slice(0, 6).map((pin) => (
-                <a key={pin.id} href={pin.url} target="_blank" rel="noreferrer" className="rounded-lg border border-line bg-skyglass p-4 transition hover:border-moss">
-                  <p className="text-sm font-semibold text-moss">{pin.title}</p>
-                  <p className="mt-2 line-clamp-2 text-sm font-semibold leading-6 text-muted">{pin.description || pin.url}</p>
-                  <p className="mt-3 text-xs font-bold uppercase tracking-wide text-muted">{pin.category.replaceAll("_", " ")}</p>
-                </a>
-              ))}
-              {!profile.favoritePins.length ? <p className="rounded-lg border border-dashed border-line bg-skyglass p-4 text-sm font-semibold text-muted md:col-span-2">No pinned resources yet.</p> : null}
-            </div>
-          </section>
-
-          <ActivityHeatmap activities={activities} ownerName={profile.user.name} />
-
-          <section className="min-w-0 rounded-xl border border-line bg-panel p-3 shadow-soft sm:p-4">
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-              <div className="min-w-0">
-                <h2 className="font-semibold text-ink">{totalContributions} contributions in the last year</h2>
-                <p className="text-sm font-semibold text-muted">Contributed to {repositories.size} repositories.</p>
-              </div>
-              <div className="flex min-w-0 flex-wrap gap-2">
-                {Array.from(repositories).slice(0, 3).map((repo) => {
-                  const [org, name] = repo.split("/");
-                  return (
-                    <Link key={repo} href={`/repos/${encodeURIComponent(org)}/${encodeURIComponent(name)}`} className="max-w-full truncate rounded-lg border border-line bg-skyglass px-3 py-1.5 text-xs font-bold text-muted hover:border-moss hover:text-ink">
-                      {repo}
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-            <div className="space-y-3">
-              {activities.slice(0, 8).map((activity) => (
-                <article key={activity.id} className="rounded-lg border border-line bg-skyglass p-3">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="truncate font-bold text-ink">{activity.title}</p>
-                      <p className="mt-1 text-sm font-semibold text-muted">
-                        <Link href={`/repos/${encodeURIComponent(activity.organizationName)}/${encodeURIComponent(activity.repositoryName)}`} className="hover:text-moss">
-                          {activity.organizationName}/{activity.repositoryName}
-                        </Link>{" "}
-                        · {formatDate(activity.date)}
-                      </p>
-                    </div>
-                    <ActivityBadge value={activity.activityType} />
-                  </div>
-                </article>
-              ))}
-              {!activities.length ? <p className="rounded-lg bg-skyglass p-5 text-sm font-semibold text-muted">No public activity yet.</p> : null}
-            </div>
-          </section>
-        </main>
+        <ProfileWorkspace profile={profile} isOwnProfile={isOwnProfile} />
       </div>
     </div>
   );

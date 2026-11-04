@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { AsyncState, EmptyState, ViewSwitcher } from "@/design-system";
+import { AttentionQueue } from "../components/AttentionQueue";
 import { useMemo, useState } from "react";
 import { ActivityLineChart, ActivityTypeChart, OrgChart, RepoChart } from "@/shared/analytics/Charts";
 import { RangeToggle } from "@/shared/analytics/RangeToggle";
@@ -14,7 +16,7 @@ import { useActivityStore } from "@/state/activities";
 import { filterActivitiesByRange, type TimeRange } from "@/shared/lib/timeRange";
 
 export default function DashboardPage() {
-  const { activities } = useActivityStore();
+  const { activities, loading, error, reload } = useActivityStore();
   const [range, setRange] = useState<TimeRange>("all");
   const [view, setView] = useState<"overview" | "repositories" | "organizations">("overview");
   const filteredActivities = useMemo(() => filterActivitiesByRange(activities, range), [activities, range]);
@@ -28,8 +30,8 @@ export default function DashboardPage() {
   return (
     <>
       <PageTitle
-        title="Dashboard"
-        description="Contribution health, goals, repositories, organizations, and activity trends."
+        title="Overview"
+        description="Your next action, contribution record, and progress in one place."
         action={
           <div className="flex min-w-0 flex-wrap gap-2">
             <RangeToggle value={range} onChange={setRange} />
@@ -38,32 +40,19 @@ export default function DashboardPage() {
         }
       />
 
+      <AttentionQueue />
       <GoalPanel />
+      <div className="mb-4 mt-8"><h2 className="text-lg font-medium">Contribution activity</h2><p className="mt-1 text-xs text-muted">Selected range · based on up to 1,000 loaded activity records</p></div>
+      <AsyncState state={loading ? "loading" : error ? "error" : "ready"} onRetry={reload}>
 
+      {!activities.length ? <EmptyState title="Your contribution record starts here" description="Record an activity to see your progress, repository breakdowns and trends." action={<Button href="/activities/new">Record activity</Button>} /> : <>
       <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3 2xl:grid-cols-6">
         {dashboardStats.map((stat) => (
           <StatCard key={stat.label} {...stat} />
         ))}
       </div>
 
-      <div className="my-4 max-w-full overflow-x-auto">
-        <div className="inline-flex rounded-xl border border-line bg-panel p-1 shadow-soft">
-          {[
-            ["overview", "Overview"],
-            ["repositories", "Repositories"],
-            ["organizations", "Organizations"]
-          ].map(([value, label]) => (
-            <button
-              key={value}
-              type="button"
-              onClick={() => setView(value as typeof view)}
-              className={`h-9 rounded-lg px-4 text-sm font-bold transition ${view === value ? "bg-moss text-on-accent" : "text-muted hover:bg-skyglass hover:text-ink"}`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <div className="my-4"><ViewSwitcher label="Contribution breakdown" value={view} onChange={setView} options={[{value:"overview",label:"Overview"},{value:"repositories",label:"Repositories"},{value:"organizations",label:"Organizations"}]} /></div>
 
       {view === "overview" ? (
         <>
@@ -118,6 +107,8 @@ export default function DashboardPage() {
           </section>
         </div>
       ) : null}
+      </>}
+      </AsyncState>
     </>
   );
 }

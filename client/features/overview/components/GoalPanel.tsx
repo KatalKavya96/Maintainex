@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { AsyncState, Feedback } from "@/design-system";
 import { Plus, Trash2 } from "lucide-react";
 import { Button } from "@/design-system/patterns/Button";
 import { Field, Input, Select } from "@/design-system/patterns/FormControls";
@@ -10,30 +11,37 @@ import type { Goal, GoalInput, GoalMetric, GoalPeriod } from "@/types/social";
 const metrics: GoalMetric[] = ["PR_REVIEWED", "PR_RAISED", "ISSUE_RAISED", "ISSUE_CLOSED", "REPO_CONTRIBUTIONS", "TOTAL_ACTIVITY", "STREAK"];
 const periods: GoalPeriod[] = ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"];
 
-export function GoalPanel() {
+export function GoalPanel({ limit = 3 }: { limit?: number | null }) {
   const [goals, setGoals] = useState<Goal[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [pending, setPending] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const [form, setForm] = useState<GoalInput>({ title: "Review 20 PRs this month", metric: "PR_REVIEWED", target: 20, period: "MONTHLY" });
+  const [form, setForm] = useState<GoalInput>({ title: "", metric: "PR_REVIEWED", target: 20, period: "MONTHLY" });
 
-  const load = () => getGoals().then(setGoals).catch(() => setGoals([]));
+  const load = () => {setLoading(true);setError("");return getGoals().then(setGoals).catch(()=>setError("Unable to load goals.")).finally(()=>setLoading(false));};
 
   useEffect(() => {
     load();
   }, []);
 
-  const activeGoals = useMemo(() => goals.slice(0, 3), [goals]);
+  const activeGoals = useMemo(() => limit === null ? goals : goals.slice(0, limit), [goals, limit]);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    await createGoal(form);
-    setForm({ ...form, title: "", target: 1 });
-    setExpanded(false);
-    load();
+    if(pending)return;
+    setPending(true);setError("");
+    try { await createGoal(form); setForm({ ...form, title: "", target: 1 }); setExpanded(false); await load(); }
+    catch(reason) {setError(reason instanceof Error ? reason.message : "Unable to save goal.");}
+    finally {setPending(false);}
   }
 
   async function remove(id: string) {
-    await deleteGoal(id);
-    load();
+    if(pending || !window.confirm("Permanently delete this goal? This cannot be undone."))return;
+    setPending(true);
+    try {await deleteGoal(id);await load();}
+    catch(reason) {setError(reason instanceof Error ? reason.message : "Unable to delete goal.");}
+    finally {setPending(false);}
   }
 
   return (
@@ -70,12 +78,13 @@ export function GoalPanel() {
             </Select>
           </Field>
           <div className="flex items-end">
-            <Button type="submit" className="w-full">Add</Button>
+            <Button type="submit" disabled={pending} className="w-full">{pending ? "Saving…" : "Add goal"}</Button>
           </div>
         </form>
       ) : null}
 
-      <div className="mt-3 grid gap-3 lg:grid-cols-3">
+      {error && goals.length > 0 && <Feedback message={error} />}
+      <AsyncState state={loading ? "loading" : error && !goals.length ? "error" : "ready"} onRetry={load}><div className="mt-3 grid gap-3 lg:grid-cols-3">
         {activeGoals.map((goal) => (
           <article key={goal.id} className="min-w-0 rounded-lg border border-line bg-skyglass p-3">
             <div className="flex items-start justify-between gap-3">
@@ -93,13 +102,13 @@ export function GoalPanel() {
                 <span>{goal.percent}%</span>
               </div>
               <div className="h-2 rounded-full bg-panel">
-                <div className="h-2 rounded-full bg-moss" style={{ width: `${goal.percent}%` }} />
+                <div className="h-2 rounded-full bg-moss" style={{ width: `${Math.max(0,Math.min(100,goal.percent))}%` }} />
               </div>
             </div>
           </article>
         ))}
         {!goals.length ? <p className="rounded-lg border border-dashed border-line bg-skyglass p-4 text-sm font-semibold text-muted lg:col-span-3">No goals yet. Add one when you want a target for the week.</p> : null}
-      </div>
+      </div></AsyncState>
     </section>
   );
 }

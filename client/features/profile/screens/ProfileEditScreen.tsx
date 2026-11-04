@@ -1,8 +1,8 @@
 "use client";
 
+import { AsyncState } from "@/design-system";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { CheckCircle2, XCircle } from "lucide-react";
 import { Button } from "@/design-system/patterns/Button";
 import { Field, Input, Textarea } from "@/design-system/patterns/FormControls";
 import { checkUsernameAvailability, getProfileByUsername, updateProfile } from "@/data/api/profile";
@@ -19,12 +19,18 @@ export default function EditProfilePage() {
   const [skillsText, setSkillsText] = useState("");
   const [orgsText, setOrgsText] = useState("");
   const [availability, setAvailability] = useState<UsernameAvailability | null>(null);
+  const [loadState, setLoadState] = useState<"loading" | "error" | "ready">("loading");
+  const [attempt, setAttempt] = useState(0);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
     if (!user?.username) return;
+    let active = true;
+    setLoadState("loading");
     getProfileByUsername(user.username).then((profile) => {
+      if (!active) return;
+      setLoadState("ready");
       setForm({
         name: profile.user.name,
         username: profile.user.username,
@@ -37,8 +43,9 @@ export default function EditProfilePage() {
       });
       setSkillsText(listToCsv(profile.user.skills));
       setOrgsText(listToCsv(profile.user.mainOrganizations));
-    }).catch(() => setMessage("Could not load profile details."));
-  }, [user?.username]);
+    }).catch(() => { if (active) setLoadState("error"); });
+    return () => { active = false; };
+  }, [user?.username, attempt]);
 
   const username = useMemo(() => form.username?.trim() ?? "", [form.username]);
 
@@ -55,6 +62,7 @@ export default function EditProfilePage() {
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (loadState !== "ready" || saving) return;
     setSaving(true);
     setMessage("");
     try {
@@ -81,18 +89,13 @@ export default function EditProfilePage() {
         <h1 className="text-2xl font-semibold text-ink">Edit profile</h1>
         <p className="mt-1 text-sm font-semibold text-muted">Update your public Maintainex identity and social links.</p>
       </div>
+      <AsyncState state={loadState} onRetry={() => setAttempt(value => value + 1)}>
       <form onSubmit={submit} className="space-y-4 rounded-xl border border-line bg-panel p-5 shadow-soft">
         <Field label="Display name">
           <Input value={form.name ?? ""} onChange={(event) => setForm({ ...form, name: event.target.value })} required />
         </Field>
-        <Field label="Username">
+        <Field label="Username" hint={availability?.message || "Username can be changed once every 30 days."} error={availability && !availableState && !availability.message.includes("current") ? availability.message : undefined}>
           <Input value={form.username ?? ""} onChange={(event) => setForm({ ...form, username: event.target.value })} required />
-          {availability ? (
-            <p className={`mt-2 flex items-center gap-2 text-xs font-bold ${availableState || availability.message.includes("current") ? "text-moss" : "text-danger"}`}>
-              {availableState || availability.message.includes("current") ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
-              {availability.message}
-            </p>
-          ) : <p className="mt-2 text-xs font-semibold text-muted">Username can be changed once every 30 days.</p>}
         </Field>
         <Field label="Bio">
           <Textarea value={form.bio ?? ""} onChange={(event) => setForm({ ...form, bio: event.target.value })} placeholder="What are you building or maintaining?" />
@@ -128,6 +131,7 @@ export default function EditProfilePage() {
           </div>
         </div>
       </form>
+      </AsyncState>
     </section>
   );
 }

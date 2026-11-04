@@ -15,7 +15,7 @@ export const beginnerOptions = [
   { label: "3 stars+", value: "3" },
   { label: "4 stars+", value: "4" }
 ];
-export const sortOptions = ["Most Relevant", "Maintainex Score", "Most Active", "Fastest Review", "Most Quests", "Highest Reputation", "Beginner Friendly"];
+export const sortOptions = ["Most Relevant", "Maintainex Score", "Most Active", "Fastest Review", "Highest Reputation", "Beginner Friendly"];
 
 export interface OrganizationFilterState {
   search: string;

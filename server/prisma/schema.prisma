@@ -124,6 +124,7 @@ model User {
   notifications         Notification[]         @relation("UserNotifications")
   sentNotifications     Notification[]         @relation("NotificationActor")
   githubIntegration     GitHubIntegration?
+  syncTombstones        SyncTombstone[]
   authAccounts          AuthAccount[]
   emailVerificationOtps EmailVerificationOtp[]
   activityReactions     ActivityReaction[]
@@ -356,6 +357,7 @@ model ScheduledWork {
   externalId       String?
   githubNodeId     String?
   syncedAt         DateTime?
+  userEditedAt     DateTime?
   createdAt        DateTime            @default(now())
   updatedAt        DateTime            @updatedAt
   user             User                @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -395,6 +397,7 @@ model Activity {
   externalId               String?
   githubNodeId             String?
   syncedAt                 DateTime?
+  userEditedAt             DateTime?
   organization             Organization?      @relation(fields: [organizationId], references: [id], onDelete: SetNull)
   repository               Repository?        @relation(fields: [repositoryId], references: [id], onDelete: SetNull)
   user                     User               @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -577,19 +580,19 @@ model Quest {
 }
 
 model UserQuest {
-  id          String    @id @default(cuid())
-  userId      String
-  questId     String
-  status      String    @default("STARTED")
-  scheduledWorkId String? @unique
-  evidenceUrl String?
-  completionNote String? @db.Text
-  completedAt DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  quest       Quest     @relation(fields: [questId], references: [id], onDelete: Cascade)
-  scheduledWork ScheduledWork? @relation(fields: [scheduledWorkId], references: [id], onDelete: SetNull)
+  id              String         @id @default(cuid())
+  userId          String
+  questId         String
+  status          String         @default("STARTED")
+  scheduledWorkId String?        @unique
+  evidenceUrl     String?
+  completionNote  String?        @db.Text
+  completedAt     DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quest           Quest          @relation(fields: [questId], references: [id], onDelete: Cascade)
+  scheduledWork   ScheduledWork? @relation(fields: [scheduledWorkId], references: [id], onDelete: SetNull)
 
   @@unique([userId, questId])
   @@index([userId])
@@ -670,6 +673,16 @@ model GitHubIntegration {
   scope                String?
   lastSyncedAt         DateTime?
   syncCursor           DateTime?
+  syncStartedAt        DateTime?
+  lastSyncError        String?
+  needsReconnect       Boolean   @default(false)
+  autoSync             Boolean   @default(true)
+  importPullRequests   Boolean   @default(true)
+  importReviews        Boolean   @default(true)
+  importIssues         Boolean   @default(true)
+  importComments       Boolean   @default(true)
+  importAssignedIssues Boolean   @default(true)
+  importRepositories   Boolean   @default(true)
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
   user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -746,4 +759,16 @@ model ActivityShare {
   @@index([activityId])
   @@index([userId])
   @@index([createdAt])
+}
+
+model SyncTombstone {
+  id         String     @id @default(cuid())
+  userId     String
+  source     DataSource
+  externalId String
+  createdAt  DateTime   @default(now())
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, source, externalId])
+  @@index([userId])
 }

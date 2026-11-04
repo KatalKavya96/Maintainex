@@ -100,6 +100,7 @@ model User {
   passwordSetAt         DateTime?
   emailVerifiedAt       DateTime?
   role                  UserRole               @default(VIEWER)
+  sessionVersion        Int                    @default(0)
   bio                   String?                @db.Text
   githubUrl             String?
   linkedinUrl           String?
@@ -771,4 +772,13 @@ model SyncTombstone {
 
   @@unique([userId, source, externalId])
   @@index([userId])
+}
+
+/// Fixed-window counters for sign-in, sign-up and viewer-session abuse; keys are hashes, never raw emails or IPs.
+model AuthThrottle {
+  key             String    @id
+  count           Int       @default(0)
+  windowStartedAt DateTime  @default(now())
+  lockedUntil     DateTime?
+  updatedAt       DateTime  @updatedAt
 }

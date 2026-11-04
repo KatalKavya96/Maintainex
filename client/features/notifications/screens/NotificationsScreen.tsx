@@ -1,30 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { AsyncState, Feedback, Button } from "@/design-system";
+import { useNotifications, canReadNotification } from "../hooks/useNotifications";
 import { Bell } from "lucide-react";
 import { PageTitle } from "@/design-system/patterns/PageTitle";
-import { getNotifications, markNotificationRead } from "@/data/api/social";
 import { formatDate } from "@/shared/lib/dateUtils";
-import type { NotificationItem } from "@/types/social";
 
 export default function NotificationsPage() {
-  const [items, setItems] = useState<NotificationItem[]>([]);
-  const load = () => getNotifications().then(setItems).catch(() => setItems([]));
-
-  useEffect(() => {
-    load();
-    window.addEventListener("maintainex-notifications-changed", load);
-    return () => window.removeEventListener("maintainex-notifications-changed", load);
-  }, []);
-
-  async function markRead(id: string) {
-    await markNotificationRead(id);
-    load();
-  }
+  const { items, loading, error, pending, load, markRead } = useNotifications();
 
   return (
     <>
       <PageTitle title="Notifications" description="Social, goal, schedule, badge, and reminder updates." />
+      {error ? <Feedback message={error} /> : null}
+      <AsyncState state={loading ? "loading" : error && !items.length ? "error" : "ready"} onRetry={load}>
       <div className="space-y-3">
         {items.map((item) => (
           <article key={item.id} className={`rounded-2xl border border-line bg-panel p-5 shadow-soft ${item.readAt ? "opacity-70" : ""}`}>
@@ -40,12 +29,13 @@ export default function NotificationsPage() {
                   <p className="mt-2 text-xs font-bold text-muted">{formatDate(item.createdAt.slice(0, 10))}</p>
                 </div>
               </div>
-              {!item.readAt ? <button type="button" onClick={() => markRead(item.id)} className="rounded-lg border border-line px-3 py-2 text-sm font-bold text-muted hover:border-moss hover:text-ink">Mark read</button> : null}
+              {canReadNotification(item) ? <Button variant="secondary" disabled={pending !== null} onClick={() => markRead(item.id)}>Mark read</Button> : null}
             </div>
           </article>
         ))}
         {!items.length ? <div className="rounded-2xl border border-line bg-panel p-8 text-center text-sm font-semibold text-muted shadow-soft">No notifications yet.</div> : null}
       </div>
+      </AsyncState>
     </>
   );
 }

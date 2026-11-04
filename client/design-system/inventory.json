@@ -780,7 +780,7 @@
       "usedBy": [
         "app/activities/[id]/page.tsx"
       ],
-      "sourceHash": "a1913e196d2299d28039bd95a6699c239823a7530376d580606e8ea2dc5bc58a"
+      "sourceHash": "11784aa613f1e3ebeb657db390aceb90e818af7781e0c7964d9d1494d9f9ef3d"
     },
     {
       "id": "feature:activities.ActivityFilters",
@@ -841,7 +841,7 @@
       "usedBy": [
         "features/activities/screens/ActivitiesScreen.tsx"
       ],
-      "sourceHash": "a8c1525d6e6444679294607482d85d5eb2bc8501665731c5b3b17cbbeb4f6f03"
+      "sourceHash": "5c22dbe03fa17ee30b6271f2cf7287a1adb087ac05c5a3e4005de7ef1ab1dff9"
     },
     {
       "id": "feature:activities.EditActivityPage",
@@ -1346,7 +1346,7 @@
       "usedBy": [
         "app/explore/organizations/[slug]/page.tsx"
       ],
-      "sourceHash": "907758dc7f5eb39eb487504cd76b5451b237b412564c8fb3b09d40d68cbdb925"
+      "sourceHash": "096a8c08560944c5523bd437c8a911aa7115b96e438e71c5ad33a5e1cb88f4cf"
     },
     {
       "id": "feature:organizations.OrganizationFilters",
@@ -1406,7 +1406,7 @@
       "usedBy": [
         "app/orgs/[orgName]/page.tsx"
       ],
-      "sourceHash": "ef419434395647fa0908ebed44df78100a9538b11946ce5fd3e3a3b4ce3d7161"
+      "sourceHash": "9d2e3943fdaf305eb5a25a1082b328ec5625cddc18b108c8167c1282040d634b"
     },
     {
       "id": "feature:organizations.OverviewTab",
@@ -1684,7 +1684,7 @@
       "description": "Feature-owned composition; contract review required before redesign.",
       "review": "source inventory; visual review pending",
       "usedBy": [],
-      "sourceHash": "151d13345510c610058278e4e403921f4856e238f7918597a6018ad56f71fbd1"
+      "sourceHash": "e5bc41839e0876b7d3e4aff6550b1fbd45bf43d07a0c01dcfbe4dcb4e8a9f572"
     },
     {
       "id": "feature:pins.NewPinPage",
@@ -1744,7 +1744,7 @@
       "usedBy": [
         "app/pins/[id]/page.tsx"
       ],
-      "sourceHash": "08c5b6a6532308c5d2e25784b4680e8247aa83a20c271b4b614d29876bc3101a"
+      "sourceHash": "630f1fc52499bde03ac59313095fc45cc2621d93b3620cc19a0bca1babfbdf87"
     },
     {
       "id": "feature:pins.PinFilters",
@@ -1865,7 +1865,7 @@
       "usedBy": [
         "app/profile/change-password/page.tsx"
       ],
-      "sourceHash": "5310e538046745314dcf87e43ed6274307505fea5de143317543b43a14824840"
+      "sourceHash": "5eaf6e72023a9f8a782deba8ce6a2dcde912f7d415da98d85a65b0b41ae72802"
     },
     {
       "id": "feature:profile.EditProfilePage",
@@ -2026,7 +2026,7 @@
       "usedBy": [
         "features/profile/screens/ProfileUsernameScreen.tsx"
       ],
-      "sourceHash": "ed6f7600655561aae3f628defba8a67051753d544951e859ade489c52767c869"
+      "sourceHash": "d26a3a1af70eb61da0ef45714548b71636bef7b1d6285688486d3242a5d93d88"
     },
     {
       "id": "feature:profile.PublicProfilePage",
@@ -2046,7 +2046,7 @@
       "usedBy": [
         "app/profile/[username]/page.tsx"
       ],
-      "sourceHash": "b4791de7ba7c6abddfcfc68206dcdaa9f37380b511d5a9789db26faaf4d741de"
+      "sourceHash": "a1e4cba5f13a73427c46b332ff1bb891f4aff86acc774c58e149d07394a5f6b6"
     },
     {
       "id": "feature:quests.NewQuestPage",
@@ -2207,7 +2207,7 @@
       "usedBy": [
         "app/repos/[org]/[repo]/page.tsx"
       ],
-      "sourceHash": "aa011309f600f07cd9fa5697ca31982313d8710fb7f9550a6a78ca2bdf2373ab"
+      "sourceHash": "3c495ae3e889cbdc2c73bc70f164db1ab76ef48c28f8e8fa750c8496dd7709a2"
     },
     {
       "id": "feature:repositories.RepositoriesPage",
@@ -2290,6 +2290,26 @@
       "sourceHash": "4ea4414c7d0fe2e9629ed6e81580b7f0f963aec528b453a01ddf68b3e7e24c84"
     },
     {
+      "id": "feature:settings.SessionsPanel",
+      "name": "SessionsPanel",
+      "owner": "feature:settings",
+      "file": "features/settings/components/SessionsPanel.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/settings/screens/SettingsScreen.tsx"
+      ],
+      "sourceHash": "892c77c1849d0be3d51a41b5c83700a8b806f6c2dd486d64424f56ede8d3b939"
+    },
+    {
       "id": "feature:settings.SettingsPage",
       "name": "SettingsPage",
       "owner": "feature:settings",
@@ -2307,7 +2327,7 @@
       "usedBy": [
         "app/settings/page.tsx"
       ],
-      "sourceHash": "f69f354fca125ccced1590233fb2a802a086a15649b2a8e4bb876882eb2766b4"
+      "sourceHash": "1d6c5ecd36173da6207074455956937ffcac97612b3c85a574e9ad91a85c3315"
     },
     {
       "id": "feature:system.BadgesPage",
@@ -2980,6 +3000,7 @@
         "features/quests/screens/ExploreQuestsIdScreen.tsx",
         "features/quests/screens/ExploreQuestsNewScreen.tsx",
         "features/settings/components/GitHubAutomationPanel.tsx",
+        "features/settings/components/SessionsPanel.tsx",
         "shell/AppShell.tsx",
         "shell/Topbar.tsx",
         "state/activities.tsx"

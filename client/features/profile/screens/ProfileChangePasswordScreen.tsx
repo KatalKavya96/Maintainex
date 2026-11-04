@@ -28,7 +28,7 @@ export default function ChangePasswordPage() {
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
-      setMessage("Password updated.");
+      setMessage("Password updated. Other devices have been signed out.");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Could not change password.");
     } finally {

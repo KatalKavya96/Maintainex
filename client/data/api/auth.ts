@@ -7,3 +7,5 @@ export const getOAuthProviders = () => apiRequest<OAuthProviders>("/auth/provide
 
 export const getOAuthUrl = (provider: OAuthProviderName, nonce: string) =>
   apiRequest<{ url: string }>(`/auth/oauth/${provider}/url${queryString({ nonce, origin: window.location.origin })}`);
+
+export const logoutEverywhere = () => apiRequest<{ signedOut: boolean }>("/auth/logout-everywhere", { method: "POST" });

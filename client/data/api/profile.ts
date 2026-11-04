@@ -1,5 +1,6 @@
 import { apiRequest, queryString } from "../http";
 import type { ProfileDashboard, ProfileSummary, ProfileUpdateInput, ProfileUser, UsernameAvailability } from "@/types/profile";
+import { setSessionToken } from "../session";
 
 export const getProfiles = () => apiRequest<ProfileSummary[]>("/profiles");
 
@@ -11,7 +12,12 @@ export const checkUsernameAvailability = (username: string) => apiRequest<Userna
 
 export const updateProfile = (data: ProfileUpdateInput) => apiRequest<ProfileUser>("/profiles/me", { method: "PUT", body: JSON.stringify(data) });
 
-export const changePassword = (data: { currentPassword: string; newPassword: string }) => apiRequest<{ changed: boolean }>("/profiles/password", { method: "PATCH", body: JSON.stringify(data) });
+/** Changing the password signs out other devices; this device continues with the re-issued token. */
+export const changePassword = async (data: { currentPassword: string; newPassword: string }) => {
+  const result = await apiRequest<{ changed: boolean; token: string }>("/profiles/password", { method: "PATCH", body: JSON.stringify(data) });
+  setSessionToken(result.token);
+  return result;
+};
 
 export const resetWorkspaceData = (password: string) => apiRequest<Record<string, number>>("/profiles/reset-workspace", { method: "POST", body: JSON.stringify({ password }) });
 

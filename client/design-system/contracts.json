@@ -213,5 +213,17 @@
     ],
     "description": "Text feedback; errors use alert and success uses status. Does not own persistence.",
     "review": "implemented and catalogued"
+  },
+  "design-system.Dialog": {
+    "revision": 1,
+    "variants": [
+      "default"
+    ],
+    "states": [
+      "closed",
+      "open"
+    ],
+    "description": "Modal on native <dialog>: focus stays inside, Escape and backdrop click call onClose, title labels the dialog. Owns no data; children own their forms and errors.",
+    "review": "implemented and catalogued"
   }
 }

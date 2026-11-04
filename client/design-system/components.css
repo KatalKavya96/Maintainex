@@ -41,3 +41,11 @@
 .ds-table td { padding:var(--ds-space-4); border-bottom:1px solid var(--app-line); vertical-align:middle; }
 .ds-table tr:last-child td { border-bottom:0; }
 .ds-table tbody tr:hover { background:var(--app-elevated); }
+.ds-dialog { width:min(calc(100% - 2rem), 28rem); max-height:calc(100dvh - 2rem); margin:auto; padding:0; overflow:auto; border:1px solid var(--app-line); border-radius:var(--ds-radius-panel); background:var(--app-panel); color:var(--app-text); box-shadow:var(--ds-shadow); }
+.ds-dialog::backdrop { background:color-mix(in srgb, var(--app-bg) 72%, transparent); backdrop-filter:blur(2px); }
+.ds-dialog__panel { padding:var(--ds-space-6); }
+.ds-dialog__header { display:flex; align-items:flex-start; justify-content:space-between; gap:var(--ds-space-3); }
+.ds-dialog__title { font-size:1.25rem; font-weight:600; letter-spacing:-.02em; }
+.ds-dialog__close { display:grid; place-items:center; width:32px; height:32px; border-radius:var(--ds-radius-control); color:var(--app-muted); }
+.ds-dialog__close:hover { background:var(--app-elevated); color:var(--app-text); }
+.ds-dialog__description { margin-top:var(--ds-space-2); color:var(--app-muted); font-size:.875rem; line-height:1.6; }

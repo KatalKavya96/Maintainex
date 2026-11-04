@@ -7,3 +7,4 @@ export { PageHeader } from "./primitives/PageHeader";
 export { Metric } from "./primitives/Metric";
 export { EmptyState, AsyncState } from "./primitives/AsyncState";
 export { DataTable, type Column } from "./primitives/DataTable";
+export { Dialog } from "./primitives/Dialog";

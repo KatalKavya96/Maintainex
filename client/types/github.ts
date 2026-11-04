@@ -1,18 +1,29 @@
+export type GitHubPreferences = {
+  autoSync: boolean;
+  importPullRequests: boolean;
+  importReviews: boolean;
+  importIssues: boolean;
+  importComments: boolean;
+  importAssignedIssues: boolean;
+  importRepositories: boolean;
+};
+
 export type GitHubStatus = {
   connected: boolean;
   configAvailable: boolean;
-  webhookConfigured: boolean;
   login: string | null;
-  scope: string | null;
-  lastSyncedAt: string | null;
-  syncCursor: string | null;
-  redirectUri: string;
   scopes: string;
-  missingConfig: string[];
-  tokenEncryptionConfigured: boolean;
+  lastSyncedAt: string | null;
+  syncing: boolean;
+  lastSyncError: string | null;
+  needsReconnect: boolean;
+  preferences: GitHubPreferences | null;
+  webhookConfigured: boolean;
 };
 
 export type GitHubSyncResult = {
+  status: "completed" | "skipped";
+  reason?: string;
   repositories: number;
   prRaised: number;
   prReviewed: number;
@@ -20,5 +31,9 @@ export type GitHubSyncResult = {
   mergedPrs: number;
   comments: number;
   assignedIssues: number;
-  staleScheduledTasks: number;
+  created: number;
+  updated: number;
+  keptDeleted: number;
+  failed: number;
+  truncated: boolean;
 };

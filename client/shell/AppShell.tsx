@@ -9,6 +9,7 @@ import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { ActivityProvider } from "@/state/activities";
 import { isPublicRoute } from "@/shared/lib/routes";
+import { useGitHubAutoSync } from "@/features/settings";
 
 /** Public entry is independent; providers for private records mount inside the workspace. */
 export function AppShell({ children }: { children: ReactNode }) {
@@ -27,6 +28,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   useEffect(() => { document.documentElement.dataset.theme = theme; },[theme]);
   useEffect(() => { if (isReady && !user && !sessionError && !authPage) router.replace(`/login?returnTo=${encodeURIComponent(pathname)}`); },[isReady,user,sessionError,authPage,router,pathname]);
   useRealtimeEvents(!authPage ? user?.id : undefined);
+  useGitHubAutoSync(!authPage && Boolean(user) && user?.id !== "viewer");
   if (authPage) return <main id="main-content" className={pathname === "/" ? "min-h-screen" : "min-h-screen px-5 py-8"}>{children}</main>;
   if (sessionError) return <SessionRecovery message={sessionError} onRetry={retrySession} onLogout={logout} />;
   if (!isReady || !user) return <main role="status" className="grid min-h-screen place-items-center text-sm text-muted">Loading session…</main>;

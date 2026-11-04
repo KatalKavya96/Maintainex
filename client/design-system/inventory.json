@@ -901,7 +901,28 @@
       "usedBy": [
         "app/login/page.tsx"
       ],
-      "sourceHash": "21f16069167474f6fdd199fc992e4071122b71d1e58896156be7968222d800da"
+      "sourceHash": "937452970adadd5da714fdca2d53431dc7172fdc13a943e22e0930afeabb1e61"
+    },
+    {
+      "id": "feature:auth.OAuthButtons",
+      "name": "OAuthButtons",
+      "owner": "feature:auth",
+      "file": "features/auth/components/OAuthButtons.tsx",
+      "revision": 1,
+      "kind": "component",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "existing behavior"
+      ],
+      "description": "Feature-owned composition; contract review required before redesign.",
+      "review": "source inventory; visual review pending",
+      "usedBy": [
+        "features/auth/screens/LoginScreen.tsx",
+        "features/auth/screens/SignupScreen.tsx"
+      ],
+      "sourceHash": "7b70112c229a80c1c4792b010d3d89919956c7667868553d61514de9ae00d74c"
     },
     {
       "id": "feature:auth.SignupPage",
@@ -921,7 +942,7 @@
       "usedBy": [
         "app/signup/page.tsx"
       ],
-      "sourceHash": "36bac387cc28574032ae5fa5af75b93c5a8fd7aa04fc6494178063ce87dc5210"
+      "sourceHash": "fcaa77c726e4dd174c4719c645f3799cd00de02275fda988c838495852dccdb7"
     },
     {
       "id": "feature:community.FeedCard",
@@ -2266,7 +2287,7 @@
       "usedBy": [
         "features/settings/screens/SettingsScreen.tsx"
       ],
-      "sourceHash": "0ba48ae9a57adc6ba1538225762099a51b3ac3824dd98ec550ce3c451f32c585"
+      "sourceHash": "4ea4414c7d0fe2e9629ed6e81580b7f0f963aec528b453a01ddf68b3e7e24c84"
     },
     {
       "id": "feature:settings.SettingsPage",
@@ -2782,7 +2803,7 @@
       "usedBy": [
         "app/layout.tsx"
       ],
-      "sourceHash": "47a5ef1fd019cb4c6bdca81cf6f8a8c8f8759f5d2a5d13c9ccd9779e1c456009"
+      "sourceHash": "41549d0999c046de08c2f81860c329785647301a1b2cace8ff92212b412ebfcd"
     },
     {
       "id": "shell.Navigation",
@@ -2926,6 +2947,8 @@
         "features/organizations/screens/OrgsOrgnameScreen.tsx",
         "features/overview/screens/DashboardScreen.tsx",
         "features/repositories/screens/ReposOrgRepoScreen.tsx",
+        "features/settings/hooks/useGitHubAutoSync.ts",
+        "features/settings/hooks/useGitHubConnection.ts",
         "shell/AppShell.tsx",
         "shell/hooks/useRealtimeEvents.ts"
       ],
@@ -2961,7 +2984,7 @@
         "shell/Topbar.tsx",
         "state/activities.tsx"
       ],
-      "sourceHash": "9fac7429c9c66a0ee72fbc27ea37ef032cc9293d2107bb955b8af6717ac14c64"
+      "sourceHash": "1229801380c63b2976b75d014a224d7ced5810ba7bf7652642f2907705e5e874"
     }
   ],
   "routes": [

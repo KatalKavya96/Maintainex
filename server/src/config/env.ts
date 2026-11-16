@@ -38,6 +38,7 @@ export const env = {
   githubRedirectUri: process.env.GITHUB_REDIRECT_URI,
   githubAuthRedirectUri: process.env.GITHUB_AUTH_REDIRECT_URI,
   githubWebhookSecret: process.env.GITHUB_WEBHOOK_SECRET,
+  cronSecret: process.env.CRON_SECRET,
   githubTokenEncryptionKey: process.env.GITHUB_TOKEN_ENCRYPTION_KEY,
   githubApiVersion: process.env.GITHUB_API_VERSION ?? "2022-11-28",
   githubOAuthScopes: process.env.GITHUB_OAUTH_SCOPES ?? "read:user user:email public_repo",

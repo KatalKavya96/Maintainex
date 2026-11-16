@@ -26,6 +26,10 @@ export class GitHubController {
     res.json(new ApiResponse(await this.service.sync(req.user!.id, req.body ?? {})));
   };
 
+  scheduledSync = async (_req: Request, res: Response) => {
+    res.json(new ApiResponse(await this.service.syncScheduled()));
+  };
+
   disconnect = async (req: Request, res: Response) => {
     res.json(new ApiResponse(await this.service.disconnect(req.user!.id, { removeImported: req.query.removeImported === "true" })));
   };

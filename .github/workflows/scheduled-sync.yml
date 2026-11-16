@@ -1,0 +1,28 @@
+name: Scheduled GitHub sync
+# Calls the deployed API once an hour so imports keep running when nobody has Maintainex open.
+# Needs repository variable MAINTAINEX_SYNC_URL (https://<your-api>/api/github/cron-sync)
+# and repository secret MAINTAINEX_CRON_SECRET (same value as the server's CRON_SECRET).
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+permissions: {}
+concurrency:
+  group: scheduled-sync
+  cancel-in-progress: false
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Trigger Maintainex sync
+        env:
+          SYNC_URL: ${{ vars.MAINTAINEX_SYNC_URL }}
+          CRON_SECRET: ${{ secrets.MAINTAINEX_CRON_SECRET }}
+        run: |
+          if [ -z "$SYNC_URL" ] || [ -z "$CRON_SECRET" ]; then
+            echo "::notice::Scheduled sync is not configured (MAINTAINEX_SYNC_URL / MAINTAINEX_CRON_SECRET). Skipping."
+            exit 0
+          fi
+          curl --fail-with-body --silent --show-error --max-time 240 \
+            -X POST -H "Authorization: Bearer $CRON_SECRET" "$SYNC_URL"

@@ -93,6 +93,16 @@ EMAIL_DNS_CHECK=true
 Use `CLIENT_URLS` for multiple frontend origins, such as localhost plus Vercel production or preview URLs.
 Use `GITHUB_REDIRECT_URI` for both GitHub login and GitHub sync unless you create a second GitHub OAuth app, in which case set `GITHUB_AUTH_REDIRECT_URI` for login.
 
+### Scheduled GitHub sync
+
+The in-app "Keep in sync automatically" switch only runs while Maintainex is open. To sync on a schedule instead:
+
+1. Set `CRON_SECRET` on the backend (at least 32 characters, for example `openssl rand -hex 32`).
+2. In this repository's GitHub settings, add the variable `MAINTAINEX_SYNC_URL` (`https://<your-api>/api/github/cron-sync`) and the secret `MAINTAINEX_CRON_SECRET` (same value as `CRON_SECRET`).
+3. `.github/workflows/scheduled-sync.yml` then calls the endpoint hourly. Run it once by hand from the Actions tab to check it.
+
+Each run syncs accounts that have automatic sync on and have not synced in the last 45 minutes. With reviews imported, it also records each reviewer's real verdict (approved, changes requested or commented) and the pull requests they merged for others. Vercel Cron can call the same endpoint with `GET` instead.
+
 ## API Routes
 
 Activities:

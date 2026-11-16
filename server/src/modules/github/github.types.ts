@@ -44,11 +44,26 @@ export type GitHubSearchItem = {
   draft?: boolean;
 };
 
+export type GitHubReview = {
+  id: number;
+  user?: GitHubUser | null;
+  state?: "APPROVED" | "CHANGES_REQUESTED" | "COMMENTED" | "DISMISSED" | "PENDING" | string;
+  submitted_at?: string;
+  body?: string | null;
+  html_url?: string;
+};
+
+export type GitHubPullRequest = {
+  number: number;
+  merged_at?: string | null;
+  merged_by?: GitHubUser | null;
+};
+
 export type GitHubWebhookPayload = Record<string, unknown> & {
   action?: string;
   sender?: GitHubUser;
   repository?: GitHubRepo;
-  pull_request?: GitHubSearchItem & { merged?: boolean; draft?: boolean; user?: GitHubUser | null };
+  pull_request?: GitHubSearchItem & { merged?: boolean; draft?: boolean; user?: GitHubUser | null; merged_by?: GitHubUser | null };
   review?: { id: number; node_id?: string; user?: GitHubUser | null; state?: string; submitted_at?: string; body?: string | null; html_url?: string };
   issue?: GitHubSearchItem;
   comment?: { id: number; node_id?: string; user?: GitHubUser | null; body?: string | null; html_url?: string; created_at?: string };

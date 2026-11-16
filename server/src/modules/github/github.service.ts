@@ -10,13 +10,17 @@ import { OAuthAccounts } from "../auth/oauth-accounts";
 import { nonceHashFor, readHandoff, signHandoff, signState, type OAuthState } from "../auth/oauth-handoff";
 import { exchangeGithubCode, githubApi, providerConfigured, redirectUriFor } from "../auth/oauth-providers";
 import { GitHubAuthError, GitHubClient, GitHubRateLimitError } from "./github.api";
-import { GitHubRecords, type Outcome } from "./github.records";
+import { MaintainerDetails } from "./github.maintainer";
+import { GitHubRecords, type ActivityOverrides, type Outcome } from "./github.records";
 import { preferenceKeys, type GitHubUser, type SyncPreferences } from "./github.types";
 import { GitHubWebhooks } from "./github.webhook";
 
 const MINUTE = 60_000;
 const DAY = 24 * 60 * MINUTE;
 const AUTO_SYNC_EVERY = 60 * MINUTE;
+// The hourly scheduler fires a little under an hour after the last run; a smaller gap keeps it from skipping every other hour.
+const SCHEDULED_SYNC_EVERY = 45 * MINUTE;
+const SCHEDULED_BATCH = 25;
 const LOCK_EXPIRES = 10 * MINUTE;
 
 type GroupKey = "prRaised" | "prReviewed" | "issuesRaised" | "mergedPrs" | "comments";
@@ -25,7 +29,7 @@ type SyncOptions = { since?: string; maxPages?: number; auto?: boolean };
 const emptyResult = () => ({
   status: "completed" as "completed" | "skipped",
   reason: undefined as string | undefined,
-  repositories: 0, prRaised: 0, prReviewed: 0, issuesRaised: 0, mergedPrs: 0, comments: 0, assignedIssues: 0,
+  repositories: 0, prRaised: 0, prReviewed: 0, issuesRaised: 0, mergedPrs: 0, mergedByMe: 0, comments: 0, assignedIssues: 0,
   created: 0, updated: 0, keptDeleted: 0, failed: 0, truncated: false
 });
 export type SyncResult = ReturnType<typeof emptyResult>;
@@ -104,7 +108,29 @@ export class GitHubService {
     return { connected: false, removed };
   }
 
-  async sync(userId: string, options: SyncOptions = {}): Promise<SyncResult> {
+  /** Server-side automatic sync for every account that has it on, oldest first, so it runs without an open browser. */
+  async syncScheduled() {
+    const due = await this.db.gitHubIntegration.findMany({
+      where: { autoSync: true, needsReconnect: false },
+      select: { userId: true },
+      orderBy: { lastSyncedAt: { sort: "asc", nulls: "first" } },
+      take: SCHEDULED_BATCH
+    });
+    const summary = { checked: due.length, synced: 0, skipped: 0, failed: 0 };
+    for (const { userId } of due) {
+      try {
+        const result = await this.sync(userId, { auto: true }, SCHEDULED_SYNC_EVERY);
+        if (result.status === "completed") summary.synced += 1;
+        else summary.skipped += 1;
+      } catch {
+        // sync() already stored the reason on the integration for the Settings screen.
+        summary.failed += 1;
+      }
+    }
+    return summary;
+  }
+
+  async sync(userId: string, options: SyncOptions = {}, autoEvery = AUTO_SYNC_EVERY): Promise<SyncResult> {
     this.ensurePersistedUser(userId);
     const integration = await this.db.gitHubIntegration.findUnique({ where: { userId } });
     const skipped = (reason: string) => ({ ...emptyResult(), status: "skipped" as const, reason });
@@ -116,7 +142,7 @@ export class GitHubService {
       if (options.auto) return skipped("needs-reconnect");
       throw new ApiError(409, "GitHub access was revoked or expired. Reconnect GitHub to resume syncing.");
     }
-    if (options.auto && (!integration.autoSync || (integration.lastSyncedAt && Date.now() - integration.lastSyncedAt.getTime() < AUTO_SYNC_EVERY))) {
+    if (options.auto && (!integration.autoSync || (integration.lastSyncedAt && Date.now() - integration.lastSyncedAt.getTime() < autoEvery))) {
       return skipped(integration.autoSync ? "up-to-date" : "auto-sync-off");
     }
 
@@ -151,6 +177,7 @@ export class GitHubService {
     const { userId, login } = integration;
     const prefs = preferencesOf(integration);
     const client = this.clientFor(decryptToken(integration.accessTokenEncrypted));
+    const maintainer = new MaintainerDetails(client, login);
     const maxPages = options.auto ? 1 : Math.min(Math.max(options.maxPages ?? 2, 1), 5);
     const since = options.since ? new Date(options.since) : integration.syncCursor ? new Date(integration.syncCursor.getTime() - DAY) : new Date(Date.now() - 30 * DAY);
     const sinceDate = since.toISOString().slice(0, 10);
@@ -181,8 +208,15 @@ export class GitHubService {
         await this.guard(result, async () => {
           const repo = await client.repoFor(item);
           if (!repo) throw new Error("Repository unavailable");
-          tally(await this.records.upsertActivity(userId, repo, item, group.type, `github:${group.key}:${item.node_id}`));
+          const overrides: ActivityOverrides = group.key === "prReviewed" ? await maintainer.reviewOf(item) : {};
+          tally(await this.records.upsertActivity(userId, repo, item, group.type, `github:${group.key}:${item.node_id}`, overrides));
           result[group.key] += 1;
+          // Reviewed-by search is the candidate list for merges: committers review what they merge, and search has no merged-by filter.
+          const merge = group.key === "prReviewed" && prefs.importPullRequests ? await maintainer.mergedByMe(item) : null;
+          if (merge) {
+            tally(await this.records.upsertActivity(userId, repo, item, "MERGED", `github:mergedByMe:${item.node_id}`, merge));
+            result.mergedByMe += 1;
+          }
         });
       }
     }

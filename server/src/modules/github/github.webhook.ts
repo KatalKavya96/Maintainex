@@ -50,6 +50,11 @@ export class GitHubWebhooks {
       if (action === "closed") {
         const result = await this.activity(pr.user?.id, repo, pr, "PR_RAISED", `github:prRaised:${pr.node_id}`, "importPullRequests");
         if (pr.merged) await this.activity(pr.user?.id, repo, pr, "MERGED", `github:mergedPrs:${pr.node_id}`, "importPullRequests");
+        if (pr.merged && pr.merged_by?.id && pr.merged_by.id !== pr.user?.id) {
+          await this.activity(pr.merged_by.id, repo, pr, "MERGED", `github:mergedByMe:${pr.node_id}`, "importPullRequests", {
+            date: toDate(pr.merged_at), notes: "You merged this pull request as a maintainer."
+          });
+        }
         return result;
       }
     }

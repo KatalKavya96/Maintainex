@@ -10,7 +10,7 @@ const toDate = (value?: string | null) => (value ? new Date(value) : new Date())
 const labelsFrom = (item: Pick<GitHubSearchItem, "labels">) => (item.labels ?? []).map((label) => label.name).filter(Boolean).slice(0, 12);
 const slugify = (value: string) => value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 const scopedSlug = (name: string, userId: string) => `${slugify(name)}-${userId.slice(0, 8).toLowerCase()}`;
-const isMerged = (item: Pick<GitHubSearchItem, "merged_at" | "pull_request">) => Boolean(item.merged_at || item.pull_request?.merged_at);
+export const isMerged = (item: Pick<GitHubSearchItem, "merged_at" | "pull_request">) => Boolean(item.merged_at || item.pull_request?.merged_at);
 
 export const reviewTypeFromState = (state?: string): ReviewType =>
   state === "approved" ? "APPROVED" : state === "changes_requested" ? "CHANGES_REQUESTED" : "COMMENTED";

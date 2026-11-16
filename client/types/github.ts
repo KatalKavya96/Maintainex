@@ -29,6 +29,7 @@ export type GitHubSyncResult = {
   prReviewed: number;
   issuesRaised: number;
   mergedPrs: number;
+  mergedByMe: number;
   comments: number;
   assignedIssues: number;
   created: number;

@@ -1,5 +1,5 @@
 import { env } from "../../config/env";
-import type { GitHubRepo, GitHubSearchItem } from "./github.types";
+import type { GitHubPullRequest, GitHubRepo, GitHubReview, GitHubSearchItem } from "./github.types";
 
 export class GitHubAuthError extends Error {}
 export class GitHubRateLimitError extends Error {
@@ -11,6 +11,11 @@ export class GitHubRateLimitError extends Error {
 export type FetchLike = (input: string, init?: { headers?: Record<string, string> }) => Promise<Response>;
 
 const SEARCH_PAGE = 50;
+
+const repoPath = (item: Pick<GitHubSearchItem, "repository_url">) => {
+  const match = /\/repos\/([^/]+)\/([^/?#]+)/.exec(item.repository_url ?? "");
+  return match ? `${match[1]}/${match[2]}` : null;
+};
 
 /** One sync's view of GitHub: typed requests, rate-limit awareness and a per-sync repository cache. */
 export class GitHubClient {
@@ -62,16 +67,28 @@ export class GitHubClient {
 
   /** Search results carry `repository_url` (…/repos/owner/name), not a numeric id. */
   repoFor(item: Pick<GitHubSearchItem, "repository_url">) {
-    const match = /\/repos\/([^/]+)\/([^/?#]+)/.exec(item.repository_url ?? "");
-    if (!match) return Promise.resolve(null);
-    const key = `${match[1]}/${match[2]}`.toLowerCase();
+    const path = repoPath(item);
+    if (!path) return Promise.resolve(null);
+    const key = path.toLowerCase();
     if (!this.repos.has(key)) {
-      this.repos.set(key, this.request<GitHubRepo>(`/repos/${match[1]}/${match[2]}`).catch((error) => {
+      this.repos.set(key, this.request<GitHubRepo>(`/repos/${path}`).catch((error) => {
         if (error instanceof GitHubAuthError || error instanceof GitHubRateLimitError) throw error;
         return null;
       }));
     }
     return this.repos.get(key)!;
+  }
+
+  /** Every submitted review on a PR, oldest first. */
+  pullReviews(item: Pick<GitHubSearchItem, "repository_url" | "number">) {
+    const path = repoPath(item);
+    return path ? this.request<GitHubReview[]>(`/repos/${path}/pulls/${item.number}/reviews?per_page=100`) : Promise.resolve([]);
+  }
+
+  /** The full PR, which (unlike search results) says who merged it. */
+  pullRequest(item: Pick<GitHubSearchItem, "repository_url" | "number">) {
+    const path = repoPath(item);
+    return path ? this.request<GitHubPullRequest>(`/repos/${path}/pulls/${item.number}`) : Promise.resolve(null);
   }
 
   remember(repo: GitHubRepo) {
